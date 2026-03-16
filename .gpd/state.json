@@ -1,0 +1,338 @@
+{
+  "project_reference": {
+    "project_md_updated": null,
+    "core_research_question": null,
+    "current_focus": null
+  },
+  "project_contract": {
+    "schema_version": 1,
+    "scope": {
+      "question": "How do the necessary properties of agent-to-agent (A2A) commerce create fundamental vulnerabilities in banking fraud detection systems, and what agent-aware detection framework addresses these gaps?",
+      "in_scope": [
+        "Analysis of behavioral invariants that human fraud detection relies on",
+        "Mapping of agent properties that violate these invariants",
+        "Taxonomy of A2A fraud attack vectors",
+        "Design of agent-aware fraud detection framework",
+        "Industry recommendations for banking/fintech adaptation"
+      ],
+      "out_of_scope": [
+        "General AI adversarial ML beyond agent-specific properties",
+        "Regulatory policy implementation details"
+      ],
+      "unresolved_questions": [
+        "What A2A transaction data can we realistically obtain for empirical validation?",
+        "Which academic papers on multi-agent systems are most relevant?"
+      ]
+    },
+    "context_intake": {
+      "must_read_refs": [
+        "ref-openclaw-docs",
+        "ref-moltbook-docs",
+        "ref-agent-econ-lit"
+      ],
+      "must_include_prior_outputs": [],
+      "user_asserted_anchors": [
+        "OpenClaw platform documentation for actual agent behavior",
+        "Moltbook platform documentation for agent social patterns",
+        "Academic literature on multi-agent economic systems"
+      ],
+      "known_good_baselines": [],
+      "context_gaps": [
+        "A2A transaction data access not yet determined \u2014 need to research data sources",
+        "Relevant academic literature needs systematic survey"
+      ],
+      "crucial_inputs": []
+    },
+    "approach_policy": {
+      "formulations": [
+        "First-principles analysis from Deutsch hard-to-vary criterion"
+      ],
+      "allowed_estimator_families": [],
+      "forbidden_estimator_families": [],
+      "allowed_fit_families": [],
+      "forbidden_fit_families": [],
+      "stop_and_rethink_conditions": [
+        "If recommendations fail when tested against real A2A transaction data",
+        "If data acquisition research reveals no viable data sources for empirical validation"
+      ]
+    },
+    "observables": [
+      {
+        "id": "obs-fraudgap",
+        "name": "Fraud detection gap properties",
+        "kind": "classification",
+        "definition": "Set of necessary properties of A2A commerce that create blind spots in human-based fraud detection",
+        "regime": null,
+        "units": null
+      }
+    ],
+    "claims": [
+      {
+        "id": "claim-main",
+        "statement": "Financial fraud detection systems rely on behavioral invariants that are properties of human agents by definition. AI agents lack these invariants, creating necessary blind spots in human-based detection.",
+        "observables": [
+          "obs-fraudgap"
+        ],
+        "deliverables": [
+          "deliv-taxonomy",
+          "deliv-framework",
+          "deliv-recommendations"
+        ],
+        "acceptance_tests": [
+          "test-hardtovary",
+          "test-empirical"
+        ],
+        "references": [
+          "ref-openclaw-docs",
+          "ref-moltbook-docs",
+          "ref-agent-econ-lit"
+        ]
+      }
+    ],
+    "deliverables": [
+      {
+        "id": "deliv-taxonomy",
+        "kind": "dataset",
+        "path": null,
+        "description": "Taxonomy of A2A fraud attack vectors classified by invariant violation",
+        "must_contain": [
+          "Attack vector classification",
+          "Invariant violation mapping",
+          "Detection implications"
+        ]
+      },
+      {
+        "id": "deliv-framework",
+        "kind": "derivation",
+        "path": null,
+        "description": "Agent-aware fraud detection framework design",
+        "must_contain": [
+          "Framework architecture",
+          "Detection methodology",
+          "Privacy preservation analysis"
+        ]
+      },
+      {
+        "id": "deliv-recommendations",
+        "kind": "note",
+        "path": null,
+        "description": "Industry recommendations for banking/fintech adaptation",
+        "must_contain": [
+          "Implementation guidance",
+          "Priority ranked actions",
+          "Risk assessment"
+        ]
+      }
+    ],
+    "acceptance_tests": [
+      {
+        "id": "test-hardtovary",
+        "subject": "claim-main",
+        "kind": "consistency",
+        "procedure": "Verify the explanation meets Deutsch hard-to-vary criterion \u2014 cannot be varied while remaining plausible",
+        "pass_condition": "Explanation remains falsifiable and specific when key terms is varied",
+        "evidence_required": [
+          "deliv-framework"
+        ],
+        "automation": "human"
+      },
+      {
+        "id": "test-empirical",
+        "subject": "claim-main",
+        "kind": "reproducibility",
+        "procedure": "Test recommendations against available A2A transaction data or realistic simulation",
+        "pass_condition": "Recommendations detect agent-based fraud patterns that human-based systems miss",
+        "evidence_required": [
+          "deliv-recommendations"
+        ],
+        "automation": "hybrid"
+      }
+    ],
+    "references": [
+      {
+        "id": "ref-openclaw-docs",
+        "kind": "spec",
+        "locator": "OpenClaw GitHub: https://github.com/openclaw/openclaw",
+        "aliases": [
+          "openclaw",
+          "agent-gateway"
+        ],
+        "role": "must_consider",
+        "why_it_matters": "Primary source of agent-to-agent messaging and session management behavior",
+        "applies_to": [
+          "claim-main"
+        ],
+        "carry_forward_to": [
+          "planning",
+          "execution",
+          "verification",
+          "writing"
+        ],
+        "must_surface": true,
+        "required_actions": [
+          "read",
+          "use"
+        ]
+      },
+      {
+        "id": "ref-moltbook-docs",
+        "kind": "spec",
+        "locator": "Moltbook platform documentation",
+        "aliases": [
+          "moltbook",
+          "agent-social"
+        ],
+        "role": "must_consider",
+        "why_it_matters": "Primary source of agent social platform behavior, listings, and reputation systems",
+        "applies_to": [
+          "claim-main"
+        ],
+        "carry_forward_to": [
+          "planning",
+          "execution",
+          "verification",
+          "writing"
+        ],
+        "must_surface": true,
+        "required_actions": [
+          "read",
+          "use"
+        ]
+      },
+      {
+        "id": "ref-agent-econ-lit",
+        "kind": "paper",
+        "locator": "Academic literature on multi-agent economic systems (to be surveyed)",
+        "aliases": [
+          "agent-economics",
+          "multi-agent-systems"
+        ],
+        "role": "must_consider",
+        "why_it_matters": "Theoretical context for agent economic behavior and transaction patterns",
+        "applies_to": [
+          "claim-main"
+        ],
+        "carry_forward_to": [
+          "planning",
+          "execution",
+          "writing"
+        ],
+        "must_surface": true,
+        "required_actions": [
+          "read",
+          "cite"
+        ]
+      }
+    ],
+    "forbidden_proxies": [
+      {
+        "id": "fp-theoretical",
+        "subject": "claim-main",
+        "proxy": "Theoretical framework without empirical validation or industry-relevant recommendations",
+        "reason": "Would look like progress while failing the decisive output test"
+      },
+      {
+        "id": "fp-generic",
+        "subject": "claim-main",
+        "proxy": "Generic AI security advice not specific to A2A commerce properties",
+        "reason": "Would not address the specific blind spots created by agent behavioral differences"
+      }
+    ],
+    "links": [
+      {
+        "id": "link-1",
+        "source": "claim-main",
+        "target": "deliv-taxonomy",
+        "relation": "supports",
+        "verified_by": [
+          "test-hardtovary"
+        ]
+      },
+      {
+        "id": "link-2",
+        "source": "deliv-taxonomy",
+        "target": "deliv-framework",
+        "relation": "supports",
+        "verified_by": []
+      },
+      {
+        "id": "link-3",
+        "source": "deliv-framework",
+        "target": "deliv-recommendations",
+        "relation": "supports",
+        "verified_by": [
+          "test-empirical"
+        ]
+      }
+    ],
+    "uncertainty_markers": {
+      "weakest_anchors": [
+        "Data access \u2014 A2A transaction data sources not yet identified",
+        "Academic literature scope \u2014 specific papers not yet surveyed"
+      ],
+      "unvalidated_assumptions": [
+        "OpenClaw and Moltbox APIs will be accessible for analysis",
+        "A2A transaction patterns will differ meaningfully from human patterns"
+      ],
+      "competing_explanations": [
+        "Banking fraud detection may already be adaptable to agent patterns without fundamental redesign"
+      ],
+      "disconfirming_observations": [
+        "Recommendations fail when tested against real A2A transaction data",
+        "A2A commerce scales without proportional fraud increase (suggesting detection works)"
+      ]
+    }
+  },
+  "position": {
+    "current_phase": null,
+    "current_phase_name": null,
+    "total_phases": null,
+    "current_plan": null,
+    "total_plans_in_phase": null,
+    "status": null,
+    "last_activity": null,
+    "last_activity_desc": null,
+    "progress_percent": 0,
+    "paused_at": null
+  },
+  "active_calculations": [],
+  "intermediate_results": [],
+  "open_questions": [
+    "What A2A transaction data can we realistically obtain for empirical validation?",
+    "Which academic papers on multi-agent systems are most relevant?"
+  ],
+  "performance_metrics": {
+    "rows": []
+  },
+  "decisions": [],
+  "approximations": [],
+  "convention_lock": {
+    "metric_signature": null,
+    "fourier_convention": null,
+    "natural_units": null,
+    "gauge_choice": null,
+    "regularization_scheme": null,
+    "renormalization_scheme": null,
+    "coordinate_system": null,
+    "spin_basis": null,
+    "state_normalization": null,
+    "coupling_convention": null,
+    "index_positioning": null,
+    "time_ordering": null,
+    "commutation_convention": null,
+    "levi_civita_sign": null,
+    "generator_normalization": null,
+    "covariant_derivative_sign": null,
+    "gamma_matrix_convention": null,
+    "creation_annihilation_order": null,
+    "custom_conventions": {}
+  },
+  "propagated_uncertainties": [],
+  "pending_todos": [],
+  "blockers": [],
+  "session": {
+    "last_date": null,
+    "stopped_at": null,
+    "resume_file": null
+  }
+}
