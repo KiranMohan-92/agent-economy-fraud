@@ -17,7 +17,7 @@ See: .gpd/PROJECT.md (updated 2026-03-16)
 **Total Plans in Phase:** 0
 **Status:** Ready to plan
 **Last Activity:** 2026-03-16
-**Last Activity Description:** Project initialized
+**Last Activity Description:** Project initialized, conventions established
 
 **Progress:** [░░░░░░░░░░] 0%
 
@@ -53,7 +53,8 @@ None yet.
 
 **Convention Lock:**
 
-No conventions locked yet.
+- Metric signature: not_applicable
+- Fourier convention: not_applicable
 
 ### Propagated Uncertainties
 
