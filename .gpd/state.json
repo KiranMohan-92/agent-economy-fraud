@@ -307,8 +307,8 @@
   "decisions": [],
   "approximations": [],
   "convention_lock": {
-    "metric_signature": null,
-    "fourier_convention": null,
+    "metric_signature": "not_applicable",
+    "fourier_convention": "not_applicable",
     "natural_units": null,
     "gauge_choice": null,
     "regularization_scheme": null,

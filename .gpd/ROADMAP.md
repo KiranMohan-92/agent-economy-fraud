@@ -36,10 +36,10 @@ First-principles analysis of agent-to-agent (A2A) commerce vulnerabilities using
 
 **Plans:**
 
-- [ ] 01-01: OpenClaw platform documentation analysis (TBD — created during /gpd:plan-phase)
-- [ ] 01-02: Moltbook platform documentation analysis (TBD)
-- [ ] 01-03: Multi-agent systems literature survey (TBD)
-- [ ] 01-04: Data acquisition research and planning (TBD)
+- [ ] 01-01: OpenClaw platform documentation analysis — Analyze OpenClaw agent-to-agent messaging and session management for fraud detection blind spots
+- [ ] 01-02: Moltbook platform documentation analysis — Analyze Moltbook agent social platform behavior and reputation systems for Sybil vulnerabilities
+- [ ] 01-03: Multi-agent systems literature survey — Survey academic literature on multi-agent economics, fraud detection, and AI/ML security
+- [ ] 01-04: Data acquisition research and planning — Research public A2A datasets and specify synthetic data requirements
 
 ### Phase 2: Modeling and Analysis
 
