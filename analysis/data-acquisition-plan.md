@@ -16,7 +16,7 @@
 
 ### 1.1 Search Scope
 
-We conducted a systematic search across six categories of data sources:
+We conducted a systematic search across eight categories of data sources:
 
 1. **Public ML repositories** (Kaggle, UCI ML Repository)
 2. **Academic datasets** (linked from literature survey papers)
@@ -24,6 +24,8 @@ We conducted a systematic search across six categories of data sources:
 4. **Blockchain transaction data** (as partial analogue)
 5. **Financial transaction datasets** (credit card, fraud detection)
 6. **Specialized repositories** (Google Dataset Search, academic data portals)
+7. **ML model hubs** (Hugging Face Datasets)
+8. **Code repositories** (GitHub)
 
 ### 1.2 Search Terms Used
 
@@ -176,6 +178,48 @@ We conducted a systematic search across six categories of data sources:
 **Key datasets:**
 - Credit Card Fraud Detection (Kaggle) - 284,807 human transactions
 - IEEE-CIS Fraud Detection (Kaggle) - E-commerce human transactions
+
+### 2.8 Hugging Face Datasets (huggingface.co)
+
+**Status:** ✗ NO A2A DATASETS FOUND
+
+**Searched:**
+- Dataset hub: https://huggingface.co/datasets
+- Search terms: "agent transaction", "multi-agent commerce", "autonomous agent economic", "agent financial", "multi-agent RL", "agent-based economics"
+- Categories: Finance, Economics, Reinforcement Learning, Multi-Agent
+
+**Found (non-A2A):**
+- Financial datasets: Stock prices, financial news, economic indicators (human markets)
+- RL datasets: RL benchmarks, gaming environments (not economic transactions)
+- Multi-agent datasets: MARL benchmarks (games, navigation — no commerce semantics)
+
+**Assessment:** Hugging Face has extensive ML datasets but no A2A transaction datasets. Financial datasets are market-level (stocks) not transaction-level. RL/MARL datasets focus on gaming or control tasks, not economic transactions between autonomous agents.
+
+**Source:** https://huggingface.co/datasets (searched 2026-03-21)
+
+### 2.9 GitHub Code Repositories (github.com)
+
+**Status:** ✗ NO A2A DATASETS FOUND
+
+**Searched:**
+- Code search: "agent-to-agent commerce", "autonomous agent transaction", "multi-agent economic", "A2A framework"
+- Repository topics: multi-agent systems, agent economics, autonomous trading
+- Dataset files: *.csv, *.json, *.parquet with transaction/agent keywords
+
+**Found (non-A2A):**
+- Research codebases with simulation outputs (synthetic, not real data)
+- Trading bot repositories (human-automated, not agent-to-agent)
+- Multi-agent RL frameworks (no economic transaction data)
+
+**Assessment:** GitHub has research code and frameworks but no public A2A transaction datasets. Found repositories contain simulation code or example data, but no real-world agent transaction logs. A2A commerce is too new for public datasets to have accumulated.
+
+**Source:** https://github.com (searched 2026-03-21)
+
+---
+
+## 3. Updated Data Gap Documentation
+
+**Note:** Search expanded from 6 to 8 sources per verification Check 11 feedback. Gap assessment remains unchanged — no public A2A datasets found.
 
 ## 3. Data Gap Documentation
 
@@ -439,7 +483,7 @@ We conducted a systematic search across six categories of data sources:
 
 ## 9. Conclusion
 
-**Data gap confirmed:** No public A2A transaction datasets exist across 6 source categories (Kaggle, UCI, Google Dataset Search, academic papers, platform APIs, blockchain analogues).
+**Data gap confirmed:** No public A2A transaction datasets exist across 8 source categories (Kaggle, UCI, Google Dataset Search, academic papers, platform APIs, blockchain analogues, Hugging Face, GitHub).
 
 **Implication:** Synthetic data approach with explicit limitations is required.
 

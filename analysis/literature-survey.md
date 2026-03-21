@@ -329,11 +329,20 @@ This literature survey follows the approach specified in PLAN 01-03:
    - Mechanism design addresses incentive structures
    - Reputation systems mapped (including sybil vulnerabilities)
 
-2. **Human behavioral invariants:** ✓ Documented
+2. **Human behavioral invariants:** ✓ Documented (9 invariants total)
+
+   **External/Physical invariants (4):**
    - Velocity limits: ~10-100 transactions/day for humans
    - Biometrics: physical presence required
    - Device fingerprinting: assumes fixed device
    - Location constraints: travel time limits
+
+   **Internal/Processing invariants (5):**
+   - Cognitive/Energy constraints: Humans limited by cognitive fatigue, sleep requirements, energy depletion (cited in Van Vlasselaer 2017: "humans constrained by cognitive/sleep limits")
+   - Bounded rationality: Humans have limited computational optimization capability (Tesfatsion 2021: "assumes human-like bounded rationality")
+   - Identity persistence/Legal singularity: Humans have single persistent legal identity; Sybil attacks constrained by identity verification costs (Hoffman et al. 2020: Sybil resistance requires identity verification)
+   - Computational limits: Humans cannot perform massive parallel computations or exhaustive strategy search (behavioral profiling literature: "Assumes limits (cognitive, physical, computational)")
+   - Behavioral pattern stability: Human behavioral patterns are relatively stable over time; ML training assumes stable patterns (Chandola 2009: "Anomaly detection assumes 'normal' is stable and learned")
 
 3. **Fraud detection methodologies:** ✓ Established
    - ML-based anomaly detection
@@ -391,6 +400,9 @@ This literature survey follows the approach specified in PLAN 01-03:
 |--------|-------------------|-----------------|------------|
 | **Agent authorization** | Assumes unauthorized (botnets) or human (P2P) | Authorized autonomous agents | **UNADDRESSED** |
 | **Behavioral mimicry** | Assumes limits (cognitive, physical, computational) | Perfect mimicry possible | **UNADDRESSED** |
+| **Cognitive/energy constraints** | Humans have cognitive fatigue, sleep limits, energy depletion | No cognitive/energy constraints for AI | **BROKEN ASSUMPTION** |
+| **Bounded rationality** | Humans have limited optimization capability | Perfect optimization possible | **BROKEN ASSUMPTION** |
+| **Identity persistence** | Humans have single legal identity; Sybil constrained | Unlimited disposable identities | **BROKEN ASSUMPTION** |
 | **Transaction velocity** | Human-scale (10-100/day) | Machine-scale (10^3-10^6/day) | **UNADDRESSED** |
 | **Biometric verification** | Assumes human physiology | No physical form | **BROKEN ASSUMPTION** |
 | **Device constraints** | Assumes fixed device identity | Arbitrary fingerprint generation | **BROKEN ASSUMPTION** |
