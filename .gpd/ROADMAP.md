@@ -10,6 +10,8 @@ First-principles analysis of agent-to-agent (A2A) commerce vulnerabilities using
 - [x] **Phase 2: Modeling and Analysis** - Formal analysis of invariant violations, develop hard-to-vary explanation, create taxonomy
 - [x] **Phase 3: Detection Framework Design** - Design agent-aware detection methodology, specify invariant signals, privacy analysis
 - [x] **Phase 4: Validation and Recommendations** - Empirical testing, hard-to-vary validation, industry recommendations synthesis
+- [ ] **Phase 5: Ecosystem Characterization** - Real-world A2A data ingestion, labeled dataset construction, invariant validation, transfer gap measurement
+- [ ] **Phase 6: Fraud Validation** _(conditional on Phase 5)_ - Attack pattern injection, fraud detection validation, arXiv paper
 
 ## Phase Details
 
@@ -133,8 +135,10 @@ First-principles analysis of agent-to-agent (A2A) commerce vulnerabilities using
 | 2. Modeling and Analysis | 4/4            | ✓ Complete | 2026-03-22 |
 | 3. Detection Framework Design | 4/4            | ✓ Complete | 2026-03-22 |
 | 4. Validation and Recommendations | 4/4            | ✓ Complete | 2026-03-23 |
+| 5. Ecosystem Characterization | 0/4            | Active | - |
+| 6. Fraud Validation | 0/4            | Conditional | - |
 
 ---
 
 _Roadmap created: 2026-03-16_
-_Last updated: 2026-03-23 — All 4 phases complete. Project research concluded._
+_Last updated: 2026-03-24 — Phases 1-4 complete. Phase 5 (real-world validation) initiated._

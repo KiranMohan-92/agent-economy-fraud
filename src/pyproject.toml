@@ -1,0 +1,45 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "a2a-fincrime-detection"
+version = "0.1.0"
+description = "Agent-to-Agent financial crime detection framework based on human behavioral invariant analysis"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.10"
+authors = [
+    { name = "Kiran" },
+]
+keywords = ["a2a", "fraud-detection", "agent-economy", "financial-crime", "erc-8004"]
+
+dependencies = [
+    "httpx>=0.27",
+    "pandas>=2.1",
+    "pyarrow>=14.0",
+    "web3>=6.15",
+    "python-dotenv>=1.0",
+    "numpy>=1.26",
+    "scikit-learn>=1.4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.4",
+    "mypy>=1.9",
+]
+dune = [
+    "dune-client>=1.7",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["a2a_detection"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W"]

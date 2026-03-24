@@ -1,0 +1,32 @@
+# Environment
+.env
+*.env.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Data (large files — keep in .gitignore, share via data download scripts)
+data/*.parquet
+data/*.csv
+data/*.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# GPD backup files
+*.backup
+*.bak
+
+# OS
+.DS_Store
+Thumbs.db
