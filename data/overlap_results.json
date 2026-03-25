@@ -1,0 +1,376 @@
+{
+  "sample_size": 200,
+  "total_population": 1505,
+  "reported_base_population": 16549,
+  "active_usdc": 26,
+  "active_eth": 62,
+  "active_tx": 74,
+  "pct_with_usdc": 13.0,
+  "pct_with_eth": 31.0,
+  "pct_with_txns": 37.0,
+  "errors": 126,
+  "top_usdc_holders": [
+    {
+      "address": "0xea1bc1973811859946483108ebf8b45013c8cb38",
+      "usdc_balance": 130.314001,
+      "eth_balance": 0.118579,
+      "tx_count": 157,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x63b8cb2dcd4ce1039793d6e9a4f530c1d27fb242",
+      "usdc_balance": 129.483314,
+      "eth_balance": 0.109769,
+      "tx_count": 143,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x204d8e91d952a3910c6df89be8f7ecd9e26086fe",
+      "usdc_balance": 123.904043,
+      "eth_balance": 0.103909,
+      "tx_count": 486,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0xe4a26371b20677f3635fc91d9c896602280b4a04",
+      "usdc_balance": 117.937089,
+      "eth_balance": 0.112831,
+      "tx_count": 161,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x17556ee5fba29170b5381630e234ac724464fc5d",
+      "usdc_balance": 54.754591,
+      "eth_balance": 0.0,
+      "tx_count": 1,
+      "has_usdc": true,
+      "has_eth": false,
+      "has_txns": true
+    },
+    {
+      "address": "0x807c88afeb6bbd3d58426557ec4867f3f2c70963",
+      "usdc_balance": 25.82925,
+      "eth_balance": 0.010356,
+      "tx_count": 86,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0xf3c67e7ac979991bb26b5a05c340ae4fdca2c2e8",
+      "usdc_balance": 7.681198,
+      "eth_balance": 0.000915,
+      "tx_count": 121,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x345b19d5f0e5ff1beb20f71c3654036631b619c6",
+      "usdc_balance": 2.006882,
+      "eth_balance": 0.002952,
+      "tx_count": 6,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0xfa4d5899fca1578690d69568a541ffd18b41ff5c",
+      "usdc_balance": 2.000199,
+      "eth_balance": 0.002411,
+      "tx_count": 5,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x46d63636b0642d37af42180dd4d1b578923a8868",
+      "usdc_balance": 1.271613,
+      "eth_balance": 0.0001,
+      "tx_count": 34,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x0c36971ccf649326236b42eb1de939a780436204",
+      "usdc_balance": 0.96693,
+      "eth_balance": 0.0,
+      "tx_count": 1,
+      "has_usdc": true,
+      "has_eth": false,
+      "has_txns": true
+    },
+    {
+      "address": "0x8f4f8a3c58937dd0f83fb6313b1bca801630bff4",
+      "usdc_balance": 0.096512,
+      "eth_balance": 5.5e-05,
+      "tx_count": 17,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x35d792b1404ee6b1fbd4a64eb30d7d304be4009f",
+      "usdc_balance": 0.060329,
+      "eth_balance": 0.00024,
+      "tx_count": 22,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x03e7aeabd59f1080198d7df21609d5d1d366278a",
+      "usdc_balance": 0.059466,
+      "eth_balance": 0.00013,
+      "tx_count": 41,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x81fd234f63dd559d0eda56d17bb1bb78f236db37",
+      "usdc_balance": 0.05,
+      "eth_balance": 1e-06,
+      "tx_count": 611,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0xe0bd60feca8708cd24c9813ad6026d0deb95daab",
+      "usdc_balance": 0.019836,
+      "eth_balance": 0.0,
+      "tx_count": 1,
+      "has_usdc": true,
+      "has_eth": false,
+      "has_txns": true
+    },
+    {
+      "address": "0x1c52418c87c464d94f90af51a18eb5cdb96de4b5",
+      "usdc_balance": 0.00253,
+      "eth_balance": 0.000265,
+      "tx_count": 90,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x7abf82f3cc5e383c7f8ba1abe3ec522e6ff43467",
+      "usdc_balance": 0.001594,
+      "eth_balance": 0.000847,
+      "tx_count": 35,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0xaa971e7e61d78e406d84495afda1b513adaea872",
+      "usdc_balance": 0.0013,
+      "eth_balance": 0.0,
+      "tx_count": 1,
+      "has_usdc": true,
+      "has_eth": false,
+      "has_txns": true
+    },
+    {
+      "address": "0x80b3a4d93b78560b5bd87ca4f822c2aa5967e080",
+      "usdc_balance": 0.000814,
+      "eth_balance": 9.7e-05,
+      "tx_count": 75,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    }
+  ],
+  "top_tx_count": [
+    {
+      "address": "0xf97a638c484b98a76f84e5e8d0b5a7ae155f2e41",
+      "usdc_balance": 0.0,
+      "eth_balance": 1e-06,
+      "tx_count": 1827,
+      "has_usdc": false,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x396531afe1fa9fe045b0d57cea16c14cb17df1ad",
+      "usdc_balance": 0.000241,
+      "eth_balance": 0.000796,
+      "tx_count": 1216,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x81fd234f63dd559d0eda56d17bb1bb78f236db37",
+      "usdc_balance": 0.05,
+      "eth_balance": 1e-06,
+      "tx_count": 611,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x204d8e91d952a3910c6df89be8f7ecd9e26086fe",
+      "usdc_balance": 123.904043,
+      "eth_balance": 0.103909,
+      "tx_count": 486,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0xe2b3a89fe4054f7095d938e51b40de91cb65d7df",
+      "usdc_balance": 0.0,
+      "eth_balance": 0.115413,
+      "tx_count": 201,
+      "has_usdc": false,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0xb419f92d3226e3de5c5c01184f9a5f3de0efd2cb",
+      "usdc_balance": 0.0,
+      "eth_balance": 0.11999,
+      "tx_count": 201,
+      "has_usdc": false,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x5941c3886f4e4565f82bc91922df14fd6f617b7b",
+      "usdc_balance": 0.0,
+      "eth_balance": 0.0,
+      "tx_count": 177,
+      "has_usdc": false,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0xe4a26371b20677f3635fc91d9c896602280b4a04",
+      "usdc_balance": 117.937089,
+      "eth_balance": 0.112831,
+      "tx_count": 161,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0xea1bc1973811859946483108ebf8b45013c8cb38",
+      "usdc_balance": 130.314001,
+      "eth_balance": 0.118579,
+      "tx_count": 157,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x63b8cb2dcd4ce1039793d6e9a4f530c1d27fb242",
+      "usdc_balance": 129.483314,
+      "eth_balance": 0.109769,
+      "tx_count": 143,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0xf3c67e7ac979991bb26b5a05c340ae4fdca2c2e8",
+      "usdc_balance": 7.681198,
+      "eth_balance": 0.000915,
+      "tx_count": 121,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x4a2891252570eed7359f671d074b3db207caad78",
+      "usdc_balance": 0.00065,
+      "eth_balance": 0.000265,
+      "tx_count": 95,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x325778934df6872e15d6caeecb8bdc14b8418c6d",
+      "usdc_balance": 0.0,
+      "eth_balance": 0.000238,
+      "tx_count": 91,
+      "has_usdc": false,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x1c52418c87c464d94f90af51a18eb5cdb96de4b5",
+      "usdc_balance": 0.00253,
+      "eth_balance": 0.000265,
+      "tx_count": 90,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x807c88afeb6bbd3d58426557ec4867f3f2c70963",
+      "usdc_balance": 25.82925,
+      "eth_balance": 0.010356,
+      "tx_count": 86,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x80b3a4d93b78560b5bd87ca4f822c2aa5967e080",
+      "usdc_balance": 0.000814,
+      "eth_balance": 9.7e-05,
+      "tx_count": 75,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x6b9b4a905b6c1f301cbb33c0e46bebaabfe320a5",
+      "usdc_balance": 0.000715,
+      "eth_balance": 0.000894,
+      "tx_count": 56,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x03e7aeabd59f1080198d7df21609d5d1d366278a",
+      "usdc_balance": 0.059466,
+      "eth_balance": 0.00013,
+      "tx_count": 41,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0xcf84f2514ef4894cd96dfd3586294150bdaa090d",
+      "usdc_balance": 0.000793,
+      "eth_balance": 0.000897,
+      "tx_count": 36,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    },
+    {
+      "address": "0x7abf82f3cc5e383c7f8ba1abe3ec522e6ff43467",
+      "usdc_balance": 0.001594,
+      "eth_balance": 0.000847,
+      "tx_count": 35,
+      "has_usdc": true,
+      "has_eth": true,
+      "has_txns": true
+    }
+  ]
+}
