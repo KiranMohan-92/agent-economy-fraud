@@ -1,19 +1,26 @@
 """Signal 3: Value Flow.
 
 Detects suspicious value flow patterns including wash trading,
-layering (rapid movement through multiple accounts), and
-value extraction schemes.
+layering (rapid movement through multiple accounts), value
+extraction schemes, and extreme directional asymmetry.
 
 On-chain, this signal is particularly powerful because the full
 transaction graph is visible — unlike traditional banking where
 inter-bank flows are opaque.
 
 Components:
-    - Net flow imbalance (40%): Ratio of inflow to outflow per address
+    - Flow asymmetry (40%): Detects BOTH wash trading (balanced flows)
+      AND extreme one-directional flows (agent drain/spray patterns)
     - Flow velocity (30%): Speed of value movement through an address
     - Layering depth (30%): Number of hops value takes before settling
 
 Score: 0.0 (normal value flow) to 1.0 (suspicious flow pattern)
+
+Note: Prior to v0.2, this signal only detected near-zero net flow
+(wash trading). Agents on-chain are predominantly outbound-only,
+which the old detector missed entirely. The fix adds asymmetric
+flow detection — extreme outflow-only or inflow-only patterns are
+also strong agent indicators, since humans have mixed income/spending.
 """
 
 from __future__ import annotations
@@ -51,11 +58,16 @@ class ValueFlowSignal:
         )
 
     def _net_flow_imbalance(self, address: str, txns: pd.DataFrame) -> float:
-        """Detect near-zero net flow (wash trading indicator).
+        """Detect abnormal flow directionality (both wash trading AND drain/spray).
 
-        Wash trading produces roughly equal inflows and outflows.
-        A net flow near zero with high gross volume is suspicious.
-        Humans typically have asymmetric flows (income vs spending).
+        Suspicious patterns detected:
+        1. Near-zero net flow (wash trading): balanced in/out with high volume
+        2. Extreme one-directional flow (drain/spray): nearly all outbound OR
+           all inbound — agents often spray funds to many addresses or drain
+           from one source. Humans have a natural mix of income and spending.
+
+        The score is U-shaped: high at both extremes of net_ratio (0.0 and 1.0),
+        low in the normal human range (0.2-0.8).
         """
         inflow = txns[txns["receiver"] == address]["amount_usdc"].sum()
         outflow = txns[txns["sender"] == address]["amount_usdc"].sum()
@@ -67,9 +79,21 @@ class ValueFlowSignal:
         net = abs(inflow - outflow)
         net_ratio = net / gross  # 0 = perfectly balanced, 1 = one-directional
 
-        # Suspicious: very balanced flows (net_ratio < 0.1) with meaningful volume
+        # U-shaped scoring: suspicious at BOTH extremes
+        # Low end (wash trading): net_ratio < 0.1 with meaningful volume
         if net_ratio < 0.1 and gross > 10:
             return min(1.0, (0.1 - net_ratio) * 10)
+
+        # High end (drain/spray): net_ratio > 0.9 means extreme asymmetry
+        # Agents that only send (or only receive) score high
+        if net_ratio > 0.9:
+            return min(1.0, (net_ratio - 0.9) * 10)
+
+        # Moderately asymmetric (0.8-0.9): mild suspicion
+        if net_ratio > 0.8:
+            return (net_ratio - 0.8) * 5  # scales 0.0 to 0.5
+
+        # Normal human range (0.1-0.8): no signal
         return 0.0
 
     def _flow_velocity(self, address: str, txns: pd.DataFrame) -> float:

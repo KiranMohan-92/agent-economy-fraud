@@ -389,5 +389,94 @@ Higher sophistication attacks that mimic benign behavior cause more false positi
 
 ---
 
-**Document Status:** COMPLETE
-**Next Step:** Hard-to-vary re-validation (Plan 04-02)
+---
+
+## 11. Real-Data Empirical Validation (Plan 05-02)
+
+**Date:** 2026-03-28
+**Dataset:** 5,136 transactions | 326 labeled addresses (226 agents, 100 humans)
+**Data Source:** ERC-8004 registry (Base chain) + synthetic human baseline
+
+### 11.1 Data Collection
+
+| Source | Method | Result |
+|--------|--------|--------|
+| ERC-8004 Registry | `eth_getLogs` mint events on `0x8004...9432` | 1,505 agent addresses |
+| Agent Profiles | RPC `eth_getTransactionCount` + `eth_getBalance` | 74 active agents (37% of sample) |
+| Transfer Events | `eth_getLogs` Transfer topic across 100k blocks | 9 real ERC-20 transfers |
+| Registry Timeline | Sampled scan across full Base history | Activity in blocks 41.9M–43.9M (~46 days) |
+
+**Key Finding:** Most agent activity is **native ETH or contract calls**, not ERC-20 transfers. The `eth_getLogs` approach captures only a fraction of actual agent behavior. Full transaction indexing (BaseScan API or Dune Analytics) is needed for comprehensive coverage.
+
+### 11.2 Real-Data Detection Results
+
+#### Decision Tier Distribution
+
+| Tier | Count | Agents | Humans | Agent Rate |
+|------|-------|--------|--------|------------|
+| ALLOW | 107 | 7 | 100 | 6.5% |
+| FLAG | 15 | 15 | 0 | **100.0%** |
+| INVESTIGATE | 7 | 7 | 0 | **100.0%** |
+| BLOCK | 0 | 0 | 0 | — |
+
+#### Binary Classification (threshold = 0.25)
+
+| Metric | Synthetic (§2.2) | Real Data | Delta |
+|--------|------------------|-----------|-------|
+| Precision | 82.36% | **95.7%** | +13.3% |
+| Recall | 96.23% | **75.9%** | -20.3% |
+| F1 Score | 88.71% | **84.6%** | -4.1% |
+| ROC-AUC | 0.97 | **0.823** | -0.15 |
+| False Positive Rate | 2.29% | **1.0%** | -1.3% |
+
+**Interpretation:** Real data shows *higher precision but lower recall* than synthetic validation. This is expected — real agents are more diverse than synthetic patterns, but those we do catch are caught with very high confidence. The zero false positives in FLAG/INVESTIGATE tiers is extremely promising.
+
+### 11.3 Per-Signal Effectiveness (Real Data)
+
+| Signal | Weight | Agent Mean | Human Mean | Separation | vs. Synthetic |
+|--------|--------|-----------|-----------|------------|---------------|
+| Network Topology | 0.25 | 0.5788 | 0.1272 | **+0.4516** | Best signal (confirmed) |
+| Economic Rationality | 0.25 | 0.4514 | 0.1320 | **+0.3194** | Strong (confirmed) |
+| Temporal Consistency | 0.20 | 0.5334 | 0.4000 | +0.1334 | Weaker than synthetic |
+| Value Flow | 0.20 | 0.0000 | 0.0646 | -0.0646 | **Needs tuning** |
+| Cross-Platform | 0.10 | 0.0000 | 0.0000 | 0.0000 | Not yet implemented |
+
+#### Signal Issues Identified
+
+1. **Value Flow (negative separation):** Agent transactions are predominantly outbound with no matching inflow. The wash-trading detector (near-zero net flow) doesn't trigger because there's no balanced bidirectional flow. **Fix:** Add asymmetric flow detection — extreme outflow-only or inflow-only patterns are also agent signals.
+
+2. **Temporal Consistency (moderate overlap):** Both agents and synthetic humans show some timing regularity. The burst detector works well but the regularity sub-signal has poor discrimination. **Fix:** Focus on sub-second precision and cross-correlate with block timestamps.
+
+3. **Cross-Platform (not implemented):** Requires multi-chain registry correlation (Base + Ethereum + BNB). The ERC-8004 contract uses CREATE2 (same address on all chains), enabling address-level matching.
+
+### 11.4 Registry Discovery
+
+The ERC-8004 Identity Registry on Base is concentrated in a narrow window:
+
+| Block Range | Approx. Age | Events (10k sample) |
+|-------------|-------------|---------------------|
+| 43,429,340 | ~12 days | 342 |
+| 42,429,340 | ~35 days | 200 |
+| 41,929,340 | ~46 days | 130 |
+
+- Protocol is **nascent and rapidly growing** (342 mints in 10k blocks = ~1 mint/30 blocks)
+- Total registered: 1,505 on Base vs. reported 16,549 total (multi-chain)
+- Peak activity is recent, suggesting accelerating adoption
+
+### 11.5 Next Steps for Real-Data Validation
+
+| Priority | Action | Expected Impact |
+|----------|--------|-----------------|
+| **P0** | Obtain BaseScan or Dune API key for full transaction histories | +10x transaction coverage |
+| **P0** | Fix Value Flow signal: add asymmetric flow detection | +5-10% recall |
+| **P1** | Scan blocks 41.9M-43.9M for agent contract interactions | Native ETH + contract call data |
+| **P1** | Implement Cross-Platform signal with multi-chain registry | +5% recall on coordinated agents |
+| **P2** | Collect real human baseline from high-volume Base DEX users | Replace synthetic humans |
+| **P2** | Adversarial testing: agents that deliberately mimic human patterns | Robustness validation |
+
+---
+
+**Document Status:** UPDATED with real-data validation results
+**Previous:** Synthetic validation (§1-10), Plan 04-01
+**Current:** Real-data empirical validation (§11), Plan 05-02
+**Next Step:** Value Flow signal tuning + full transaction indexing
