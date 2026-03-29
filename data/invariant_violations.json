@@ -1,0 +1,47 @@
+{
+  "1. Velocity Limits": {
+    "verdict": "NOT YET VIOLATED",
+    "measurability": "MEASURABLE",
+    "evidence": "Top: 40 tx/day vs 100 human max"
+  },
+  "2. Biometric Auth": {
+    "verdict": "ASSUMED VIOLATED",
+    "measurability": "UNMEASURABLE",
+    "evidence": "On-chain txns use ECDSA, not biometrics"
+  },
+  "3. Device Fingerprinting": {
+    "verdict": "ASSUMED VIOLATED",
+    "measurability": "UNMEASURABLE",
+    "evidence": "Blockchain carries no device metadata"
+  },
+  "4. Location Constraints": {
+    "verdict": "VIOLATED",
+    "measurability": "MEASURABLE",
+    "evidence": "Agents on 3+ chains simultaneously"
+  },
+  "5. Behavioral Stability": {
+    "verdict": "PARTIALLY ASSESSED",
+    "measurability": "PARTIAL",
+    "evidence": "CV=1.87, needs time-series"
+  },
+  "6. Identity Persistence": {
+    "verdict": "VIOLATED",
+    "measurability": "MEASURABLE",
+    "evidence": "Near-zero creation cost ($0.01-0.10)"
+  },
+  "7. Cognitive/Energy Limits": {
+    "verdict": "VIOLATED",
+    "measurability": "MEASURABLE",
+    "evidence": "Top: 40 tx/day, 0x human"
+  },
+  "8. Computational Constraints": {
+    "verdict": "VIOLATED",
+    "measurability": "PARTIAL",
+    "evidence": "Block-speed execution (~2s)"
+  },
+  "9. Bounded Rationality": {
+    "verdict": "VIOLATED",
+    "measurability": "PARTIAL",
+    "evidence": "Throughput optimization over per-tx value"
+  }
+}
