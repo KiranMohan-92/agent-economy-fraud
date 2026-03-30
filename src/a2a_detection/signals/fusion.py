@@ -68,17 +68,21 @@ class SignalFusion:
     availability per signal.
     """
 
-    # Default signal weights from Phase 4 implementation guidance
+    # Signal weights — calibrated by error propagation analysis (2026-03-30)
+    # Value Flow zeroed (r=-0.47 with F1, actively harmful while dead)
+    # Cross-Platform zeroed (not implemented)
+    # Redistributed to the two working P0 signals
+    # Original Phase 4 weights: 0.25/0.25/0.20/0.20/0.10
     DEFAULT_WEIGHTS = {
-        "economic_rationality": 0.25,
-        "network_topology": 0.25,
-        "value_flow": 0.20,
+        "economic_rationality": 0.35,
+        "network_topology": 0.35,
+        "value_flow": 0.00,
         "temporal_consistency": 0.20,
         "cross_platform": 0.10,
     }
 
-    # Decision thresholds
-    THRESHOLD_FLAG = 0.25
+    # Decision thresholds — 0.24 optimal per threshold sweep (F1: 0.868 vs 0.863)
+    THRESHOLD_FLAG = 0.24
     THRESHOLD_INVESTIGATE = 0.50
     THRESHOLD_BLOCK = 0.75
 
