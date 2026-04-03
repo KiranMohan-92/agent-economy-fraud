@@ -236,5 +236,19 @@ class NetworkTopologySignal:
 
 ---
 
+---
+
+## Precision Caveat (Added 2026-04-02)
+
+**Important:** The impact estimates in the priority matrix above (e.g., "+35% detection",
+"+49% detection") are calibrated against Phase 4 synthetic data where precision was ~96%.
+Phase 5 real-world validation showed **precision drops to 27.6%** on real on-chain data,
+while **recall remains robust at 95.4%**. The precision gap is attributed to the framework
+correctly flagging non-human automated activity (bots, relays) that falls outside the
+labeled agent ground truth. Implementers should plan for higher false positive rates than
+the synthetic benchmarks suggest, and should include tuning periods in their rollout plans.
+
+---
+
 **Document Status:** COMPLETE
 **Next Step:** Update TODO.md and ROADMAP.md

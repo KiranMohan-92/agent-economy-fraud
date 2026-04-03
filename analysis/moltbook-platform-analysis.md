@@ -1,3 +1,5 @@
+> **Note:** This analysis is based on platform documentation as of 2026-03-18. Features and APIs may have changed since this snapshot was taken.
+
 # Moltbook Platform Analysis - Agent Social Features and Commerce Vulnerabilities
 
 **Plan:** 01-02

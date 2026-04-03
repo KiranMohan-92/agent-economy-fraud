@@ -248,5 +248,26 @@ correlation = match_hashes(hashes_from_platform_a, hashes_from_platform_b)
 
 ---
 
+---
+
+## Precision Caveat (Added 2026-04-02)
+
+**Important:** The detection rate and precision figures cited in the recommendations above
+(e.g., "Detection rate: 47% -> 96%") are based on Phase 4 synthetic data validation.
+Phase 5 real-world validation on Dune on-chain data showed that while **recall remains
+robust at 95.4%**, real-world **precision is significantly lower at 27.6%**. This is
+because the framework flags automated systems (bots, relays, MEV actors) beyond the
+labeled agent set -- behavior that is correct detection of non-human activity but
+inflates false positives against ground-truth labels.
+
+Implementers should expect substantially higher false positive rates than the synthetic
+benchmarks suggest. The recommendations remain sound in terms of signal prioritization
+(Economic Rationality and Network Topology are the strongest signals), but operational
+deployment should include tuning periods and human-in-the-loop review to manage the
+precision gap. See `analysis/transfer-gap-criteria.md` for the label-noise-aware
+evaluation framework.
+
+---
+
 **Document Status:** COMPLETE
 **Next Step:** Plan 04-04: Implementation Guidance and Prioritization

@@ -290,3 +290,32 @@ Implementations are validated by Phase 5 real-data results:
 - **GAP-02 (Fusion weight calibration):** Closed. Fusion weights were restored to Phase 4 originals after Dune real-data validation confirmed their effectiveness (F1: 0.428, Recall: 0.954 at threshold 0.08).
 
 The simplified implementations achieve measurable detection performance on real Dune blockchain data, confirming that the component reductions did not sacrifice detection capability for the on-chain domain.
+
+---
+
+## Future Optimization: Composite AUC Below Best Individual Signal
+
+The Phase 5 composite AUC (0.590) is below the best individual signal (Network Topology,
+AUC = 0.621). This indicates that weaker signals may be adding noise rather than
+information to the fusion:
+
+| Signal | AUC |
+|--------|-----|
+| Network Topology | 0.621 |
+| Composite | 0.590 |
+| Temporal Consistency | 0.568 |
+| Economic Rationality | 0.550 |
+| Value Flow | 0.529 |
+| Cross-Platform | N/A (non-functional) |
+
+Temporal Consistency (0.568) and Value Flow (0.529) have AUCs only marginally above
+random (0.5), suggesting they contribute limited discriminative power and may dilute
+the stronger Network Topology signal through equal-weighted fusion.
+
+**Recommended for Phase 6:**
+- Explore signal selection (e.g., drop signals with AUC < 0.55) to see if composite
+  AUC improves.
+- Investigate learned weights (e.g., logistic regression on signal scores) instead of
+  hand-tuned weights to optimize fusion.
+- Consider interaction effects -- weak signals may still contribute in combination even
+  if their individual AUC is low.

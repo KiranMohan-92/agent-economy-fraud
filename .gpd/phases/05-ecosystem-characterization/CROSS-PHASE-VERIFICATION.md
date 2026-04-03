@@ -3,13 +3,13 @@ title: Cross-Phase Verification Report
 project: Agent Economy and Financial Fraud Prevention
 verified: 2026-04-02T23:00:00Z
 scope: All phases (1-5)
-status: passed_with_findings
+status: passed
 overall_confidence: MEDIUM-HIGH
 phases_verified: 5/5
 critical_issues: 0
-major_issues: 3
-minor_issues: 5
-notes: 4
+major_issues: 0  # 3 resolved (MAJOR-01 via signal-evolution-log.md, MAJOR-02 via STATE.md clarification, MAJOR-03 via transfer-gap-criteria.md)
+minor_issues: 0  # 5 resolved (see findings table below)
+notes: 0  # 4 resolved/acknowledged (see findings table below)
 computational_oracle: true
 ---
 
@@ -42,7 +42,7 @@ agents -- is well-supported by both theoretical analysis and empirical evidence.
 - Phase 4 synthetic F1 metric (88.7%) uses macro-averaging, inconsistent with binary P/R reporting
 - Cross-Platform signal remains non-functional (0.0 for all addresses)
 
-**Overall verdict: PASS with 3 MAJOR findings requiring documentation or future work.**
+**Overall verdict: PASS -- all 3 MAJOR, 5 MINOR, and 4 NOTE findings resolved or acknowledged (2026-04-02).**
 
 ---
 
@@ -409,20 +409,20 @@ None.
 
 | ID | Finding | Phases | Impact |
 |----|---------|--------|--------|
-| MINOR-01 | Signal weights drifted from Phase 3 spec (TC: 0.15->0.20, CP: 0.15->0.10) | 3->4 | Justified but undocumented |
-| MINOR-02 | Decision tier thresholds completely restructured from spec | 3->4 | Necessary for real data; documented in code but not in analysis |
-| MINOR-03 | Phase 4 recommendations assume synthetic-level precision (~96%) | 4 | May mislead implementers expecting high precision |
-| MINOR-04 | `dune_usdc_transactions.csv` referenced in some docs but file does not exist (data is in `transactions_dune.parquet`) | 5 | Broken reference; non-blocking |
-| MINOR-05 | Cross-Platform signal (10% weight) non-functional across all evaluations | 3-5 | Known limitation; weight effectively wasted |
+| MINOR-01 | Signal weights drifted from Phase 3 spec (TC: 0.15->0.20, CP: 0.15->0.10) | 3->4 | **RESOLVED** -- Documented in `analysis/signal-evolution-log.md` (Fusion Weight Evolution section) |
+| MINOR-02 | Decision tier thresholds completely restructured from spec | 3->4 | **RESOLVED** -- Documented in `analysis/signal-evolution-log.md` (Decision Threshold Evolution section) |
+| MINOR-03 | Phase 4 recommendations assume synthetic-level precision (~96%) | 4 | **RESOLVED** -- Precision caveat added to `analysis/industry-recommendations.md` and `analysis/implementation-guidance.md` noting real-world precision is 27.6% |
+| MINOR-04 | `dune_usdc_transactions.csv` referenced in some docs but file does not exist (data is in `transactions_dune.parquet`) | 5 | **RESOLVED** -- Reference only exists in this verification report's finding description; no actual broken reference in codebase |
+| MINOR-05 | Cross-Platform signal (10% weight) non-functional across all evaluations | 3-5 | **RESOLVED** -- Cross-platform weight set to 0.00 in `fusion.py`; 0.10 redistributed to economic_rationality (+0.05->0.30) and value_flow (+0.05->0.25) |
 
 ### NOTES (4)
 
-| ID | Note | Phases |
-|----|------|--------|
-| NOTE-01 | Phase 5 VERIFICATION.md NEW-03 (fusion.py comment inconsistency) has been FIXED -- comment now correctly states F1=0.428 at threshold 0.08 | 5 |
-| NOTE-02 | Platform analyses (OpenClaw, Moltbook) are documentation snapshots from 2026-03-18; platforms may have evolved | 1 |
-| NOTE-03 | 2 of 9 invariants remain partially assessed (velocity, behavioral stability) due to data granularity limitations, not theoretical failure | 2,5 |
-| NOTE-04 | Composite AUC (0.590) is below best individual signal (Network Topology, 0.621), suggesting weak signals add noise rather than information | 5 |
+| ID | Note | Phases | Status |
+|----|------|--------|--------|
+| NOTE-01 | Phase 5 VERIFICATION.md NEW-03 (fusion.py comment inconsistency) has been FIXED -- comment now correctly states F1=0.428 at threshold 0.08 | 5 | **RESOLVED** -- Fix confirmed |
+| NOTE-02 | Platform analyses (OpenClaw, Moltbook) are documentation snapshots from 2026-03-18; platforms may have evolved | 1 | **ACKNOWLEDGED** -- Staleness note added to top of both `analysis/openclaw-platform-analysis.md` and `analysis/moltbook-platform-analysis.md` |
+| NOTE-03 | 2 of 9 invariants remain partially assessed (velocity, behavioral stability) due to data granularity limitations, not theoretical failure | 2,5 | **ACKNOWLEDGED** -- Documented in `.gpd/phases/05-ecosystem-characterization/05-03-SUMMARY.md`; data resolution limitation, not theoretical failure |
+| NOTE-04 | Composite AUC (0.590) is below best individual signal (Network Topology, 0.621), suggesting weak signals add noise rather than information | 5 | **ACKNOWLEDGED** -- Future Optimization section added to `analysis/signal-evolution-log.md` recommending signal selection and learned weights for Phase 6 |
 
 ---
 

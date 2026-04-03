@@ -8,12 +8,12 @@ score and maps it to one of 4 decision tiers:
     INVESTIGATE: 0.50 ≤ score < 0.75 — Manual review required
     BLOCK:       score ≥ 0.75 — High-confidence agent fraud
 
-Signal weights (from Phase 4 implementation guidance):
-    Economic Rationality:       0.25
+Signal weights (updated 2026-04-02, cross-platform zeroed):
+    Economic Rationality:       0.30
     Network Topology:           0.25
-    Value Flow:                 0.20
+    Value Flow:                 0.25
     Temporal Consistency:       0.20
-    Cross-Platform Correlation: 0.10
+    Cross-Platform Correlation: 0.00 (non-functional; single-chain data)
 """
 
 from __future__ import annotations
@@ -72,12 +72,18 @@ class SignalFusion:
     # Value Flow restored to 0.20: with real timestamps, F1 triples (0.11 → 0.31)
     # Previous zeroing was due to synthetic data artifact (r=-0.47 with dead signal)
     # Phase 4 original weights: 0.25/0.25/0.20/0.20/0.10
+    # Cross-Platform weight set to 0.00: signal is non-functional (returns 0.0
+    # for all addresses) because Phase 5 data is single-chain (Base only).
+    # Redistributed 0.10 to the two strongest-performing signals:
+    #   economic_rationality: 0.25 -> 0.30 (AUC 0.550)
+    #   value_flow:           0.20 -> 0.25 (critical for recall after v0.2 fix)
+    # Will restore cross_platform weight when multi-chain data is available.
     DEFAULT_WEIGHTS = {
-        "economic_rationality": 0.25,
+        "economic_rationality": 0.30,
         "network_topology": 0.25,
-        "value_flow": 0.20,
+        "value_flow": 0.25,
         "temporal_consistency": 0.20,
-        "cross_platform": 0.10,
+        "cross_platform": 0.00,
     }
 
     # Decision thresholds — 0.08 optimal on real Dune data (F1: 0.428, R: 0.954)

@@ -1,3 +1,5 @@
+> **Note:** This analysis is based on platform documentation as of 2026-03-18. Features and APIs may have changed since this snapshot was taken.
+
 # OpenClaw Platform Analysis: A2A Commerce Vulnerabilities
 
 **Analysis Date:** 2026-03-17
