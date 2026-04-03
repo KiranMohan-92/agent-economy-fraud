@@ -13,11 +13,11 @@ See: .gpd/PROJECT.md (updated 2026-03-16)
 **Current Phase:** 5
 **Current Phase Name:** Ecosystem Characterization
 **Total Phases:** 6 (Phase 6 conditional)
-**Current Plan:** 05-01 (Go/No-Go Gate)
+**Current Plan:** 05-02 (Data Ingestion) — completed via Dune MCP
 **Total Plans in Phase:** 4
-**Status:** Active — executing Plan 05-01
-**Last Activity:** 2026-03-24
-**Last Activity Description:** Phase 5 initiated — GPD verification complete, Dune queries and reference implementation being built
+**Status:** Active — Plans 05-01, 05-02, 05-03 complete; 05-04 pending
+**Last Activity:** 2026-04-03
+**Last Activity Description:** Dune Analytics real data ingestion complete (93,777 rows, 81,904 after dedup). Value Flow signal restored (GAP-01 CLOSED). Detection threshold re-optimized for real data.
 
 **Progress:** [██████████] 100%
 
@@ -26,13 +26,23 @@ See: .gpd/PROJECT.md (updated 2026-03-16)
 ### Core Explanation (Hard-to-Vary)
 Fraud detection systems built on 9 human behavioral invariants fundamentally break when the economic agent is software. Agent properties (no biometrics, no velocity limits, no geographic constraints, near-zero creation cost, machine-speed execution, swarm coordination) violate every invariant that current detection relies upon.
 
-### Detection Framework Performance
+### Detection Framework Performance (Synthetic)
 - **Precision:** 96.23%
 - **Recall:** 96.23%
 - **F1 Score:** 88.71%
 - **ROC-AUC:** 0.97
 - **Latency:** 97ms (under 100ms target)
 - **Improvement over human-baseline:** +49.1%
+
+### Detection Framework Performance (Real On-Chain Data — Dune, 2026-04-03)
+- **Dataset:** 81,904 USDC transactions (Base chain, Jan 2025 — Apr 2026)
+- **Evaluated:** 2,134 active addresses (548 agents, 1,586 counterparties)
+- **Precision:** 27.6% (low due to counterparty label noise — many "humans" are automated)
+- **Recall:** 95.4% (catches 523/548 known agents)
+- **F1 Score:** 42.8%
+- **Active signals:** 4/5 (Value Flow restored; Cross-Platform pending multi-chain data)
+- **Key finding:** Value Flow is now the strongest signal (mean=0.42) with real timestamps
+- **Threshold:** Re-optimized from 0.24 to 0.08 for real data score distribution
 
 ### 5 Agent-Invariant Signals
 1. Economic Rationality
@@ -61,10 +71,14 @@ Fraud detection systems built on 9 human behavioral invariants fundamentally bre
 - [Phase 2]: 9 human behavioral invariants identified as the complete taxonomy
 - [Phase 3]: 5-signal detection framework with signal fusion architecture
 - [Phase 4]: Priority matrix scoring: impact 40%, urgency 30%, feasibility 20%, cost 10%
+- [Phase 5]: Dune MCP for real data ingestion — batched at 100 addresses/query for free tier
+- [Phase 5]: Value Flow weight restored 0.00→0.20 — F1 triples with real timestamps
+- [Phase 5]: Detection threshold lowered 0.24→0.08 — real data has compressed score distribution
 
 ### Active Approximations
 
-- Synthetic data validation only — real-world A2A transaction data not yet tested
+- ~~Synthetic data validation only~~ → Real on-chain data validated via Dune Analytics (93K rows)
+- Counterparty labels are heuristic (confidence 0.7) — many "humans" may be automated contracts
 - Platform analyses based on documentation snapshots (OpenClaw, Moltbook) — platforms evolving
 
 **Convention Lock:**

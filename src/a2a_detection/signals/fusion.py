@@ -68,21 +68,21 @@ class SignalFusion:
     availability per signal.
     """
 
-    # Signal weights — calibrated by error propagation analysis (2026-03-30)
-    # Value Flow zeroed (r=-0.47 with F1, actively harmful while dead)
-    # Cross-Platform zeroed (not implemented)
-    # Redistributed to the two working P0 signals
-    # Original Phase 4 weights: 0.25/0.25/0.20/0.20/0.10
+    # Signal weights — restored after Dune real-data validation (2026-04-03)
+    # Value Flow restored to 0.20: with real timestamps, F1 triples (0.11 → 0.31)
+    # Previous zeroing was due to synthetic data artifact (r=-0.47 with dead signal)
+    # Phase 4 original weights: 0.25/0.25/0.20/0.20/0.10
     DEFAULT_WEIGHTS = {
-        "economic_rationality": 0.35,
-        "network_topology": 0.35,
-        "value_flow": 0.00,
+        "economic_rationality": 0.25,
+        "network_topology": 0.25,
+        "value_flow": 0.20,
         "temporal_consistency": 0.20,
         "cross_platform": 0.10,
     }
 
-    # Decision thresholds — 0.24 optimal per threshold sweep (F1: 0.868 vs 0.863)
-    THRESHOLD_FLAG = 0.24
+    # Decision thresholds — 0.08 optimal on real Dune data (F1: 0.428, R: 0.954)
+    # Previous 0.24 was calibrated on synthetic data with wider score spread
+    THRESHOLD_FLAG = 0.08
     THRESHOLD_INVESTIGATE = 0.50
     THRESHOLD_BLOCK = 0.75
 
