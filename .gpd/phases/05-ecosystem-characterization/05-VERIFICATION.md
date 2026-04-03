@@ -408,7 +408,7 @@ The following checks from the 2026-03-28 verification were re-confirmed via quic
 |---|-------|----------|-----------|-------|
 | 1 | Core Explanation Completeness | PASS | PASS | No changes to Phase 2 artifacts |
 | 2 | Attack Chain Completeness | PASS | PASS | No changes to Phase 2-3 artifacts |
-| 3 | Synthetic Validation Metrics | PASS | PASS | No changes to Phase 4 data |
+| 3 | Synthetic Validation Metrics | PASS | PASS | No changes to Phase 4 data. Note: STATE.md precision label corrected from 96.23% (was mislabeled recall) to true precision 82.36%. The F1=88.71% and confusion matrix in `analysis/empirical-validation-results.md` §2.1–2.2 were always correct. |
 | 5 | Go/No-Go Gate | PASS | PASS | No changes to Phase 5 gate analysis |
 | 8 | Agent Address Data Quality | PASS | PASS | Expanded from 1,505 to 665 ERC-8004 agents |
 

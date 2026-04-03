@@ -4,6 +4,8 @@
 **Created:** 2026-03-22
 **Status:** Complete
 
+> **Note:** This spec was simplified during Phase 4 implementation to fit on-chain data constraints. See [`signal-evolution-log.md`](signal-evolution-log.md) for a detailed comparison of spec vs implementation, including component reductions, weight changes, and Phase 5 validation results.
+
 ## Overview
 
 This document specifies 5 agent-invariant detection signals with detailed measurement protocols, scoring algorithms, and implementation guidance. Each signal is designed to detect fraud patterns that are properties of transactions themselves, not the actors who initiate them.

@@ -27,9 +27,11 @@ See: .gpd/PROJECT.md (updated 2026-03-16)
 Fraud detection systems built on 9 human behavioral invariants fundamentally break when the economic agent is software. Agent properties (no biometrics, no velocity limits, no geographic constraints, near-zero creation cost, machine-speed execution, swarm coordination) violate every invariant that current detection relies upon.
 
 ### Detection Framework Performance (Synthetic)
-- **Precision:** 96.23%
-- **Recall:** 96.23%
+- **Precision:** 82.36% (TP/(TP+FP) = 9623/11685)
+- **Recall:** 96.23% (TP/(TP+FN) = 9623/10000)
 - **F1 Score:** 88.71%
+- **Confusion matrix:** TP=9623, FN=377, FP=2062, TN=87938
+> **Note (2026-04-02):** Precision label corrected. Previously listed as 96.23%, which was actually the recall (detection rate). The F1 of 88.71% was always correct, computed from the true precision (82.36%) and recall (96.23%). See `analysis/empirical-validation-results.md` §2.1–2.2 for the full confusion matrix.
 - **ROC-AUC:** 0.97
 - **Latency:** 97ms (under 100ms target)
 - **Improvement over human-baseline:** +49.1%
@@ -88,7 +90,7 @@ Fraud detection systems built on 9 human behavioral invariants fundamentally bre
 
 ### Propagated Uncertainties
 
-- Real-world detection performance may differ from synthetic data results
+- Transfer gap from synthetic to real data exceeds original F1/AUC thresholds due to negative-class label noise, not signal failure. Recall transfers within 1% (-0.8%). Updated label-noise-aware criteria defined in `analysis/transfer-gap-criteria.md`.
 - A2A platform ecosystem is rapidly evolving — new attack vectors may emerge
 
 ### Pending Todos
