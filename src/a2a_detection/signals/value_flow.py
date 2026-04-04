@@ -1,26 +1,30 @@
 """Signal 3: Value Flow.
 
 Detects suspicious value flow patterns including wash trading,
-layering (rapid movement through multiple accounts), value
-extraction schemes, and extreme directional asymmetry.
+layering (rapid movement through multiple accounts), and
+rapid relay behavior.
 
 On-chain, this signal is particularly powerful because the full
 transaction graph is visible — unlike traditional banking where
 inter-bank flows are opaque.
 
 Components:
-    - Flow asymmetry (40%): Detects BOTH wash trading (balanced flows)
-      AND extreme one-directional flows (agent drain/spray patterns)
-    - Flow velocity (30%): Speed of value movement through an address
-    - Layering depth (30%): Number of hops value takes before settling
+    - Flow velocity (50%): Speed of value movement through an address
+    - Layering depth (50%): Number of hops value takes before settling
 
 Score: 0.0 (normal value flow) to 1.0 (suspicious flow pattern)
 
-Note: Prior to v0.2, this signal only detected near-zero net flow
-(wash trading). Agents on-chain are predominantly outbound-only,
-which the old detector missed entirely. The fix adds asymmetric
-flow detection — extreme outflow-only or inflow-only patterns are
-also strong agent indicators, since humans have mixed income/spending.
+Sub-signal history:
+    v0.1: _net_flow_imbalance only (detected wash trading, missed drain/spray)
+    v0.2: Added asymmetric drain/spray detection; F1 improved 0.11 → 0.31
+    v0.3: Removed _net_flow_imbalance entirely (2026-04-04).
+          On-chain validation showed it fires MORE on humans than agents:
+          most human counterparties appear receive-only (net_ratio=1.0)
+          because they transact once with an agent then never again.
+          This inverse discrimination made it the largest single source
+          of false positives (drove 35%+ of FP addresses to score > 0.4).
+          _flow_velocity discriminates 14/18 agents vs 0/7 humans and
+          is retained. Weight redistributed equally to velocity+layering.
 """
 
 from __future__ import annotations
@@ -32,9 +36,8 @@ import pandas as pd
 class ValueFlowSignal:
     """Value Flow signal scorer for detecting wash trading and layering."""
 
-    W_IMBALANCE = 0.40
-    W_VELOCITY = 0.30
-    W_LAYERING = 0.30
+    W_VELOCITY = 0.50
+    W_LAYERING = 0.50
 
     def score_address(self, address: str, transactions: pd.DataFrame) -> float:
         """Score an address based on its value flow patterns."""
@@ -45,13 +48,11 @@ class ValueFlowSignal:
         if len(addr_txns) < 3:
             return 0.0
 
-        imbalance = self._net_flow_imbalance(address, addr_txns)
         velocity = self._flow_velocity(address, addr_txns)
         layering = self._layering_indicator(address, addr_txns, transactions)
 
         return np.clip(
-            self.W_IMBALANCE * imbalance
-            + self.W_VELOCITY * velocity
+            self.W_VELOCITY * velocity
             + self.W_LAYERING * layering,
             0,
             1,

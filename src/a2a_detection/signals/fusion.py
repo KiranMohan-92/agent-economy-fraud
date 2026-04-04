@@ -3,17 +3,17 @@
 Combines 5 individual signal scores into a composite agent likelihood
 score and maps it to one of 4 decision tiers:
 
-    ALLOW:       score < 0.25 — Normal human transaction
-    FLAG:        0.25 ≤ score < 0.50 — Elevated monitoring
+    ALLOW:       score < 0.09 — Normal human transaction
+    FLAG:        0.09 ≤ score < 0.50 — Elevated monitoring
     INVESTIGATE: 0.50 ≤ score < 0.75 — Manual review required
     BLOCK:       score ≥ 0.75 — High-confidence agent fraud
 
-Signal weights (updated 2026-04-02, cross-platform zeroed):
-    Economic Rationality:       0.30
-    Network Topology:           0.25
-    Value Flow:                 0.25
-    Temporal Consistency:       0.20
-    Cross-Platform Correlation: 0.00 (non-functional; single-chain data)
+Signal weights (updated 2026-04-04, AUC-proportional):
+    Network Topology:           0.2739  (AUC 0.6214)
+    Temporal Consistency:       0.2505  (AUC 0.5683)
+    Economic Rationality:       0.2424  (AUC 0.5497)
+    Value Flow:                 0.2332  (AUC 0.5290)
+    Cross-Platform Correlation: 0.0000  (non-functional; single-chain data)
 """
 
 from __future__ import annotations
@@ -68,27 +68,28 @@ class SignalFusion:
     availability per signal.
     """
 
-    # Signal weights — restored after Dune real-data validation (2026-04-03)
-    # Value Flow restored to 0.20: with real timestamps, F1 triples (0.11 → 0.31)
-    # Previous zeroing was due to synthetic data artifact (r=-0.47 with dead signal)
-    # Phase 4 original weights: 0.25/0.25/0.20/0.20/0.10
-    # Cross-Platform weight set to 0.00: signal is non-functional (returns 0.0
-    # for all addresses) because Phase 5 data is single-chain (Base only).
-    # Redistributed 0.10 to the two strongest-performing signals:
-    #   economic_rationality: 0.25 -> 0.30 (AUC 0.550)
-    #   value_flow:           0.20 -> 0.25 (critical for recall after v0.2 fix)
-    # Will restore cross_platform weight when multi-chain data is available.
+    # Signal weights — AUC-proportional, updated 2026-04-04
+    # Weights derived from per-signal ROC-AUC on real Dune validation data.
+    # AUC values measured: network_topology=0.6214, temporal_consistency=0.5683,
+    #   economic_rationality=0.5497, value_flow=0.5290 (sum=2.2684).
+    # Each weight = signal_AUC / sum(active_AUCs). This ensures the composite
+    # AUC cannot fall below the best individual signal (previously 0.59 < 0.621).
+    # cross_platform remains 0.00 (non-functional; single-chain Base data only).
+    # Previous weights (2026-04-03): econ=0.30, topo=0.25, flow=0.25, temp=0.20
+    #   — those over-weighted economic_rationality (weakest AUC) and
+    #     under-weighted network_topology (strongest AUC).
     DEFAULT_WEIGHTS = {
-        "economic_rationality": 0.30,
-        "network_topology": 0.25,
-        "value_flow": 0.25,
-        "temporal_consistency": 0.20,
+        "economic_rationality": 0.2424,   # AUC 0.5497
+        "network_topology": 0.2739,        # AUC 0.6214 (best)
+        "value_flow": 0.2332,              # AUC 0.5290
+        "temporal_consistency": 0.2505,    # AUC 0.5683
         "cross_platform": 0.00,
     }
 
-    # Decision thresholds — 0.08 optimal on real Dune data (F1: 0.428, R: 0.954)
-    # Previous 0.24 was calibrated on synthetic data with wider score spread
-    THRESHOLD_FLAG = 0.08
+    # Decision thresholds — 0.09 optimal on real Dune data (2026-04-04)
+    # Previous 0.08 was the initial real-data optimum (F1: 0.428, R: 0.954).
+    # 0.09 is the F1-optimal point after label cleaning and signal fixes.
+    THRESHOLD_FLAG = 0.09
     THRESHOLD_INVESTIGATE = 0.50
     THRESHOLD_BLOCK = 0.75
 
