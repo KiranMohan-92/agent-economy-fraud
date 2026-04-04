@@ -9,19 +9,43 @@ This script implements the full validation pipeline:
     3. Re-score all labeled addresses using SignalFusion
     4. Save results to data/detection_results_dune.csv
     5. Print a side-by-side before/after metrics comparison
+    6. Save validation_metrics.json with per-signal AUCs and cleaning stats
 
 Usage:
     python -m a2a_detection.scripts.validate_precision
 
-    # With RPC for EOA contract filtering:
-    RPC_URL=https://mainnet.base.org python -m a2a_detection.scripts.validate_precision
+    # With EOA contract filtering (recommended for highest negative-class quality):
+    RPC_URL=<your-base-rpc-url> python -m a2a_detection.scripts.validate_precision
 
     # Custom activity threshold:
     MIN_TX_COUNT=10 python -m a2a_detection.scripts.validate_precision
 
+EOA Contract Filtering (RPC_URL):
+    The negative ("human") label class contains smart contracts falsely labeled as
+    humans because they appeared as counterparties to known ERC-8004 agents. Setting
+    RPC_URL enables automatic removal of these contract addresses before evaluation.
+
+    How to obtain a free Base-chain RPC endpoint:
+      - Alchemy (recommended): https://dashboard.alchemy.com/
+          1. Create a free account → New App → Chain: Base → Network: Base Mainnet
+          2. Copy the HTTPS URL, e.g. https://base-mainnet.g.alchemy.com/v2/<key>
+          3. Set: export RPC_URL="https://base-mainnet.g.alchemy.com/v2/<key>"
+
+      - Infura: https://app.infura.io/
+          1. Create a free account → Create New API Key → Network: Base Mainnet
+          2. Copy the HTTPS URL, e.g. https://base-mainnet.infura.io/v3/<key>
+          3. Set: export RPC_URL="https://base-mainnet.infura.io/v3/<key>"
+
+      - Public (no key, rate-limited): https://mainnet.base.org
+          3. Set: export RPC_URL="https://mainnet.base.org"
+
+    Without RPC_URL the EOA filter is skipped and only the minimum-activity filter
+    applies. The script records "eoa_filter_applied": false in validation_metrics.json.
+
 Output:
-    - data/detection_results_dune.csv (updated scores)
-    - Printed metrics table to stdout
+    - data/detection_results_dune.csv (updated scores per address)
+    - data/validation_metrics.json (precision/recall/F1, per-signal AUCs, cleaning stats)
+    - Printed before/after comparison table to stdout
 """
 
 from __future__ import annotations
@@ -265,14 +289,24 @@ def main() -> None:
     })
 
     # -- Individual signal AUCs ------------------------------------------------
+    # Captured per-signal so improvements from feature changes are traceable.
+    # Signal columns are named "signal_<name>" in the results DataFrame.
+    signal_auc_map = {
+        "network_topology":       "signal_network_topology",
+        "economic_rationality":   "signal_economic_rationality",
+        "temporal_consistency":   "signal_temporal_consistency",
+        "value_flow":             "signal_value_flow",
+    }
+    per_signal_aucs: dict[str, float | None] = {}
     logger.info("\n--- Individual Signal AUCs (updated) ---")
-    for sig in ["signal_economic_rationality", "signal_network_topology",
-                "signal_value_flow", "signal_temporal_consistency"]:
+    for friendly, col in signal_auc_map.items():
         try:
-            auc = roc_auc_score(y_true, merged[sig])
-            logger.info(f"  {sig}: AUC={auc:.4f}")
-        except Exception:
-            pass
+            auc = float(roc_auc_score(y_true, merged[col]))
+            per_signal_aucs[friendly] = round(auc, 4)
+            logger.info(f"  {friendly}: AUC={auc:.4f}")
+        except Exception as exc:
+            per_signal_aucs[friendly] = None
+            logger.warning(f"  {friendly}: AUC unavailable ({exc})")
 
     # -- Print comparison ------------------------------------------------------
     print_comparison(BASELINE, updated_metrics, label_stats)
@@ -281,6 +315,7 @@ def main() -> None:
     metrics_out = {
         "baseline": BASELINE,
         "updated": updated_metrics,
+        "per_signal_aucs": per_signal_aucs,
         "label_cleaning_stats": label_stats,
     }
     metrics_path = DATA_DIR / "validation_metrics.json"

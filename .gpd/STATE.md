@@ -46,6 +46,22 @@ Fraud detection systems built on 9 human behavioral invariants fundamentally bre
 - **Key finding:** Value Flow is now the strongest signal (mean=0.42) with real timestamps
 - **Threshold:** Re-optimized from 0.24 to 0.08 for real data score distribution
 
+### Detection Framework Performance (Cleaned Labels — 2026-04-04)
+> **Scope note:** The metrics below are measured on the **1,734-address cleaned subset**, not the full 6,754+548 address set. The 6,754 raw "human" counterparty labels were filtered to 1,069 by removing thin counterparties (<5 transactions); 665 agents are present (pool expanded from 548 due to Dune re-ingestion including previously missing addresses).
+
+- **Evaluated:** 1,734 addresses (665 agents, 1,069 cleaned-human counterparties)
+- **Precision:** 42.9%
+- **Recall:** 81.1%
+- **F1 Score:** 56.1% ← _this is the current headline metric_
+- **ROC-AUC (composite):** 0.515
+- **Per-signal AUCs** (live run, 2026-04-04):
+  - Network Topology: 0.5990 (strongest)
+  - Value Flow: 0.5220
+  - Economic Rationality: 0.5152
+  - Temporal Consistency: 0.4647
+- **Label cleaning:** thin-counterparty filter only (EOA contract filter pending RPC_URL)
+- **Agent pool:** 548 → 665 (Dune re-ingestion added 117 previously uncounted agents)
+
 ### 5 Agent-Invariant Signals
 1. Economic Rationality
 2. Network Topology
