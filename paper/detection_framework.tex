@@ -297,12 +297,38 @@ mimicry-throttled agents.  Economic Rationality and Value Flow
 contribute nearly equally (0.2424 and 0.2332, respectively).  The
 four active weights sum to approximately one, and the zero weight
 on CP ensures that the composite score is unaffected by the
-inactive signal.  We note that the narrow AUC spread across signals
-(0.4647--0.5990) produces near-uniform weights ($\sigma_w = 0.015$);
+inactive signal.
+
+\paragraph{Effective uniformity of weights.}
+We acknowledge that the narrow AUC spread across active signals
+(0.4647--0.5990) produces near-uniform weights ($\sigma_w = 0.015$).
 AUC-proportional weighting is effectively equivalent to equal
-weighting on this dataset.  We retain it as a principled default
-that will differentiate signals as the evaluation set grows and
-AUC values diverge.
+weighting on this dataset: the theoretical justification for
+rewarding more discriminative signals has minimal practical effect
+when all signals hover near chance.  We considered two alternative
+weighting schemes:
+\begin{enumerate}[nosep]
+  \item \textbf{Exclude TC} (AUC = 0.4647, below chance).  Removing
+    TC and re-normalizing yields $w_{\text{NT}} = 0.363$,
+    $w_{\text{ER}} = 0.312$, $w_{\text{VF}} = 0.325$---marginally
+    less uniform but with a negligible change in composite AUC
+    ($+0.003$).  We retain TC because the canary-signal hypothesis
+    (\cref{sec:limit_tc_canary}) makes its longitudinal trajectory
+    diagnostically valuable even when its current AUC is low.
+  \item \textbf{Use $\auc - 0.5$ as weights} (rewarding only
+    discriminative power above chance).  This yields
+    $w_{\text{NT}} = 0.547$, $w_{\text{VF}} = 0.122$,
+    $w_{\text{ER}} = 0.084$, $w_{\text{TC}} = 0.000$
+    (below-chance TC is zeroed out), and $w_{\text{CP}} = 0.000$.
+    In this regime NT dominates, which is defensible given its
+    highest AUC but makes the composite fragile to NT-specific
+    evasion.
+\end{enumerate}
+We retain raw AUC-proportional weighting as a conservative default
+that avoids over-concentration on any single signal.  As the
+evaluation set grows and AUC values diverge, we expect the weighting
+scheme to differentiate naturally; the choice of scheme will matter
+more then.
 
 \paragraph{Why linear fusion.}
 We deliberately chose a linear model over more expressive alternatives

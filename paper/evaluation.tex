@@ -3,7 +3,53 @@
 
 \section{Evaluation}\label{sec:evaluation}
 
-We validate the agent-invariant detection framework through a three-stage empirical pipeline of increasing ecological validity: synthetic generation, real on-chain deployment, and adversarial attack injection. Each stage tests a distinct claim. Stage~1 establishes detection accuracy under controlled conditions. Stage~2 measures transfer to live blockchain data with noisy labels. Stage~3 stress-tests robustness against seven escalating attack chains, including three scenarios rated \emph{IMPOSSIBLE} in our threat model (\cref{sec:threat}). Together, the three stages form the evidence backbone of our central thesis: that behavioral invariants---not identity heuristics---enable reliable agent detection.
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  node distance=0.6cm and 1.2cm,
+  stage/.style={rectangle, draw, rounded corners, fill=blue!8,
+    minimum width=3.6cm, minimum height=1.6cm, align=center,
+    font=\small},
+  data/.style={rectangle, draw, dashed, fill=gray!8,
+    minimum width=3.2cm, align=center, font=\scriptsize},
+  arrow/.style={-{Stealth[length=5pt]}, thick},
+  label/.style={font=\scriptsize\itshape, text=black!60}
+]
+% Stage 1
+\node[stage] (s1) {\textbf{Stage 1}\\Synthetic\\Validation};
+\node[data, below=0.3cm of s1] (d1) {100,000 addresses\\(10K agents, 90K humans)\\Generated};
+
+% Stage 2
+\node[stage, right=1.8cm of s1] (s2) {\textbf{Stage 2}\\Real On-Chain\\Validation};
+\node[data, below=0.3cm of s2] (d2) {81,904 USDC txns\\665 agents + 1,069 humans\\Base chain via Dune};
+
+% Stage 3
+\node[stage, right=1.8cm of s2] (s3) {\textbf{Stage 3}\\Attack Injection\\Validation};
+\node[data, below=0.3cm of s3] (d3) {93,579 real txns\\+ 6,050 injected attacks\\(99,629 total)};
+
+% Arrows
+\draw[arrow] (s1) -- node[above, label] {transfer} (s2);
+\draw[arrow] (s2) -- node[above, label] {inject} (s3);
+
+% Labels below data
+\node[below=0.15cm of d1, font=\scriptsize, text=green!50!black]
+  {F1 = 88.7\%\\AUC = 0.97};
+\node[below=0.15cm of d2, font=\scriptsize, text=orange!70!black]
+  {Recall = 95.4\%\\AUC = 0.515};
+\node[below=0.15cm of d3, font=\scriptsize, text=blue!60!black]
+  {7/8 chains\\100\% recall};
+\end{tikzpicture}
+\caption{Three-stage evaluation pipeline.  Each stage uses a distinct
+dataset of increasing ecological validity.  Dataset sizes differ
+across stages because Stage~1 is purely synthetic, Stage~2 uses real
+Base chain transactions, and Stage~3 augments the real data with
+injected attack transactions.  The three transaction counts
+(100,000 / 81,904 / 93,579+6,050) reported across sections correspond
+to these three stages, respectively.}
+\label{fig:dataflow}
+\end{figure}
+
+We validate the agent-invariant detection framework through a three-stage empirical pipeline of increasing ecological validity (\cref{fig:dataflow}): synthetic generation, real on-chain deployment, and adversarial attack injection. Each stage tests a distinct claim. Stage~1 establishes detection accuracy under controlled conditions. Stage~2 measures transfer to live blockchain data with noisy labels. Stage~3 stress-tests robustness against seven escalating attack chains, including three scenarios rated \emph{IMPOSSIBLE} in our threat model (\cref{sec:threat}). Together, the three stages form the evidence backbone of our central thesis: that behavioral invariants---not identity heuristics---enable reliable agent detection.
 
 %% ---------- STAGE 1 ----------
 \subsection{Stage 1: Synthetic Validation}\label{sec:eval_synthetic}
@@ -88,9 +134,28 @@ Temporal Consistency (TC) & 0.4647 \\
 \end{table}
 
 \paragraph{Transfer Gap Analysis.}
-The critical metric for generalization is recall transfer. Recall drops by only 0.83 percentage points (96.23\% $\rightarrow$ 95.4\%), representing 99.2\% retention from synthetic to real data. This confirms that the behavioral invariants identified in Stage~1 persist in live agent populations. The precision drop of 68.6\% (82.36\% $\rightarrow$ 27.6\% on raw labels) is substantially attributable to heuristic negative-class labels: counterparty addresses assumed to be human may include unlabeled agents, inflating false positives. We assign 0.7 confidence to this attribution based on manual inspection of high-scoring ``human'' addresses that exhibit agent-like behavioral profiles.
+To disentangle genuine transfer degradation from threshold re-optimization, we report performance at \emph{both} the synthetic-calibrated threshold ($\theta = 0.24$) and the re-optimized threshold ($\theta = 0.08$):
 
-The moderate composite AUC of 0.515 warrants careful interpretation. This metric reflects the difficulty of the \emph{ranking} task on real data where the negative class is contaminated, not the \emph{detection} task at a fixed operating point. The high recall at the re-optimized threshold (0.08) demonstrates that the framework successfully identifies the vast majority of registered agents despite label noise.
+\begin{table}[h]
+\centering
+\caption{Transfer-gap analysis: fixed vs.\ re-optimized threshold on real on-chain data (cleaned labels).}
+\label{tab:transfer_gap}
+\small
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metric} & $\theta = 0.24$ \textbf{(synthetic)} & $\theta = 0.08$ \textbf{(re-optimized)} \\
+\midrule
+Recall & 61.4\% & 95.4\% \\
+FPR & 8.2\% & 38.7\% \\
+Precision & 52.1\% & 27.6\% \\
+F1 & 56.4\% & 42.8\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+At the fixed synthetic threshold of 0.24, recall drops from 96.23\% to 61.4\%---a 34.8\,pp decrease that reveals the true distributional shift between synthetic and real score distributions. The re-optimized threshold of 0.08 recovers recall to 95.4\% but at the cost of a substantially elevated false-positive rate (38.7\% vs.\ 8.2\%). The earlier headline figure of $-0.83$\,pp recall transfer compared Stage~1 synthetic recall (96.23\%) against Stage~2 \emph{raw-label} recall at the re-optimized threshold; this comparison is misleading because threshold re-optimization absorbs much of the distributional shift. The fixed-threshold comparison provides a more honest measure of generalization.
+
+The moderate composite AUC of 0.515 warrants careful interpretation. This metric reflects the difficulty of the \emph{ranking} task on real data where the negative class is contaminated, not the \emph{detection} task at a fixed operating point. We assign 0.7 confidence to the label-contamination attribution based on manual inspection of high-scoring ``human'' addresses that exhibit agent-like behavioral profiles.
 
 %% ---------- STAGE 3 ----------
 \subsection{Stage 3: Attack Injection Validation}\label{sec:eval_attack}
@@ -175,7 +240,7 @@ Table~\ref{tab:cross_stage} synthesizes the three evaluation stages.
 \textbf{Stage} & \textbf{Claim Tested} & \textbf{Key Result} & \textbf{Verdict} \\
 \midrule
 1: Synthetic & Detection accuracy & F1 = 88.71\%, AUC = 0.97 & Confirmed \\
-2: Real & Transfer to live data & Recall retention = 99.2\% & Confirmed \\
+2: Real & Transfer to live data & Recall 61.4\% at fixed $\theta$; 95.4\% re-opt. & Partially confirmed \\
 3: Attack & Adversarial robustness & 7/8 chains at 100\% recall & Partially confirmed \\
 \bottomrule
 \end{tabular}

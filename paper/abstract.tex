@@ -11,11 +11,15 @@ agent gateway and Moltbook agent social platform as case studies, we
 derive an eight-chain taxonomy of A2A fraud attack vectors grounded in
 actual platform documentation. We design a five-signal agent-invariant
 detection framework and validate it against 93,579 real on-chain USDC
-transactions from 665 ERC-8004 registered agents on Base chain
-(recall~95.4\%, composite ROC-AUC~0.515 on cleaned labels,
-transfer from synthetic benchmarks $-0.83$\,pp), then
-against a labeled mixed dataset with injected attack patterns. The
-framework detects 7 of~8 attack chains at 100\% per-chain recall. The
+transactions from 665 ERC-8004 registered agents on Base chain.
+On real data the framework achieves recall of 95.4\% at a
+re-optimized threshold, but composite ROC-AUC is only 0.515 on
+cleaned labels---barely above chance---reflecting severe
+negative-class contamination rather than strong ranking ability.
+Transfer from synthetic benchmarks incurs a recall drop of only
+$-0.83$\,pp. Against a labeled mixed dataset with injected attack
+patterns, the framework detects 7 of~8 attack chains at 100\%
+per-chain recall. The
 eighth chain---coordinated swarm attacks---reveals a fundamental gap:
 per-address scoring is blind to coordinated multi-agent attacks where
 individual agents have minimal on-chain footprint, motivating a

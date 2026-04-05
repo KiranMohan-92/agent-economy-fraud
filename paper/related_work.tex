@@ -76,6 +76,63 @@ bridging the gap between theoretical attack taxonomies and empirical
 on-chain evidence.
 
 %% -----------------------------------------------------------------
+\subsection{Adversarial ML for Transaction Monitoring}\label{subsec:rw-advml}
+
+A substantial body of work studies adversarial evasion of ML-based
+fraud detectors.  Cartella~\etal\cite{cartella2021} demonstrate that
+gradient-based adversarial perturbations can evade neural-network credit
+card fraud detectors while preserving the economic semantics of
+transactions.  Biggio~\etal\cite{biggio2013} formalize evasion attacks
+against classifiers at test time, providing a general framework for
+reasoning about adversarial robustness that applies directly to
+transaction-monitoring models.  Earlier, Aleskerov~\etal\cite{aleskerov1997}
+introduced \textsc{CardWatch}, a neural-network fraud detector that
+established many of the behavioral features still used today.
+
+Our invariant-collapse argument differs from this literature in a key
+respect.  Adversarial ML attacks perturb \emph{individual inputs} to
+cross a decision boundary while remaining close to the original
+distribution.  The agent-economy threat is more fundamental: agents do
+not need to perturb their behavior to evade detection---their
+\emph{normal operating behavior} falls outside the distribution on
+which detectors were trained.  Conversely, when agents \emph{do}
+attempt mimicry (CHAIN\_6), the behavioral mimicry paradox
+(\cref{subsec:chain6}) shows that deterministic imitation of a
+stochastic process produces a distinct statistical signature that is
+\emph{easier} to detect than the original agent behavior.  This
+contrasts with the adversarial ML setting, where evasion generally
+makes detection harder.
+
+%% -----------------------------------------------------------------
+\subsection{Web2 Bot Detection}\label{subsec:rw-botdetect}
+
+The problem of distinguishing automated actors from humans has decades
+of history in web security.  Bursztein~\etal\cite{bursztein2014}
+demonstrate generic CAPTCHA-solving attacks, showing that
+challenge--response mechanisms---the canonical defense against
+bots---are increasingly fragile.  Iliou~\etal\cite{iliou2021} combine
+web-server logs with mouse behavioral biometrics to detect advanced
+web bots, achieving high accuracy through features that overlap
+significantly with our Temporal Consistency signal: timing regularity,
+interaction cadence, and session-length distributions.
+Jonker~\etal\cite{jonker2019} study fingerprint surface-based
+detection of bot detectors, documenting the adversarial arms race
+between bot operators and detection systems.
+
+The nine invariants identified in our threat model
+(\cref{sec:threat}) generalize several assumptions underlying Web2
+bot detection: that users exhibit circadian patterns, that
+interaction timing is stochastic, and that identity creation carries
+nontrivial cost.  All three assumptions fail for AI agents, just as
+they have progressively eroded for sophisticated web bots.  The
+evasion--counter-evasion dynamics documented in two decades of bot
+detection research~\cite{bursztein2014,jonker2019} provide a useful
+precedent for anticipating how agent-economy fraud will evolve:
+initial reliance on simple behavioral heuristics, followed by an
+arms race toward structural and graph-based signals---precisely the
+trajectory our detection framework anticipates.
+
+%% -----------------------------------------------------------------
 \subsection{AI Agent Security}\label{subsec:rw-aisec}
 
 The AI-security community has focused primarily on compromising agents
