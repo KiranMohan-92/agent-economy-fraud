@@ -1,0 +1,392 @@
+% =============================================================
+%  Section 4 — Five-Signal Detection Framework
+% =============================================================
+
+\section{Five-Signal Detection Framework}\label{sec:detection}
+
+The threat model of \cref{sec:threat} identified eight attack chains
+that exploit the gap between human behavioral assumptions and agent
+capabilities.  We now present a detection framework built on a
+fundamentally different premise: rather than modeling what humans
+\emph{do} and flagging deviations, we model what agents
+\emph{cannot avoid doing} and detect the presence of those invariant
+signatures.
+
+
+% ============================================================
+\subsection{Design Principles}\label{subsec:principles}
+
+The framework rests on a paradigm shift from \emph{human-behavioral}
+detection to \emph{agent-invariant} detection.  The operative question
+changes from ``does this look like a human?'' to ``does this exhibit
+properties that are \emph{present} in agents but \emph{absent} in
+humans?''
+
+This shift is not cosmetic.  Human-behavioral models degrade as agents
+learn to mimic human patterns (CHAIN\_6 in \cref{sec:threat}), whereas
+agent-invariant signals exploit properties that agents cannot suppress
+without sacrificing the economic advantage that motivates the attack in
+the first place.  We formalize this intuition through four necessity
+principles:
+
+\begin{enumerate}[label=\textbf{P\arabic*.},leftmargin=2.5em]
+  \item \textbf{Economic Necessity.}\label{principle:econ}
+    An agent must transact at volumes or values that justify its
+    operational cost.  Transactions that are economically irrational
+    under any plausible human utility function---but rational under
+    agent amortization---constitute a detectable signal.
+
+  \item \textbf{Network Necessity.}\label{principle:net}
+    An agent must interact with counterparties to accomplish its
+    objective, producing graph structures (hubs, fans, chains) that
+    differ from organic human social graphs.
+
+  \item \textbf{Temporal Necessity.}\label{principle:temp}
+    An agent operates on machine time.  Even when throttled to
+    mimic human cadence, the residual timing distribution reveals
+    either machine-speed precision ($<400$\,ms intervals) or
+    machine-generated regularity ($\cvt < 0.05$)---both absent in
+    genuine human or legitimate-agent traffic.
+
+  \item \textbf{Value Flow Necessity.}\label{principle:vf}
+    Illicit value must move from source to destination.
+    Regardless of the layering strategy, the aggregate flow velocity
+    and directionality leave detectable traces in the value-flow
+    graph.
+\end{enumerate}
+
+\noindent
+Each principle maps to one or more of the five signals described
+below.  A fifth signal, Cross-Platform Correlation, anticipates the
+multi-chain setting of CHAIN\_5 but is not active in the current
+single-chain implementation.
+
+
+% ============================================================
+\subsection{Agent-Invariant Signals}\label{subsec:signals}
+
+We define five composite signals, each decomposed into sub-signals
+with empirically derived weights.
+\Cref{tab:signal_overview} provides a summary; the sub-signal
+specifications and scoring functions are detailed in
+\cref{app:signals}.
+
+\begin{table}[t]
+  \centering
+  \caption{%
+    Five-signal overview.  Sub-signal weights were derived from
+    real on-chain validation data (81,904 Base chain USDC transactions;
+    see~\cref{sec:evaluation}).  CP is architecturally defined but
+    inactive in the current single-chain deployment.%
+  }
+  \label{tab:signal_overview}
+  \small
+  \begin{tabularx}{\textwidth}{@{}l l X l@{}}
+    \toprule
+    \textbf{Signal} & \textbf{Abbr.} & \textbf{Sub-signals (weight)}
+      & \textbf{Principle} \\
+    \midrule
+    Economic Rationality & ER
+      & Utility maximization / circular flow (40\%),
+        purpose coherence (35\%),
+        concentration patterns (25\%)
+      & P1 \\[4pt]
+    Network Topology & NT
+      & Sender centrality (50\%),
+        receiver centrality (30\%),
+        path anomaly (20\%)
+      & P2 \\[4pt]
+    Value Flow & VF
+      & Flow velocity (50\%),
+        layering indicator (50\%)
+      & P4 \\[4pt]
+    Temporal Consistency & TC
+      & Circadian violation (35\%),
+        timing regularity (35\%),
+        burst detection (30\%)
+      & P3 \\[4pt]
+    Cross-Platform Correlation & CP
+      & \emph{Inactive}---designed for simultaneous
+        multi-chain presence detection
+      & P2, P3 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+
+% ---- Signal 1: Economic Rationality ----
+\subsubsection{Signal 1: Economic Rationality (ER)}\label{subsub:er}
+
+The Economic Rationality signal detects transactions that are
+economically incoherent under human decision-making but perfectly
+rational for an amortized autonomous agent.
+
+\paragraph{Sub-signals.}
+\emph{Utility maximization} flags circular flows---value that
+departs from and returns to the same address through intermediate
+hops---which serve no legitimate economic purpose but are a hallmark
+of wash trading and layering.
+\emph{Purpose coherence} measures whether an address's transaction
+mix is consistent with any identifiable economic role (merchant,
+consumer, liquidity provider); addresses with incoherent mixes score
+higher.
+\emph{Concentration patterns} detect addresses whose counterparty
+set is anomalously narrow or anomalously broad relative to their
+transaction volume.
+
+\paragraph{Agent-economic threshold.}
+A key empirical finding is that agents routinely transact at values
+between \$0.06 and \$0.91---amounts that fall below the cognitive
+cost threshold at which a human would bother initiating a
+transaction.  The marginal cost of human attention to a financial
+decision has been estimated at \$1--\$5~\cite{kahneman2011};
+agent amortization reduces this to effectively zero.  Transactions
+below this threshold therefore carry a strong \emph{a~priori}
+probability of agent origin, independent of any behavioral feature.
+
+
+% ---- Signal 2: Network Topology ----
+\subsubsection{Signal 2: Network Topology (NT)}\label{subsub:nt}
+
+The Network Topology signal captures structural anomalies in the
+transaction graph that arise from agent enumeration (CHAIN\_1),
+disposable agent armies (CHAIN\_4), and cross-platform linkage
+(CHAIN\_5).
+
+\paragraph{Sub-signals.}
+\emph{Sender centrality} (50\% weight) measures the out-degree and
+betweenness centrality of the sending address within a sliding
+time window.  An orchestrator spawning 100 disposable agents
+(\cref{subsec:chain4}) produces an extreme hub that is
+straightforward to detect.
+\emph{Receiver centrality} (30\%) applies the same logic to
+incoming edges, detecting sink patterns characteristic of value
+extraction.
+\emph{Path anomaly} (20\%) flags unusual multi-hop paths---for
+example, chains of three or more previously unseen addresses
+activated within the same block, or repeated edges between the
+same pair of addresses.
+
+\paragraph{Relation to attack chains.}
+The NT signal is the primary detector for four of the eight chains
+in \cref{tab:attack_chains}: CHAIN\_1 (enumeration), CHAIN\_2
+(history extraction), CHAIN\_4 (disposable army), and CHAIN\_5
+(cross-platform identity).  Its effectiveness stems from a simple
+observation: agents must interact with the network to accomplish
+their objectives, and those interactions leave structural traces
+that are difficult to suppress without fundamentally altering the
+attack.
+
+
+% ---- Signal 3: Value Flow ----
+\subsubsection{Signal 3: Value Flow (VF)}\label{subsub:vf}
+
+The Value Flow signal tracks how value moves through the network,
+detecting patterns consistent with layering, rapid extraction, and
+wash trading.
+
+\paragraph{Sub-signals.}
+\emph{Flow velocity} (50\%) measures the rate at which value passes
+through an address, normalized by the address's age and transaction
+count.  An address that receives and forwards large sums within
+minutes scores highly.
+\emph{Layering indicator} (50\%) detects fan-out patterns in which
+a single inflow is split into multiple outflows of similar size
+within a short time window---the canonical layering topology.
+
+\paragraph{A note on net flow imbalance.}
+An earlier iteration of the framework included a \emph{net flow
+imbalance} sub-signal, hypothesizing that fraudulent agents would
+show large imbalances between inflows and outflows.  Phase~5
+validation (\cref{sec:evaluation}) revealed a paradoxical result:
+the sub-signal fired on 57.1\% of \emph{human} addresses but only
+5.6\% of agent addresses.  The explanation is that humans frequently
+operate as net senders or net receivers (paying for services,
+receiving salary), while agents tend to maintain balanced flows as
+part of their operational logic.  This sub-signal was accordingly
+removed, illustrating the importance of empirical validation over
+intuitive reasoning when designing agent-specific detectors.
+
+
+% ---- Signal 4: Temporal Consistency ----
+\subsubsection{Signal 4: Temporal Consistency (TC)}\label{subsub:tc}
+
+The Temporal Consistency signal exploits the fact that agents
+operate on machine time, producing timing distributions that
+differ from human behavior in \emph{two} directions: they can be
+too fast and too regular.
+
+\paragraph{Sub-signals.}
+\emph{Circadian violation} (35\%) flags sustained transaction
+activity during hours when human activity is negligible
+(typically 02:00--06:00 local time).  While a single late-night
+transaction is unremarkable, sustained high-throughput activity
+across the circadian trough is a strong agent indicator.
+\emph{Timing regularity} (35\%) computes the coefficient of
+variation of inter-transaction intervals.  As established in
+the CHAIN\_6 analysis (\cref{subsec:chain6}), this sub-signal
+fires on \emph{both} tails:
+\begin{equation}\label{eq:tc_twotail}
+  \text{TC}_{\text{reg}} =
+  \begin{cases}
+    \text{high} & \text{if } \cvt < 0.05
+                  \quad\text{(machine regularity)}, \\
+    \text{high} & \text{if inter-tx interval} < 400\;\text{ms}
+                  \quad\text{(machine speed)}, \\
+    \text{low}  & \text{otherwise}.
+  \end{cases}
+\end{equation}
+The two-tailed design is a direct consequence of the mimicry
+paradox: an agent that throttles its timing to appear human
+inevitably produces \emph{too little} variance, while an
+unthrottled agent produces intervals that are \emph{too short}.
+Either direction is diagnostic.
+\emph{Burst detection} (30\%) identifies sustained bursts of
+activity---defined as $n \geq 10$ transactions with inter-arrival
+times below one second---that exceed any plausible human input
+rate.
+
+
+% ---- Signal 5: Cross-Platform Correlation ----
+\subsubsection{Signal 5: Cross-Platform Correlation (CP)}\label{subsub:cp}
+
+The Cross-Platform Correlation signal is designed to detect
+simultaneous multi-chain presence, the signature of CHAIN\_5.
+An entity that transacts on Base, Ethereum mainnet, and Arbitrum
+within the same minute---especially if the transactions are
+economically linked (same token, complementary amounts)---is
+exhibiting behavior that is effectively impossible for a human
+operator managing multiple interfaces concurrently.
+
+In the current implementation, CP is \textbf{inactive}: our
+validation dataset covers only Base~L2 transactions, and
+cross-chain correlation requires oracle infrastructure that is
+beyond the scope of this work.  The signal is included in the
+architectural specification to ensure the framework generalizes
+to the multi-chain setting that CHAIN\_5 anticipates.  Its fusion
+weight is accordingly set to zero (\cref{subsec:fusion}).
+
+
+% ============================================================
+\subsection{Signal Fusion}\label{subsec:fusion}
+
+Individual signals capture different facets of agent behavior; the
+composite score integrates them into a single risk metric.  We adopt
+a linear fusion model with \emph{AUC-proportional} weights---each
+signal's weight is proportional to its standalone area under the
+ROC curve, measured on the real on-chain validation set of 81,904 USDC
+transactions from Base~L2~\cite{dune2026}.
+
+\begin{equation}\label{eq:fusion}
+  S_{\text{composite}} =
+    0.2739 \cdot \text{NT}
+  + 0.2505 \cdot \text{TC}
+  + 0.2424 \cdot \text{ER}
+  + 0.2332 \cdot \text{VF}
+  + 0.0000 \cdot \text{CP}.
+\end{equation}
+
+Several properties of \cref{eq:fusion} merit discussion.
+
+\paragraph{Weight interpretation.}
+Network Topology carries the largest weight (0.2739), reflecting the
+strong structural signatures produced by agent orchestration patterns.
+Temporal Consistency is a close second (0.2505), driven by the
+two-tailed timing signal that catches both unthrottled and
+mimicry-throttled agents.  Economic Rationality and Value Flow
+contribute nearly equally (0.2424 and 0.2332, respectively).  The
+four active weights sum to approximately one, and the zero weight
+on CP ensures that the composite score is unaffected by the
+inactive signal.  We note that the narrow AUC spread across signals
+(0.4647--0.5990) produces near-uniform weights ($\sigma_w = 0.015$);
+AUC-proportional weighting is effectively equivalent to equal
+weighting on this dataset.  We retain it as a principled default
+that will differentiate signals as the evaluation set grows and
+AUC values diverge.
+
+\paragraph{Why linear fusion.}
+We deliberately chose a linear model over more expressive alternatives
+(gradient-boosted trees, neural networks) for three reasons.
+First, interpretability: a linear model allows practitioners to
+decompose any flagged transaction into its contributing signals,
+which is essential for regulatory compliance and audit trails.
+Second, robustness: linear models are less susceptible to
+overfitting on the relatively small labeled dataset available for
+A2A fraud.
+Third, transparency: the weight vector can be published, audited,
+and updated independently of the scoring engine, facilitating
+community review.
+
+\paragraph{Decision tiers.}
+The composite score maps to four operational tiers:
+
+\begin{table}[h]
+  \centering
+  \caption{Decision tiers derived from composite score thresholds.}
+  \label{tab:decision_tiers}
+  \small
+  \begin{tabular}{@{}l l l@{}}
+    \toprule
+    \textbf{Tier} & \textbf{Score Range} & \textbf{Action} \\
+    \midrule
+    \textsc{allow}       & $< 0.09$        & Transaction proceeds normally. \\
+    \textsc{flag}        & $0.09$--$0.50$  & Transaction logged for review queue. \\
+    \textsc{investigate}  & $0.50$--$0.75$  & Manual or automated investigation triggered. \\
+    \textsc{block}       & $\geq 0.75$     & Transaction held pending review. \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\noindent
+Threshold selection balances false-positive cost (legitimate
+transactions delayed) against false-negative cost (fraudulent
+transactions approved).  The \textsc{allow} threshold of 0.09
+was chosen to keep the false-positive rate on known-human
+traffic below 5\%; the \textsc{block} threshold of 0.75
+corresponds to a true-positive rate exceeding 90\% on known-agent
+attack traffic in Phase~5 validation (\cref{sec:evaluation}).
+
+
+% ============================================================
+\subsection{Implementation}\label{subsec:implementation}
+
+The detection framework is released as a pip-installable Python
+package under the Apache~2.0 license:
+
+\begin{center}
+  \texttt{pip install a2a-fincrime-detection}
+\end{center}
+
+\paragraph{Architecture.}
+The package comprises six signal modules (one per signal, plus a
+fusion module), each implementing the sub-signal specifications
+of~\cref{subsec:signals}.  All modules follow a common interface:
+they accept a transaction DataFrame and return a per-address score
+in $[0, 1]$.  The fusion module combines individual scores via
+\cref{eq:fusion} and assigns decision tiers per
+\cref{tab:decision_tiers}.
+
+\paragraph{Testing and validation.}
+The package includes 32 unit tests covering signal computation,
+edge cases (single-transaction addresses, zero-value transfers),
+and fusion arithmetic.  End-to-end validation was performed on
+81,904 on-chain USDC transactions from Base~L2, sourced via Dune
+Analytics~\cite{dune2026} and labeled using ERC-8004 agent
+registry data~\cite{erc8004}.
+
+\paragraph{Requirements.}
+The implementation targets Python $\geq 3.10$ and depends on four
+core libraries: \texttt{pandas} for data manipulation,
+\texttt{numpy} for numerical computation, \texttt{scikit-learn}
+for threshold calibration and ROC analysis, and \texttt{web3} for
+on-chain data retrieval.  No GPU is required; scoring the full transaction dataset
+completes in under 30 seconds on a single CPU core.
+
+\paragraph{Extensibility.}
+Adding a new signal---for example, activating the Cross-Platform
+Correlation module when multi-chain data becomes available---requires
+implementing the \texttt{SignalModule} interface and adding the
+signal's AUC-proportional weight to the fusion vector.  The
+architecture is deliberately modular to support the rapid iteration
+cycle that A2A fraud detection will demand as the agent ecosystem
+evolves.

@@ -1,0 +1,37 @@
+% limitations.tex — Section 8: Limitations and Future Work
+
+\section{Limitations and Future Work}\label{sec:limitations}
+
+We identify five limitations that bound the validity of our results and define the highest-priority directions for future work. We present these in order of estimated impact on reported metrics.
+
+\subsection{Label Quality}\label{sec:limit_labels}
+
+The most consequential limitation is the quality of negative-class labels. Our positive class---665 ERC-8004-registered agents~\cite{erc8004}---has verifiable on-chain provenance. The negative class, however, is constructed heuristically: counterparty addresses of known agents are labeled as human at approximately 0.7 confidence after the minimum-activity filter described in \cref{sec:eval_real}. This heuristic is fragile. Many ``human'' counterparties are in fact automated contracts: DEX routers, MEV bots, token distributors, and bridge relayers that exhibit programmatic behavioral signatures indistinguishable from those of autonomous agents. Their presence in the negative class inflates measured precision by rewarding the classifier for detecting automation that happens not to be ERC-8004-registered.
+
+Obtaining verified human-controlled externally owned accounts (EOAs)---for example, addresses with hardware wallet signatures or proof-of-personhood attestations---would provide a clean negative class against which precision can be measured without circularity. We estimate that with clean labels, true precision lies in the 60--80\% range rather than the 82.36\% reported on synthetic data. The recall figure of 95.4\% on real data is less affected, since agent-class labels are derived from an on-chain registry rather than from heuristics.
+
+\subsection{Collective Detection Architecture}\label{sec:limit_collective}
+
+CHAIN\_7 (Swarm Intelligence) in our attack taxonomy (\cref{sec:threat}) requires population-level detection: identifying coordinated multi-agent behavior that is individually invisible. Our current framework scores each address independently. It cannot detect a swarm of agents that individually mimic human behavior but collectively execute a synchronized attack.
+
+Addressing this gap requires a fundamentally different architecture. We propose three components: (1)~time-window clustering that groups transactions into overlapping windows at block-level granularity, (2)~amount synchronization detection that identifies statistically improbable value correlations across independent addresses within each window, and (3)~activation correlation scoring that measures the pairwise temporal co-occurrence of address activity over rolling horizons. Together, these components would enable per-population detection rather than per-address detection.
+
+This is an open problem. No production system implements collective behavioral detection at the 2-second block granularity required by Base chain transaction throughput. We consider this the highest-priority architectural gap in the agent fraud detection landscape.
+
+\subsection{Cross-Platform Signal}\label{sec:limit_cross_platform}
+
+The Cross-Platform (CP) signal receives zero weight in the composite detector because all evaluation data originates from a single chain (Base). CP is designed to detect behavioral inconsistencies when the same agent identity operates across multiple blockchains---for example, exhibiting different value distributions on Ethereum mainnet versus Base, or maintaining incompatible transaction schedules across chains. With single-chain data, CP provides no discriminative information and is correctly zeroed out by the AUC-proportional weighting scheme.
+
+Multi-chain evaluation data spanning Ethereum, BNB Chain, and Polygon would activate CP and likely improve composite AUC above the best single-signal AUC of 0.621 reported in \cref{sec:eval_real}. The CREATE2 address derivation pattern documented in \cref{sec:introduction}---where agents deploy identical bytecode across chains to obtain deterministic addresses---provides a natural linkage mechanism for cross-chain identity resolution. Collecting and validating multi-chain agent transaction data is a near-term priority.
+
+\subsection{Temporal Consistency as Canary Signal}\label{sec:limit_tc_canary}
+
+Temporal Consistency (TC) exhibits the steepest performance degradation between pre-cleaning and post-cleaning evaluation sets: AUC drops from 0.5683 to 0.4647, a decline of 18.2\%. This makes TC the most sensitive signal to label noise, but it also reveals a deeper structural vulnerability. TC detects deviations from human circadian and session-length patterns. These patterns are precisely the first behavioral dimension that agents can learn to mimic, because temporal regularities are low-dimensional, publicly observable, and trivially parameterizable.
+
+We therefore designate TC as the \emph{canary signal}: the first indicator that agent behavioral sophistication has advanced. We offer a testable prediction grounded in the framework of hard-to-vary explanations~\cite{deutsch2011}: within 12 months of this publication, TC standalone AUC will fall to $\leq 0.52$ on comparable datasets, while Network Topology (NT) will remain at $\geq 0.58$. NT is structurally harder to mimic because it depends on the global graph position of an address---a property that cannot be faked without acquiring genuine, diverse counterparty relationships. Monitoring the TC/NT divergence provides a quantitative early warning system for agent capability evolution.
+
+\subsection{Pre-Crime Research Validity}\label{sec:limit_precrime}
+
+As of April 2026, no documented case of systematic agent-to-agent fraud exploitation exists in the public record. This paper validates an attack surface before it has been systematically exploited. The epistemic status of our threat model is therefore predictive rather than retrospective: we demonstrate that the attack chains are \emph{feasible} given current agent capabilities and infrastructure, not that they have been \emph{executed} at scale.
+
+Historical precedent supports the validity of pre-exploitation research. DeFi protocol exploits followed a 12--24 month lag between capability availability and systematic exploitation~\cite{virtuals2025}. NFT wash trading and market manipulation exhibited a 12--18 month lag. For LLM-integrated agents, the relevant capability stack---autonomous transaction execution, identity generation, and multi-agent coordination---has been available since mid-2025, placing the predicted exploitation window at 6--12 months from the current date. The detection framework, open-source implementation, and institutional recommendations presented in this paper are designed for deployment within this window.

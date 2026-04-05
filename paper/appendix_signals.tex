@@ -1,0 +1,196 @@
+\section{Signal Specifications}\label{app:signals}
+
+This appendix provides the full sub-signal architecture for each of the five
+detection signals in the A2A fraud-detection framework. All AUC values reported
+are from Phase~5 evaluation on the cleaned dataset (665 agents, 1{,}069 human
+counterparties).
+
+%----------------------------------------------------------------------
+\subsection{Signal 1: Economic Rationality (ER)}
+\label{app:sig:er}
+
+Economic Rationality quantifies whether an address's transaction pattern is
+consistent with purposeful economic activity or exhibits characteristics of
+autonomous agent behavior.
+
+\paragraph{Sub-signals.}
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{Utility maximisation detection.}
+    Identifies circular value flows using depth-limited DFS on the transaction
+    graph. A cycle of length $\leq k$ through an address indicates potential
+    wash trading or self-dealing.
+  \item \textbf{Purpose coherence.}
+    Scores each address's economic rationale by measuring the diversity and
+    consistency of its counterparty set and transaction purposes.
+  \item \textbf{Concentration patterns.}
+    Computes a Herfindahl-like index over outgoing value distribution:
+    \begin{equation}
+      H_i = \sum_{j} \left(\frac{v_{ij}}{\sum_k v_{ik}}\right)^2,
+    \end{equation}
+    where $v_{ij}$ is the total value sent from address $i$ to counterparty
+    $j$. High concentration suggests programmatic routing.
+\end{enumerate}
+
+\paragraph{Key observation.}
+Observed agent transaction values range from \$0.06 to \$0.91, well below any
+reasonable human cognitive cost threshold for initiating a financial
+transfer---a strong prior for autonomous execution.
+
+\paragraph{Phase~5 performance.} $\auc = 0.5152$ (cleaned).
+
+%----------------------------------------------------------------------
+\subsection{Signal 2: Network Topology (NT)}
+\label{app:sig:nt}
+
+Network Topology is the strongest individual signal. It detects structural
+anomalies in the transaction graph that are characteristic of agent swarms and
+automated enumeration.
+
+\paragraph{Sub-signals and weights.}
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{Sender centrality} (weight 0.50).
+    Measures the out-degree and eigenvector centrality of the address as a
+    sender. High-burst out-degree indicates automated enumeration of
+    counterparties.
+  \item \textbf{Receiver centrality} (weight 0.30).
+    Captures in-degree spikes consistent with sink patterns (value
+    aggregation points).
+  \item \textbf{Path anomaly} (weight 0.20).
+    Flags repeated edges (history extraction) and star topologies (agent
+    armies controlled by a single orchestrator).
+\end{enumerate}
+
+\paragraph{Detected patterns.}
+\begin{itemize}[leftmargin=*]
+  \item \emph{High out-degree bursts}: rapid enumeration of new counterparties.
+  \item \emph{Repeated edges}: the same directed edge observed many times,
+    indicating automated history extraction.
+  \item \emph{Star topology}: a single hub address connected to many leaf
+    addresses with minimal inter-leaf connectivity.
+  \item \emph{Sink patterns}: addresses that only receive and never send,
+    serving as value collection endpoints.
+\end{itemize}
+
+\paragraph{Evolution.}
+Phase~3 specification included four sub-components (with Sybil detection and
+Louvain community analysis). These were reduced to three in Phase~4
+implementation after Sybil/Louvain proved computationally expensive without
+proportionate discriminative gain on the ERC-8004 dataset.
+
+\paragraph{Phase~5 performance.} $\auc = 0.5990$ (cleaned)---strongest signal.
+
+%----------------------------------------------------------------------
+\subsection{Signal 3: Value Flow (VF)}
+\label{app:sig:vf}
+
+Value Flow tracks how value moves through the network, detecting layering and
+velocity patterns associated with automated fund movement.
+
+\paragraph{Sub-signals and weights.}
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{Flow velocity} (weight 0.50).
+    Measures the speed at which value transits through an address (time
+    between first inflow and subsequent outflow).
+  \item \textbf{Layering indicator} (weight 0.50).
+    Detects progressive splitting or aggregation of values across
+    multiple hops, a hallmark of obfuscation layering.
+\end{enumerate}
+
+\paragraph{Removed sub-signal.}
+\texttt{net\_flow\_imbalance} was included in Phase~4 but removed after Phase~5
+evaluation. It fired paradoxically: 57.1\% of human addresses triggered the
+sub-signal versus only 5.6\% of known agents. The imbalance arose because human
+counterparties naturally maintain non-zero net flows (they buy more than they
+sell, or vice versa), whereas agents exhibited near-zero net flow due to
+symmetric automated routing.
+
+\paragraph{Threshold evolution.}
+The detection threshold was re-optimised from 0.24 (Phase~4) to 0.08 (Phase~5)
+after the sub-signal removal.
+
+\paragraph{Phase~5 performance.} $\auc = 0.5220$ (cleaned).
+
+%----------------------------------------------------------------------
+\subsection{Signal 4: Temporal Consistency (TC)}
+\label{app:sig:tc}
+
+Temporal Consistency captures timing anomalies in transaction sequences. It
+operates bidirectionally, detecting both machine-speed automation and
+suspiciously precise human mimicry.
+
+\paragraph{Sub-signals and weights.}
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{Circadian violation} (weight 0.35).
+    Flags addresses active during hours inconsistent with any single
+    timezone's waking period.
+  \item \textbf{Timing regularity} (weight 0.35).
+    Measures the coefficient of variation (CV) of inter-transaction
+    intervals. Both extremes are suspicious:
+    \begin{itemize}
+      \item $\cvt < 0.05$: ``too perfect'' timing mimicry (agents
+        attempting to appear human);
+      \item $\cvt > 3.0$: erratic bursting characteristic of
+        event-driven bots.
+    \end{itemize}
+  \item \textbf{Burst detection} (weight 0.30).
+    Identifies clusters of transactions with inter-arrival times $< 400$\,ms,
+    below human reaction thresholds.
+\end{enumerate}
+
+\paragraph{Empirical observations.}
+Real agents on the ERC-8004 dataset exhibit $\cvt \approx 1.87$, while the most
+sophisticated mimicry agents show $\cvt < 0.005$---four orders of magnitude
+more regular than genuine agent traffic.
+
+\paragraph{TC-canary property.}
+TC degrades fastest among all signals as adversaries adapt. Its Phase~5
+$\auc = 0.4647$ (cleaned, below random baseline) confirms that temporal
+features are the first to be gamed, consistent with the theoretical prediction
+that timing is the cheapest behavioral dimension to manipulate.
+
+%----------------------------------------------------------------------
+\subsection{Signal 5: Cross-Platform Correlation (CP)}
+\label{app:sig:cp}
+
+Cross-Platform Correlation is architecturally complete but currently inactive
+(assigned weight 0.0) because the evaluation dataset contains only Base chain
+transactions.
+
+\paragraph{Design.}
+CP detects simultaneous presence of the same logical agent across multiple
+EVM-compatible chains by matching:
+\begin{itemize}[leftmargin=*]
+  \item \texttt{CREATE2} deployment addresses across Base, Ethereum mainnet,
+    and BNB Chain;
+  \item Correlated transaction timing across chains (shared clock source);
+  \item Identical bytecode fingerprints at matched addresses.
+\end{itemize}
+
+\paragraph{Activation requirements.}
+CP requires multi-chain transaction data. Once cross-chain A2A commerce data
+becomes available, the signal can be activated by setting its weight to a
+non-zero value and supplying multi-chain transaction feeds to the pipeline.
+
+%----------------------------------------------------------------------
+\subsection{Signal Weight Evolution}
+
+\begin{table}[h]
+\centering
+\caption{Signal weight evolution across development phases.}
+\label{tab:weight-evolution}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Signal} & \textbf{Phase 3--4} & \textbf{Phase 5} & \textbf{Phase 5 AUC} \\
+\midrule
+Economic Rationality (ER) & 0.20 & AUC-prop. & 0.5152 \\
+Network Topology (NT)     & 0.20 & AUC-prop. & 0.5990 \\
+Value Flow (VF)            & 0.20 & AUC-prop. & 0.5220 \\
+Temporal Consistency (TC)  & 0.20 & AUC-prop. & 0.4647 \\
+Cross-Platform (CP)        & 0.20 & 0.00      & ---    \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+After Phase~5 evaluation, signal weights were updated from uniform
+($w_i = 0.20$) to AUC-proportional for the four active signals, with CP
+held at zero pending multi-chain data availability.

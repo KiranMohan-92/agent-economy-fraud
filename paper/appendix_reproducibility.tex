@@ -1,0 +1,95 @@
+\section{Reproducibility}\label{app:reproducibility}
+
+This appendix provides all information necessary to reproduce the experimental
+results reported in this paper.
+
+%----------------------------------------------------------------------
+\subsection{Software Package}
+
+The reference implementation is released as \texttt{a2a-fincrime-detection}
+version 0.1.0, installable from PyPI under the package name
+\texttt{a2a-detection}.
+
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Language:} Python $\geq$ 3.10
+  \item \textbf{License:} Apache 2.0
+  \item \textbf{Dependencies:} \texttt{httpx}, \texttt{pandas},
+    \texttt{pyarrow}, \texttt{web3}, \texttt{python-dotenv},
+    \texttt{numpy}, \texttt{scikit-learn}
+\end{itemize}
+
+%----------------------------------------------------------------------
+\subsection{Installation}
+
+Install from PyPI:
+
+\begin{lstlisting}[language=bash]
+pip install a2a-detection
+\end{lstlisting}
+
+Alternatively, install from source:
+
+\begin{lstlisting}[language=bash]
+git clone https://github.com/<repo>/a2a-fincrime-detection.git
+cd a2a-fincrime-detection
+pip install -e .
+\end{lstlisting}
+
+The source distribution uses \texttt{pyproject.toml} for build configuration.
+
+%----------------------------------------------------------------------
+\subsection{Reproducing Experiments}
+
+\paragraph{Step 1: Inject synthetic attacks.}
+Generate the attack injection dataset with a fixed random seed for
+deterministic output:
+
+\begin{lstlisting}[language=bash]
+python -m a2a_detection.scripts.inject_attacks --seed 42
+\end{lstlisting}
+
+\paragraph{Step 2: Run fraud detection validation.}
+Execute the full detection pipeline on the labeled dataset and report
+metrics:
+
+\begin{lstlisting}[language=bash]
+python -m a2a_detection.scripts.validate_fraud_detection
+\end{lstlisting}
+
+This command produces per-signal AUC scores, composite score distributions,
+and the Phase~5 evaluation metrics reported in \Cref{sec:evaluation}.
+
+\paragraph{Step 3: Run the test suite.}
+Verify correctness of all components:
+
+\begin{lstlisting}[language=bash]
+python -m pytest src/a2a_detection/tests/ -v
+\end{lstlisting}
+
+All 47 tests should pass. The test suite covers signal computation,
+threshold calibration, attack injection, and label loading.
+
+%----------------------------------------------------------------------
+\subsection{Data Availability}
+
+The labeled dataset (see \Cref{app:dataset}) is released alongside the
+package. After installation, data files are accessible via the package's
+built-in data loader:
+
+\begin{lstlisting}[language=python]
+from a2a_detection.data import load_transactions, load_labels
+txs = load_transactions()    # 81,904 rows
+labels = load_labels()       # 1,734 labeled addresses
+\end{lstlisting}
+
+%----------------------------------------------------------------------
+\subsection{Hardware Requirements}
+
+\begin{itemize}[leftmargin=*]
+  \item \textbf{CPU:} Standard consumer or server CPU; no GPU required.
+  \item \textbf{Memory:} $<$ 4\,GB RAM for the full pipeline.
+  \item \textbf{Inference latency:} 97\,ms per address on consumer hardware
+    (Apple M2, single core).
+  \item \textbf{Full evaluation:} Completes in under 60 seconds on the
+    1{,}734-address dataset.
+\end{itemize}

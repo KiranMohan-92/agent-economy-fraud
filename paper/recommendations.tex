@@ -1,0 +1,142 @@
+% recommendations.tex — Section 7: Industry Recommendations
+
+\section{Industry Recommendations}\label{sec:recommendations}
+
+We translate our detection-framework findings into a prioritized
+roadmap for financial institutions.  Each recommendation is scored on a
+weighted composite of \emph{impact} (40\%), \emph{urgency} (30\%),
+\emph{feasibility} (20\%), and \emph{cost} (10\%), then assigned to one
+of four priority tiers.
+
+%% -----------------------------------------------------------------
+\subsection{Priority Matrix}\label{subsec:priorities}
+
+\Cref{tab:priorities} summarizes the full roadmap.
+
+\begin{table}[t]
+  \centering
+  \caption{Recommended deployment roadmap, ordered by composite
+    priority score.  Cost estimates assume a mid-tier U.S.\ financial
+    institution.}
+  \label{tab:priorities}
+  \small
+  \begin{tabularx}{\textwidth}{@{}c l c X@{}}
+    \toprule
+    \textbf{ID} & \textbf{Recommendation} & \textbf{Tier / Horizon} & \textbf{Rationale} \\
+    \midrule
+    \multicolumn{4}{@{}l}{\textit{P0 --- Immediate (0--6 months, \$80K--\$200K)}} \\
+    \addlinespace[2pt]
+    R1 & Economic Rationality + Network Topology signals
+       & P0 / 0--6\,mo
+       & Highest individual AUC signals (NT\,=\,0.5990, ER\,=\,0.5152 on
+         cleaned labels; see \cref{tab:signal_auc}).
+         Deployable as scoring overlays on existing transaction-monitoring
+         pipelines.  Estimated cost: \$80K. \\
+    \addlinespace[2pt]
+    R2 & Agent-platform metadata detection
+       & P0 / 0--6\,mo
+       & Parse session metadata for OpenClaw session-key patterns
+         and ERC-8004 registry lookups.  Low engineering effort;
+         estimated cost: \$20K. \\
+    \midrule
+    \multicolumn{4}{@{}l}{\textit{P1 --- Near-term (6--12 months, \$100K--\$500K)}} \\
+    \addlinespace[2pt]
+    R3 & Velocity-threshold adjustment
+       & P1 / 6--12\,mo
+       & Current thresholds ($>$1{,}000\,tx/hr) miss agent-speed
+         activity.  Reduce to $>$100\,tx/hr for addresses flagged
+         by R1--R2. \\
+    \addlinespace[2pt]
+    R4 & Cross-channel identity correlation
+       & P1 / 6--12\,mo
+       & Detect \texttt{identityLinks}-type aggregation across
+         payment rails, flagging accounts whose identity graph
+         expands faster than human norms. \\
+    \addlinespace[2pt]
+    R5 & Collective-behavior detection prototype
+       & P1 / 6--12\,mo
+       & Time-window clustering for \textsc{Chain\_7}:
+         $\geq$10 new addresses transacting the same amount within
+         a narrow time window. \\
+    \midrule
+    \multicolumn{4}{@{}l}{\textit{P2 --- Medium-term (12--24 months, \$500K--\$2M)}} \\
+    \addlinespace[2pt]
+    R6 & Biometric authentication mandate
+       & P2 / 12--24\,mo
+       & Require step-up biometric verification for agent-initiated
+         transactions exceeding \$1{,}000. \\
+    \addlinespace[2pt]
+    R7 & Forensic data retention
+       & P2 / 12--24\,mo
+       & Preserve session transcripts, tool-call logs, and agent
+         provenance metadata for 7~years to support post-incident
+         investigation. \\
+    \addlinespace[2pt]
+    R8 & Agent KYC framework
+       & P2 / 12--24\,mo
+       & Extend KYC/AML obligations to the controlling human or
+         legal entity behind agent wallets that transact above
+         regulatory thresholds. \\
+    \midrule
+    \multicolumn{4}{@{}l}{\textit{P3 --- Long-term (24--36 months, \$2M+)}} \\
+    \addlinespace[2pt]
+    R9  & Multi-chain monitoring integration
+        & P3 / 24--36\,mo
+        & Extend detection to Ethereum L1, Arbitrum, Optimism, and
+          Solana as agent activity spreads across chains. \\
+    \addlinespace[2pt]
+    R10 & Industry-standard agent-transaction labeling
+        & P3 / 24--36\,mo
+        & Contribute to or adopt a cross-industry standard for
+          tagging agent-originated transactions in SWIFT/ISO~20022
+          messages and on-chain metadata. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\paragraph{Sequencing rationale.}
+P0 items deliver the highest risk-adjusted return: they leverage the two
+strongest signals identified in \Cref{sec:evaluation} (Network Topology
+AUC\,=\,0.5990, Economic Rationality AUC\,=\,0.5152 on cleaned labels) and require only
+rule-layer additions to existing transaction-monitoring systems.
+P1~items address velocity and coordination patterns that become
+exploitable once agents operate at scale.  P2 and P3~items require
+cross-functional investment (legal, compliance, infrastructure) and are
+sequenced to align with anticipated regulatory timelines.
+
+%% -----------------------------------------------------------------
+\subsection{Privacy Compliance}\label{subsec:privacy}
+
+All P0 recommendations are designed to comply with applicable data
+protection and financial-crime regulations:
+
+\begin{itemize}[nosep]
+  \item \textbf{On-chain data.}  Blockchain transaction records are
+    publicly available by design.  Analyzing agent addresses, transfer
+    volumes, and temporal patterns on Base chain does not constitute
+    processing of personal data under GDPR~\cite{gdpr2016} or
+    CCPA~\cite{ccpa2018}, because on-chain addresses are pseudonymous
+    and our detection pipeline does not attempt to link them to natural
+    persons.
+  \item \textbf{Agent-address analysis.}  The Economic Rationality and
+    Network Topology signals operate on transaction-graph features
+    (degree distribution, value entropy, timing regularity).  No
+    personally identifiable information is ingested or produced.
+  \item \textbf{Agent KYC (R8).}  When KYC obligations apply---\ie
+    when agent-controlled wallets transact above thresholds set by the
+    Bank Secrecy Act~\cite{bsa1970} and its implementing
+    regulations---the obligation attaches to the \emph{controlling human
+    or legal entity}, not to the agent itself.  This preserves the
+    existing beneficial-ownership framework while closing the
+    agent-intermediation gap.
+  \item \textbf{Session-transcript retention (R7).}  Forensic retention
+    of agent session logs must be implemented with appropriate access
+    controls and data-minimization safeguards consistent with GDPR
+    Article~5(1)(c) and GLBA Safeguards Rule requirements.
+\end{itemize}
+
+\noindent
+In summary, the P0 and P1 tiers are implementable today without
+regulatory friction; P2 items (R6--R8) will benefit from forthcoming
+guidance on AI-agent financial activity that several jurisdictions are
+actively developing.

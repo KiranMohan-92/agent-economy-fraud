@@ -1,0 +1,292 @@
+% =============================================================
+%  Section 3 — Threat Model: Eight Attack Chains
+% =============================================================
+
+\section{Threat Model: Eight Attack Chains}\label{sec:threat}
+
+The preceding section established that agent-to-agent (A2A) commerce
+introduces transaction patterns for which no human behavioral prior
+exists.  We now make this concrete: starting from the \emph{documented}
+capabilities of the OpenClaw platform~\cite{openclaw2026}, we derive
+eight attack chains that exploit the gap between what fraud-detection
+systems assume and what autonomous agents can actually do.
+
+Each chain is grounded in a specific API call or composition of calls
+available to any OpenClaw session.  We emphasize that none of these
+chains require zero-day exploits or undocumented behavior; they follow
+directly from the platform's published interface.
+\Cref{tab:attack_chains} summarizes all eight chains, their difficulty
+rating, the invariant each violates, and the detection signal most
+sensitive to the resulting anomaly.
+
+% ---- Summary table ----
+\begin{table}[t]
+  \centering
+  \caption{%
+    Eight attack chains derived from OpenClaw platform capabilities.
+    Difficulty reflects the sophistication required to execute the
+    chain, not the difficulty of detection.
+    \textsuperscript{*}Impossible under current human-assumption
+    detection systems.
+    \textsuperscript{\dag}Impossible under per-address scoring
+    architectures.%
+  }
+  \label{tab:attack_chains}
+  \small
+  \begin{tabularx}{\textwidth}{@{}l l X l l@{}}
+    \toprule
+    \textbf{Chain} & \textbf{Attack} & \textbf{Invariant Violated}
+      & \textbf{Difficulty} & \textbf{Primary Signal} \\
+    \midrule
+    CHAIN\_1 & Agent Enumeration
+      & Account visibility     & Easy      & Network Topology \\
+    CHAIN\_2 & History Extraction
+      & Transaction privacy    & Medium    & NT, Value Flow \\
+    CHAIN\_3 & Async Flooding
+      & Velocity               & Medium    & Temporal Consistency \\
+    CHAIN\_4 & Disposable Agent Army
+      & Identity persistence   & Hard      & Network Topology \\
+    CHAIN\_5 & Cross-Platform Identity
+      & Channel isolation      & Impossible\textsuperscript{*}
+      & Econ.\ Rationality, NT \\
+    CHAIN\_6 & Behavioral Mimicry
+      & Unique fingerprint     & Impossible\textsuperscript{*}
+      & Temporal Consistency \\
+    CHAIN\_7 & Swarm Intelligence
+      & Coordination latency   & Impossible\textsuperscript{\dag}
+      & Collective (gap) \\
+    CHAIN\_8 & Market Manipulation
+      & Reaction time          & Impossible\textsuperscript{*}
+      & Value Flow, ER \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+The remainder of this section details the four chains that are most
+instructive for detection design: async flooding (\cref{subsec:chain3}),
+disposable agent armies (\cref{subsec:chain4}), the behavioral mimicry
+paradox (\cref{subsec:chain6}), and swarm intelligence
+(\cref{subsec:chain7}).  The other four chains are summarized in
+\cref{subsec:chains_other}.
+
+
+% ============================================================
+\subsection{CHAIN\_3: Async Flooding}\label{subsec:chain3}
+
+\paragraph{Mechanism.}
+The OpenClaw \texttt{sessions\_send} API accepts a
+\texttt{timeoutSeconds} parameter.  When set to zero, the call returns
+immediately---it fires a transaction without waiting for confirmation.
+An agent can therefore issue transactions as fast as the network will
+accept them, bounded only by RPC round-trip latency (approximately
+400\,ms on Base~L2).
+
+\paragraph{Velocity arithmetic.}
+The resulting throughput is straightforward to compute:
+\begin{equation}\label{eq:async_velocity}
+  v_{\text{async}} = \frac{1}{0.4\;\text{s}}
+                    = 2.5\;\text{tx/s}
+                    = 9{,}000\;\text{tx/h}.
+\end{equation}
+For comparison, a human operator interacting through a banking
+interface sustains roughly 100 transactions per day on average,
+or approximately $4.2$\;tx/h.  Even a power user executing
+20~transactions per hour through a mobile app achieves at most
+$v_{\text{human,peak}} \approx 20$\;tx/h.  The velocity
+amplification factor comparing \emph{peak agent} to
+\emph{peak human} throughput is:
+\begin{equation}\label{eq:velocity_amp}
+  \alpha_v = \frac{v_{\text{async}}}{v_{\text{human,peak}}}
+           = \frac{9{,}000\;\text{tx/h}}{20\;\text{tx/h}}
+           = 450.
+\end{equation}
+Against average human throughput the factor exceeds $10^{6}$;
+against peak human throughput it remains ${\sim}450\times$---still
+far beyond any velocity threshold in production rule engines.
+Critically, this is not a theoretical upper bound---it is the
+\emph{default} behavior of a single agent calling a documented
+API with a single parameter change.
+
+\paragraph{Why this matters for detection.}
+No velocity cap in a traditional rule engine is calibrated for
+throughput six orders of magnitude above human norms.
+The Temporal Consistency signal (\cref{subsec:signals}) catches
+async flooding through two sub-signals: burst detection, which
+flags sustained inter-transaction intervals below 400\,ms, and
+circadian violation, which flags activity outside any plausible
+human waking window when sustained at this rate.  Importantly, an
+attacker who throttles the flood to evade velocity rules
+sacrifices the economic advantage of the attack, creating a
+natural deterrent even without perfect detection.
+
+
+% ============================================================
+\subsection{CHAIN\_4: Disposable Agent Army}\label{subsec:chain4}
+
+\paragraph{Mechanism.}
+The \texttt{sessions\_spawn} API creates sub-agents with configurable
+lifecycle parameters.  Two parameters are critical:
+\texttt{cleanup: "delete"} removes all traces of the agent after the
+session ends, and \texttt{pruneAfter: "1h"} sets an automatic
+expiration.  Combined, these allow an orchestrator to create agents
+that exist just long enough to execute a transaction and then vanish.
+
+\paragraph{Scale.}
+Each spawn call completes in under one second.  An orchestrator
+can therefore instantiate 100 sub-agents in fewer than 100 seconds,
+each of which receives a fresh address with a clean reputation
+slate.  After one hour, every sub-agent is pruned, leaving no
+persistent identity for reputation systems to score.
+
+\paragraph{The identity-persistence assumption.}
+Contemporary fraud-detection systems universally assume that an
+identity, whether a bank account, a wallet address, or a user ID,
+persists long enough to accumulate a behavioral history.  Reputation
+scores, velocity counters, and behavioral models all depend on
+this assumption.  The disposable agent army violates it
+categorically: each agent's history is at most one hour long,
+and typically consists of a single transaction.
+
+\paragraph{Detection via Network Topology.}
+Although individual disposable agents are difficult to fingerprint,
+the \emph{orchestrator} that spawns them is not.  The Network
+Topology signal (\cref{subsec:signals}) detects this pattern through
+sender centrality: a single address that fans out to dozens of
+previously unseen addresses within a narrow time window produces an
+anomalous hub in the transaction graph.  The addresses themselves
+may be ephemeral, but the star topology they form is a durable
+structural invariant of the attack.
+
+
+% ============================================================
+\subsection{CHAIN\_6: Behavioral Mimicry Paradox}\label{subsec:chain6}
+
+\paragraph{Mechanism.}
+The \texttt{sessions\_history} API returns the complete behavioral
+profile of any agent---its transaction timestamps, amounts,
+counterparties, and message contents.  A malicious agent can query
+this history, compute the target's statistical fingerprint (mean
+inter-transaction interval, amount distribution, preferred
+counterparties), and mimic it in its own transactions.
+
+\paragraph{Mimicry quality.}
+An agent programmed to replicate a target's timing distribution can
+achieve a coefficient of variation (CV) in inter-transaction intervals
+below 0.01---effectively perfect regularity.  This might seem like a
+successful evasion: the mimic's transactions ``look like'' the
+target's.
+
+\paragraph{The paradox.}
+In practice, this mimicry makes the agent \emph{more} detectable, not
+less.  The reason is that real agents---even automated ones operating
+legitimately---exhibit substantial timing variability due to network
+latency jitter, queue contention, rate-limit backoffs, and varying
+computational loads.  Empirically, we observe $\cvt = 1.87$ for
+genuine agent traffic (see \cref{sec:evaluation}).  An entity
+transacting with $\cvt < 0.05$ is performing an act that no real
+system produces organically: it is \emph{too regular}.
+
+\begin{equation}\label{eq:mimicry_paradox}
+  \cvt_{\text{mimic}} < 0.05 \ll \cvt_{\text{real}} \approx 1.87
+  \quad \Longrightarrow \quad
+  \text{``too perfect'' regularity is an agent-invariant signal.}
+\end{equation}
+
+This is a fundamental result.  Traditional fraud detection looks for
+anomalously \emph{irregular} behavior---spikes, outliers, deviations
+from the norm.  Agent-invariant detection must also look in the
+opposite direction: anomalous \emph{regularity} is equally
+diagnostic.  The Temporal Consistency signal captures this through its
+timing-regularity sub-signal, which fires on both tails of the CV
+distribution (\cref{subsec:signals}).
+
+
+% ============================================================
+\subsection{CHAIN\_7: Swarm Intelligence}\label{subsec:chain7}
+
+\paragraph{Mechanism.}
+The \texttt{sessions\_send} API supports broadcast delivery: a single
+message can instruct 100 or more agents simultaneously.  Each agent
+in the swarm executes exactly one transaction---say, purchasing a
+small amount of the same token---and then goes silent.
+
+\paragraph{Individual invisibility.}
+From the perspective of any per-address detection system, each swarm
+member is unremarkable: a single transaction of modest value,
+performed at a plausible time, from an address with no prior
+suspicious history.  No velocity rule fires.  No behavioral model
+has enough data to score.  The agent is individually invisible.
+
+\paragraph{Collective visibility.}
+Zoom out, however, and the swarm is unmistakable.  Fifty or more
+addresses, previously dormant, execute transactions of similar
+amounts to the same target within the same block or narrow time
+window.  The coordination is visible in the population distribution,
+even though it is invisible in any single address's history.
+
+\paragraph{The architectural blind spot.}
+This is not a detection failure per se---the signal is present in the
+data.  It is an \emph{architectural} failure: current fraud-detection
+systems score individual addresses, not populations.  There is no
+module that asks ``did 50 unrelated addresses just do the same thing
+at the same time?''  We identify this as a \textbf{collective blind
+spot} in~\cref{tab:attack_chains}, and the absence of a validated
+population-level signal is a known gap in our detection framework
+(\cref{subsec:signals}).
+
+\paragraph{Implications.}
+Closing this gap requires a fundamentally different detection
+primitive: one that operates on \emph{sets of addresses} rather than
+individual addresses.  We discuss candidate approaches---including
+graph-community detection over sliding windows and statistical tests
+for coordinated activation---in \cref{sec:recommendations}, while
+acknowledging that no validated implementation exists at the time of
+writing.
+
+
+% ============================================================
+\subsection{Remaining Attack Chains}\label{subsec:chains_other}
+
+\paragraph{CHAIN\_1: Agent Enumeration.}
+The OpenClaw agent registry is publicly queryable.  An adversary can
+enumerate all registered agents, their capabilities, and their
+communication endpoints, building a complete map of the agent
+ecosystem.  This violates the account-visibility invariant that
+underpins privacy-by-obscurity assumptions in traditional finance.
+The Network Topology signal detects enumeration through path-anomaly
+scoring: systematic querying of many endpoints produces a distinctive
+star-shaped access pattern.
+
+\paragraph{CHAIN\_2: History Extraction.}
+As noted in CHAIN\_6, the \texttt{sessions\_history} API exposes full
+transaction histories.  Even without mimicry, this violates
+transaction privacy: an adversary can reconstruct the complete
+financial profile of any agent.  Detection relies on a combination of
+Network Topology (unusual query patterns) and Value Flow (the
+extracted data enabling subsequent layering attacks).
+
+\paragraph{CHAIN\_5: Cross-Platform Identity.}
+An agent operating on multiple blockchains simultaneously---Base,
+Ethereum mainnet, Arbitrum---can exploit the channel-isolation
+assumption: no single-chain fraud detector sees the full picture.
+This chain is rated ``Impossible'' under current human-assumption
+systems because humans rarely transact on multiple chains
+simultaneously.  The Cross-Platform Correlation signal
+(\cref{subsec:signals}) is designed for exactly this case, though it
+remains inactive in our current single-chain implementation.
+
+\paragraph{CHAIN\_8: Market Manipulation.}
+Agents can react to on-chain events in milliseconds---faster than any
+human trader and faster than most monitoring systems.  By front-running
+price movements or exploiting stale oracle data, an agent can extract
+value in ways that violate the reaction-time invariant of human-paced
+markets.  The Value Flow and Economic Rationality signals detect the
+resulting anomalies: transactions that are economically rational only
+if the actor has sub-second information access.
+
+\medskip
+\noindent
+Taken together, these eight chains demonstrate that the A2A commerce
+surface is not merely larger than the human-commerce surface---it is
+\emph{qualitatively different}.  The next section presents a detection
+framework designed for this new surface.

@@ -1,0 +1,45 @@
+\section{Introduction}\label{sec:introduction}
+
+Autonomous AI agents are already transacting at scale.
+As of early 2026, 665 agents registered under the ERC-8004 identity standard~\cite{erc8004} on the Base blockchain have executed over 81{,}000 USDC transactions.
+Individual agents sustain 40 transactions per day across 46-day periods without interruption, optimize micro-payments to \$0.06--\$0.91 per transaction precision, and operate simultaneously across multiple chains via CREATE2 address derivation.
+Platforms such as OpenClaw~\cite{openclaw2026} and Moltbook~\cite{moltbook2026} enable agents to enumerate peers, exchange transaction histories, and execute financial operations at machine speed.
+Agent-to-agent (A2A) commerce is not a forecast---it is an empirical fact with a growing transaction volume and no regulatory framework designed to accommodate it.
+
+Banking fraud detection is structurally unprepared for this shift.
+Existing systems rest on \emph{behavioral invariants}: empirical regularities that describe how humans transact.
+Velocity checks assume fatigue-bounded throughput.
+Behavioral biometrics assume embodied interaction patterns.
+Device fingerprinting assumes persistent hardware bindings.
+KYC and AML frameworks~\cite{bsa1970} assume that identity is scarce and costly to establish.
+Every one of these assumptions is an artifact of human physiology, psychology, or economics---and every one of them fails for AI agents.
+
+An autonomous agent has no body to tire, no device to fingerprint, no geographic location to constrain, and near-zero marginal cost to instantiate a new identity.
+It can sustain transaction rates that would flag any human account within minutes, yet do so as its normal operating behavior.
+The consequence is not merely that current fraud systems will miss some agent-driven attacks; it is that the \emph{detection surface itself} becomes undefined.
+Signals calibrated against human baselines produce either catastrophic false-positive rates (flagging legitimate agent commerce) or catastrophic false-negative rates (missing agent-orchestrated fraud), with no principled way to distinguish the two failure modes.
+
+This paper advances a single core claim: fraud detection systems built on human behavioral invariants fail against AI agents \emph{necessarily}, not contingently.
+The failure is structural---it follows from the mismatch between the invariants and the operational characteristics of autonomous agents.
+In the epistemological framework of Deutsch~\cite{deutsch2011}, this claim is \emph{hard to vary}: one cannot modify it while preserving its explanatory power under the observed evidence.
+We support this claim through formal analysis, empirical validation on real on-chain data, and a constructive detection framework that replaces human invariants with agent-native signals.
+
+The paper makes six contributions:
+\begin{enumerate}[leftmargin=*,nosep]
+  \item \textbf{Nine-invariant taxonomy.} A complete formal mapping of human behavioral invariants to their corresponding agent violations, establishing the structural basis for detection failure (\cref{sec:threat}).
+  \item \textbf{Eight-chain attack taxonomy.} A classification of agent-enabled attack chains by invariant violation and detection difficulty across four tiers: \textsc{easy}, \textsc{medium}, \textsc{hard}, and \textsc{impossible} (\cref{sec:threat}).
+  \item \textbf{Five-signal detection framework.} An agent-invariant detection methodology grounded in on-chain observables rather than human behavioral assumptions (\cref{sec:detection}).
+  \item \textbf{Three-stage empirical validation.} Evaluation across synthetic data (F1\,=\,88.71\%), real on-chain transactions (recall\,=\,95.4\%, F1\,=\,56.1\%), and injection testing (7/8 attack chains detected at 100\% recall) (\cref{sec:evaluation}).
+  \item \textbf{Collective detection gap.} Identification of coordinated swarm attacks as a fundamentally distinct threat class requiring new architectural approaches beyond per-agent analysis (\cref{sec:evaluation}).
+  \item \textbf{Banking recommendations.} Prioritized implementation guidance (P0--P3) with deployment timelines and compliance mappings for financial institutions (\cref{sec:recommendations}).
+\end{enumerate}
+
+The remainder of this paper is organized as follows.
+\Cref{sec:background} surveys the A2A commerce ecosystem and the behavioral invariants underlying current fraud detection.
+\Cref{sec:threat} presents the invariant taxonomy and attack classification.
+\Cref{sec:detection} develops the agent-native detection framework.
+\Cref{sec:evaluation} reports empirical results across all three validation stages.
+\Cref{sec:related} positions this work relative to prior research in adversarial machine learning and blockchain analytics.
+\Cref{sec:recommendations} translates findings into actionable banking guidance.
+\Cref{sec:limitations} discusses scope constraints and open problems.
+\Cref{sec:conclusions} summarizes findings and identifies directions for future work.

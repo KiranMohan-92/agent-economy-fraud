@@ -1,0 +1,117 @@
+% Agent-to-Agent Commerce and the Collapse of Human Behavioral Invariants
+% in Banking Fraud Detection
+% arXiv preprint — cs.CR — April 2026
+
+\documentclass[11pt,a4paper]{article}
+
+% --- Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{microtype}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{xspace}
+
+% --- Listings setup ---
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{gray!8},
+  frame=single,
+  framerule=0.4pt,
+  rulecolor=\color{gray!40},
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  xleftmargin=1em,
+  xrightmargin=1em,
+  aboveskip=0.8em,
+  belowskip=0.8em,
+}
+
+% --- Custom commands ---
+\newcommand{\A}{\mathfrak{A}}        % Agent set
+\newcommand{\tx}{\mathrm{tx}}         % Transaction
+\newcommand{\cvt}{\mathrm{CV}}        % Coefficient of variation
+\newcommand{\auc}{\mathrm{AUC}}       % Area under curve
+\newcommand{\fpr}{\mathrm{FPR}}       % False positive rate
+\newcommand{\tpr}{\mathrm{TPR}}       % True positive rate
+\newcommand{\ie}{i.e.,\xspace}
+\newcommand{\eg}{e.g.,\xspace}
+\newcommand{\etal}{et~al.\xspace}
+
+% --- Hyperref setup ---
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  citecolor=green!50!black,
+  urlcolor=blue!70!black,
+  pdfauthor={},
+  pdftitle={Agent-to-Agent Commerce and the Collapse of Human Behavioral Invariants in Banking Fraud Detection}
+}
+
+% --- Title ---
+\title{Agent-to-Agent Commerce and the Collapse of Human\\
+Behavioral Invariants in Banking Fraud Detection}
+
+\author{
+  Anonymous Author(s)\\
+  \textit{Preprint --- Under Review}
+}
+
+\date{April 2026}
+
+\begin{document}
+
+\maketitle
+
+% --- Abstract ---
+\input{abstract}
+
+% --- Main sections ---
+\input{introduction}
+\input{background}
+\input{threat_model}
+\input{detection_framework}
+\input{evaluation}
+\input{related_work}
+\input{recommendations}
+\input{limitations}
+\input{conclusions}
+
+% --- Acknowledgments ---
+\section*{Acknowledgments}
+On-chain transaction data was obtained via Dune Analytics.
+ERC-8004 agent registry data from Base chain contract
+\texttt{0x8004...9432}.
+The \texttt{a2a-detection} reference implementation is available
+under the Apache~2.0 license.
+
+% --- Bibliography ---
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+% --- Appendices ---
+\appendix
+\input{appendix_signals}
+\input{appendix_dataset}
+\input{appendix_reproducibility}
+
+\end{document}

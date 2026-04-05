@@ -1,0 +1,107 @@
+% related_work.tex — Section 6: Related Work
+
+\section{Related Work}\label{sec:related}
+
+Our work draws on four research threads---multi-agent economics,
+financial fraud detection, blockchain analytics, and AI agent
+security---while exposing a gap that none of them addresses: the
+structural collapse of human behavioral invariants when autonomous AI
+agents become the transacting entities.
+
+%% -----------------------------------------------------------------
+\subsection{Multi-Agent Economic Systems}\label{subsec:rw-maes}
+
+Agent-based computational economics (ACE) models heterogeneous agents
+that interact through market institutions.  Tesfatsion's foundational
+ACE framework~\cite{tesfatsion2021} demonstrates how macroscopic
+economic phenomena emerge from micro-level agent rules, while
+Lowe~\etal\cite{lowe2017} extend multi-agent reinforcement learning
+(MARL) to mixed cooperative--competitive settings where agents must
+simultaneously collaborate and compete.
+
+On the mechanism-design side, Babaioff~\etal\cite{babaioff2021} and
+Cai~\etal\cite{cai2022} derive approximately optimal auction mechanisms
+for multi-dimensional buyer valuations, building on the algorithmic game
+theory foundations laid by Nisan~\etal\cite{nisan2007}.  More recently,
+Park~\etal\cite{park2023} construct generative agents---LLM-driven
+entities that simulate believable human behavior in sandboxed
+environments.
+
+A common thread unites all of these lines: agents are modeled as
+\emph{participants in} markets designed for (and by) humans.  None
+considers the case where agents autonomously \emph{initiate}
+transactions, hold wallet keys, and operate at machine speed---precisely
+the setting enabled by A2A commerce platforms such as OpenClaw and
+Moltbook.  Our threat model (\Cref{sec:threat}) fills this gap by
+deriving fraud chains directly from documented platform capabilities.
+
+%% -----------------------------------------------------------------
+\subsection{Financial Fraud Detection}\label{subsec:rw-fraud}
+
+Graph-based approaches dominate recent fraud-detection research.
+Wei~\etal\cite{wei2021} survey graph neural networks for financial fraud,
+and Pourhabibi~\etal\cite{pourhabibi2020} provide a systematic review of
+graph-based anomaly detection in payment networks.  Hilal~\etal\cite{hilal2022}
+offer a broader survey of anomaly-detection techniques, covering
+statistical, machine-learning, and deep-learning methods applied to
+credit-card fraud, insurance fraud, and money laundering.
+
+Every method in these surveys relies, implicitly or explicitly, on
+\emph{human behavioral baselines}: circadian transaction patterns,
+geographic plausibility, spending-category distributions, and
+biometric-backed authentication signals.  Our invariant analysis
+(\Cref{sec:detection}) demonstrates that all nine of these invariants
+collapse under A2A commerce.  No prior work addresses the structural
+failure that occurs when the transacting entity is an AI agent rather
+than a human.
+
+%% -----------------------------------------------------------------
+\subsection{Blockchain Analytics}\label{subsec:rw-blockchain}
+
+Address clustering and de-anonymization have matured considerably since
+Meiklejohn~\etal\cite{meiklejohn2016} characterized Bitcoin payment
+flows through heuristic clustering.  Chen~\etal\cite{chen2020} extend
+graph analysis to Ethereum, exploiting smart-contract call graphs and
+token-transfer patterns.  Victor and Weintraud~\cite{victor2021} develop
+methods to detect and quantify wash trading on decentralized exchanges,
+identifying coordinated self-dealing through temporal and volumetric
+anomalies.
+
+Our work extends blockchain analytics in two directions.  First, we
+target the specific on-chain footprint of AI agents with documented
+platform capabilities (\eg ERC-8004 registrations, ERC-4337 account
+abstraction wallets).  Second, we validate our threat-model predictions
+against real Base-chain transaction data (\Cref{sec:evaluation}),
+bridging the gap between theoretical attack taxonomies and empirical
+on-chain evidence.
+
+%% -----------------------------------------------------------------
+\subsection{AI Agent Security}\label{subsec:rw-aisec}
+
+The AI-security community has focused primarily on compromising agents
+from the outside.  Greshake~\etal\cite{greshake2023} demonstrate
+indirect prompt injection against LLM-integrated applications, and
+Carlini~\etal\cite{carlini2023} show that training-time poisoning can
+implant persistent backdoors.  Emerging interoperability standards---the
+Agent-to-Agent (A2A) protocol~\cite{a2aprotocol2025} and the Model
+Context Protocol (MCP)~\cite{mcp2024}---define how agents discover and
+invoke one another's capabilities, yet neither specifies fraud-detection
+hooks or transaction-rate governance.
+
+Orthogonally, Sybil attacks have been studied since
+Douceur~\cite{douceur2002} formalized the problem, with
+Jiang~\etal\cite{jiang2020} proposing reputation-based defenses for
+peer-to-peer networks.  Our \textsc{Chain\_4} threat
+(Disposable Agent Army, \Cref{sec:threat}) is a Sybil attack executed at
+machine speed with near-zero marginal cost: each disposable agent is
+created, used for a single fraudulent transaction, and discarded before
+reputation systems can respond.
+
+%% -----------------------------------------------------------------
+\paragraph{Key differentiation.}
+To our knowledge, no prior work combines (1)~documented A2A platform
+capabilities as the basis for a threat model, (2)~formal invariant
+analysis showing \emph{why} existing detection fails, and (3)~real
+on-chain validation against Base-chain transaction data.  The
+intersection of agent-economy fraud and banking fraud detection remains
+an open and urgent research gap.

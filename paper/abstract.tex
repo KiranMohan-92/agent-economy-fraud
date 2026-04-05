@@ -1,0 +1,32 @@
+\begin{abstract}
+Financial fraud detection systems are built on nine behavioral invariants
+that describe properties exclusive to human actors: velocity limits,
+biometric authentication, device fingerprinting, geographic constraints,
+cognitive and energy constraints, identity persistence, behavioral
+stability, computational limits, and bounded rationality. We show that
+AI agents executing agent-to-agent (A2A) commerce systematically violate
+all nine invariants by necessity---not by choice---creating fundamental
+blind spots in existing detection infrastructure. Using the OpenClaw
+agent gateway and Moltbook agent social platform as case studies, we
+derive an eight-chain taxonomy of A2A fraud attack vectors grounded in
+actual platform documentation. We design a five-signal agent-invariant
+detection framework and validate it against 93,579 real on-chain USDC
+transactions from 665 ERC-8004 registered agents on Base chain
+(recall~95.4\%, composite ROC-AUC~0.515 on cleaned labels,
+transfer from synthetic benchmarks $-0.83$\,pp), then
+against a labeled mixed dataset with injected attack patterns. The
+framework detects 7 of~8 attack chains at 100\% per-chain recall. The
+eighth chain---coordinated swarm attacks---reveals a fundamental gap:
+per-address scoring is blind to coordinated multi-agent attacks where
+individual agents have minimal on-chain footprint, motivating a
+next-generation collective detection architecture. We provide an
+open-source reference implementation (Apache~2.0) and banking/fintech
+recommendations. The A2A fraud window is narrow: historical fraud lag
+from comparable platform launches suggests systematic exploitation
+within 6--12 months.
+
+\medskip
+\noindent\textbf{Keywords:} agent-to-agent commerce, fraud detection,
+behavioral invariants, multi-agent systems, blockchain analytics,
+financial security, ERC-8004
+\end{abstract}

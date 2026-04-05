@@ -1,0 +1,90 @@
+\section{Dataset Construction}\label{app:dataset}
+
+This appendix details the construction of the labeled evaluation dataset used
+throughout the paper.
+
+%----------------------------------------------------------------------
+\subsection{Agent Address Extraction}
+
+A total of 1{,}505 ERC-8004-registered agent addresses were extracted from the
+Base chain agent registry contract. These addresses serve as ground-truth
+positives: each is provably an autonomous agent by virtue of its on-chain
+registration under the ERC-8004 standard.
+
+%----------------------------------------------------------------------
+\subsection{Transaction Collection}
+
+USDC transfer events involving the extracted agent addresses were queried via
+Dune Analytics. Due to API rate limits, queries were executed in 16 batches of
+100 addresses each. The raw result comprised 81{,}904 transaction rows,
+subsequently preprocessed and stored in Apache Parquet format for efficient
+downstream processing.
+
+%----------------------------------------------------------------------
+\subsection{Labeling Strategy}
+
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Positive class (agent).}
+    Any address present in the ERC-8004 registry is labeled as an agent.
+    This constitutes a deterministic ground-truth label---no probabilistic
+    inference is required.
+  \item \textbf{Negative class (human counterparty).}
+    Counterparty addresses that are \emph{not} in the ERC-8004 registry and
+    that appear in $\geq 5$ transactions with known agents are labeled as
+    human with a confidence of 0.7. The transaction-count threshold filters
+    out ephemeral or bot-like addresses that interact only once, while the
+    sub-unit confidence reflects residual uncertainty (some counterparties
+    may themselves be unregistered agents).
+\end{itemize}
+
+%----------------------------------------------------------------------
+\subsection{Final Evaluation Set}
+
+After filtering and deduplication:
+\begin{itemize}[leftmargin=*]
+  \item 665 agent addresses retained in the final evaluation set;
+  \item 1{,}069 cleaned human counterparty addresses.
+\end{itemize}
+
+The reduction from 1{,}505 to 665 agents is due to addresses with insufficient
+transaction history (fewer than the minimum required for signal computation).
+
+%----------------------------------------------------------------------
+\subsection{Attack Injection}
+
+To evaluate adversarial robustness, synthetic attack transactions were injected
+into the dataset:
+\begin{itemize}[leftmargin=*]
+  \item 6{,}050 synthetic transactions generated;
+  \item 82 unique attack addresses, all prefixed with \texttt{0xdead} to
+    guarantee no collision with real on-chain addresses;
+  \item Injection rate: 6.07\% of the combined dataset;
+  \item Attack scenarios include wash trading rings, Sybil clusters, and
+    layering chains (see \Cref{sec:evaluation} for results).
+\end{itemize}
+
+%----------------------------------------------------------------------
+\subsection{Data Files}
+
+The released dataset consists of three Parquet files:
+
+\begin{table}[h]
+\centering
+\caption{Dataset files and their contents.}
+\label{tab:data-files}
+\begin{tabular}{lp{8cm}}
+\toprule
+\textbf{File} & \textbf{Description} \\
+\midrule
+\texttt{transactions\_dune.parquet} &
+  81{,}904 raw USDC transfer events (sender, receiver, value, timestamp,
+  block number). \\
+\texttt{labels\_dune.parquet} &
+  Ground-truth labels for 665 agents and 1{,}069 human counterparties
+  with associated confidence scores. \\
+\texttt{attack\_injection\_dataset.parquet} &
+  6{,}050 synthetic attack transactions with 82 attack addresses and
+  scenario annotations. \\
+\bottomrule
+\end{tabular}
+\end{table}
