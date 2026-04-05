@@ -11,7 +11,7 @@ First-principles analysis of agent-to-agent (A2A) commerce vulnerabilities using
 - [x] **Phase 3: Detection Framework Design** - Design agent-aware detection methodology, specify invariant signals, privacy analysis
 - [x] **Phase 4: Validation and Recommendations** - Empirical testing, hard-to-vary validation, industry recommendations synthesis
 - [x] **Phase 5: Ecosystem Characterization** - Real-world A2A data ingestion, labeled dataset construction, invariant validation, transfer gap measurement
-- [ ] **Phase 6: Fraud Validation** _(conditional on Phase 5)_ - Attack pattern injection, fraud detection validation, arXiv paper
+- [x] **Phase 6: Fraud Validation** _(conditional on Phase 5)_ - Attack pattern injection, fraud detection validation, arXiv paper
 
 ## Phase Details
 
@@ -127,6 +127,28 @@ First-principles analysis of agent-to-agent (A2A) commerce vulnerabilities using
 - [x] 04-03: Industry recommendations synthesis — P0-P3 recommendations with 3-tier timeline and compliance
 - [x] 04-04: Implementation guidance and prioritization — 10 ranked recommendations, technical guides, risk mitigation
 
+### Phase 6: Fraud Validation
+
+**Goal:** Validate the 5-signal detection framework against real-world-motivated attack patterns injected into real on-chain data
+
+**Depends on:** Phase 5 (Ecosystem Characterization)
+
+**Requirements:** FVAL-01, FVAL-02, FVAL-03, FVAL-04
+
+**Success Criteria** (what must be TRUE):
+
+1. All 8 attack chains injected with realistic parameters and verified
+2. Detection framework validated against mixed real+injected dataset
+3. Per-chain recall and FPR documented with operating point analysis
+4. arXiv paper synthesizing all 6 phases ready for submission
+
+**Plans:**
+
+- [x] 06-01: Attack pattern injection — 6,050 synthetic txns injected into 93,579 real; all 8 chains implemented and tested (15 tests pass)
+- [x] 06-02: Detection validation — 7/8 chains at 100% recall; Chain 7 collective gap identified; ROC-AUC 0.777; FPR 3.8% at operating point
+- [x] 06-03: Real-world fraud case analysis — No confirmed A2A cases; 5 adjacent-domain cases with chain mapping; validates Chain 7 gap independently
+- [x] 06-04: arXiv paper draft — Full 9-section paper with 3-stage validation, per-chain recall table, testable predictions, P0–P3 recommendations
+
 ## Progress
 
 | Phase | Plans Complete | Status      | Completed |
@@ -136,15 +158,17 @@ First-principles analysis of agent-to-agent (A2A) commerce vulnerabilities using
 | 3. Detection Framework Design | 4/4            | ✓ Complete | 2026-03-22 |
 | 4. Validation and Recommendations | 4/4            | ✓ Complete | 2026-03-23 |
 | 5. Ecosystem Characterization | 4/4            | ✓ Complete | 2026-04-05 |
-| 6. Fraud Validation | 0/4            | Conditional — awaiting Phase 6 go/no-go | - |
+| 6. Fraud Validation | 4/4            | ✓ Complete | 2026-04-05 |
 
 ---
 
 ## Next Milestone
 
-**Phase 6 Go/No-Go Decision** — Review Phase 5 transfer gap results against Phase 6 entry criteria. Key question: does the recall-invariant transfer gap (−0.83pp) and signal-level AUC evidence justify proceeding to attack pattern injection and fraud validation? Decision owner: project lead.
+**Research Complete** — All 6 phases complete. `paper/agent-economy-fraud-arxiv.md` is ready
+for arXiv submission. Next steps are editorial: author list, institution affiliations, LaTeX
+conversion, and submission to arXiv cs.CR or q-fin.RM.
 
 ---
 
 _Roadmap created: 2026-03-16_
-_Last updated: 2026-04-05 — Phase 5 complete. Real-world validation finished; transfer gap quantified. Phase 6 go/no-go pending._
+_Last updated: 2026-04-05 — Phase 6 complete. arXiv paper draft ready. All 6 phases finished._

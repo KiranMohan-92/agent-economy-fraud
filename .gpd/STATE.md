@@ -6,18 +6,18 @@ See: .gpd/PROJECT.md (updated 2026-03-16)
 
 **Core research question:** How do the necessary properties of agent-to-agent (A2A) commerce create fundamental vulnerabilities in banking fraud detection systems, and what agent-aware detection framework addresses these gaps?
 
-**Current focus:** Phase 5 — COMPLETE. Phase 6 (Fraud Validation) conditional on go/no-go.
+**Current focus:** Phase 6 — COMPLETE. All 6 phases complete. arXiv paper draft ready for submission.
 
 ## Current Position
 
-**Current Phase:** 5 (COMPLETE)
-**Current Phase Name:** Ecosystem Characterization
-**Total Phases:** 6 (Phase 6 conditional)
-**Current Plan:** 05-04 (Signal Validation & Transfer Gap) — COMPLETE
+**Current Phase:** 6 (COMPLETE)
+**Current Phase Name:** Fraud Validation
+**Total Phases:** 6 (all phases complete)
+**Current Plan:** 06-04 (arXiv Paper Draft) — COMPLETE
 **Total Plans in Phase:** 4
-**Status:** COMPLETE — Plans 05-01, 05-02, 05-03, 05-04 all complete
+**Status:** COMPLETE — Plans 06-01, 06-02, 06-03, 06-04 all complete
 **Last Activity:** 2026-04-05
-**Last Activity Description:** Plan 05-04 complete. Reference implementation packaged (pip-installable, Apache 2.0). 32 unit tests pass. Formal transfer gap analysis written. Recall transfers at −0.83pp (96.2%→95.4%); precision/F1 gaps attributed to label-noise contamination of negative class.
+**Last Activity Description:** Phase 6 complete. Attack injection (6,050 synthetic txns into 93,579 real), detection validation (7/8 chains at 100% recall, Chain 7 collective gap identified, ROC-AUC 0.777), real-world case mapping (5 adjacent-domain cases), and arXiv paper draft complete.
 
 **Progress:** [██████████] 100%
 
@@ -111,8 +111,7 @@ Fraud detection systems built on 9 human behavioral invariants fundamentally bre
 
 ### Pending Todos
 
-- Roadmap update with Phase 5 completion (minor housekeeping)
-- Go/no-go decision for Phase 6 documentation
+None — all 6 phases complete.
 
 ### Blockers/Concerns
 
@@ -121,5 +120,5 @@ None.
 ## Session Continuity
 
 **Last session:** 2026-04-05
-**Stopped at:** Plan 05-04 complete. All Phase 5 deliverables created: package, tests, transfer-gap-analysis.md, 05-04-SUMMARY.md
+**Stopped at:** Phase 6 complete. All deliverables created: inject_attacks.py, validate_fraud_detection.py, real-world-fraud-cases.md, agent-economy-fraud-arxiv.md. All 4 plan summaries written. Final commits pending push to origin/master.
 **Resume file:** —
