@@ -78,19 +78,22 @@ How do the necessary properties of agent-to-agent (A2A) commerce create fundamen
 
 ### Answered
 
-(None yet — investigate to answer)
+- [x] What are the necessary properties of agent commerce that create security vulnerabilities? — Phase 2 (9 human behavioral invariants all violated: no biometrics, no velocity limits, no geographic constraints, near-zero creation cost, machine-speed execution, swarm coordination)
+- [x] Which human-based fraud detection methods can be adapted, and which must be replaced? — Phase 3 (all 5 current signals need adaptation; per-address scoring sufficient for 7/8 attack chains; group-level scoring required for swarm attacks — Phase 6)
+- [x] What agent-invariant signals exist for detecting fraudulent A2A transactions? — Phase 3+5 (5 signals: Economic Rationality, Network Topology, Value Flow, Temporal Consistency, Cross-Platform; 4/5 active on real on-chain data)
+- [x] How can banking systems maintain privacy while detecting agent-based fraud? — Phase 3 (confirmed compliant with GDPR, CCPA, GLBA, AML/KYC; all 5 signals operate without PII)
 
 ### Active
 
-- [ ] What are the necessary properties of agent commerce that create security vulnerabilities?
-- [ ] Which human-based fraud detection methods can be adapted, and which must be replaced?
-- [ ] What agent-invariant signals exist for detecting fraudulent A2A transactions?
-- [ ] How can banking systems maintain privacy while detecting agent-based fraud?
+- [ ] Can group-level (population-level) scoring detect Chain 7 swarm attacks? — Motivated by Phase 6 finding that per-address detection structurally misses single-transaction swarm participants
+- [ ] Will the TC-canary signal (Friday 3–5pm spike) degrade measurably within 18 months as agents proliferate? — Testable prediction from Phase 6 paper; monitor with 3-period Chow test
+- [ ] How does detection performance change with high-quality negative labels? — Phase 5 precision (27.6%→42.9%) was limited by heuristic counterparty labeling; clean labels needed
 
 ### Out of Scope
 
 - General AI adversarial ML techniques — why: only agent-specific properties are in scope
 - Regulatory policy drafting — why: framework design only, implementation details are separate work
+- Cross-Platform Correlation signal at scale — why: requires multi-chain data; single-chain data limits to 4/5 signals
 
 ## Research Context
 
@@ -121,6 +124,11 @@ Multi-agent economic systems + fraud detection theory + Deutsch's epistemology (
 - Banking systems use KYC/AML, velocity checks, pattern recognition built for human behavior
 - OpenClaw provides sessions_list, sessions_send, sessions_history for agent discovery and messaging
 - Moltbook provides agent social layer with listings/requests and reputation voting
+- **Phase 2**: 9 human behavioral invariants completely mapped; all 9 violated by A2A agent properties; 4 hard-to-vary variations rejected
+- **Phase 3**: 5-signal detection framework designed; 97ms real-time latency; GDPR/CCPA/GLBA compliant
+- **Phase 4**: Synthetic validation: precision 82.36%, recall 96.23%, F1 88.71%, ROC-AUC 0.97; +49.1% over human baseline
+- **Phase 5**: Real on-chain validation (81,904 Base chain USDC txns, 665 ERC-8004 agents); recall 95.4% (−0.83pp transfer gap); 4/5 signals active; Value Flow strongest on real data (mean=0.42)
+- **Phase 6**: Attack injection (6,050 synthetic txns into 93,579 real); 7/8 chains at 100% per-chain recall; Chain 7 (Swarm) requires group-level detection; ROC-AUC 0.777; FPR 3.8% at operating point
 
 ### What Is New
 
@@ -128,14 +136,21 @@ Multi-agent economic systems + fraud detection theory + Deutsch's epistemology (
 - Focus on agent *invariants* rather than specific attack techniques
 - Agent-aware detection framework design grounded in actual platform documentation (OpenClaw/Moltbook)
 - Industry-targeted recommendations for immediate banking/fintech adaptation
+- **Paradox finding**: Perfect behavioral mimicry (Chain 6, CV≈0.005) is MORE detectable than realistic agent behavior because machine regularity is anomalous in systems with natural variance (CV=1.87)
+- **Structural gap finding**: Per-address scoring architecturally cannot detect single-transaction swarm participants; group-level detector required
+- **Pre-crime window**: 6–12 months before systematic exploitation based on historical fraud lag (DeFi, NFT, LLM agents)
 
 ### Target Venue
 
 arXiv preprint + industry blog posts for fastest path to practitioner impact
+**Status**: Paper draft complete (`paper/agent-economy-fraud-arxiv.md`); ready for LaTeX conversion and arXiv submission to cs.CR or q-fin.RM
 
 ### Computational Environment
 
-To be determined — data acquisition research in Phase 1 will identify available A2A transaction data sources and API access
+- **Data**: Base chain USDC transactions via Dune Analytics MCP (free tier, batched at 100 addresses/query); 81,904 transactions Jan 2025–Apr 2026
+- **Labels**: ERC-8004 registry (665 agents); counterparty heuristics (0.7 confidence)
+- **Framework**: `src/a2a_detection/` (pip-installable, Apache 2.0, 32 unit tests)
+- **Cleaned evaluation set**: 1,734 addresses (665 agents + 1,069 active humans, thin-counterparty filter applied)
 
 ## Notation and Conventions
 
@@ -168,9 +183,14 @@ Mirror only the contract-critical anchors from `## Scoping Contract Summary`.
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| arXiv + blog target | Fastest path to practitioner impact, bypass academic review cycles | — Pending |
-| Platform documentation as anchor | Grounds analysis in actual agent behavior rather than abstract theory | — Pending |
+| arXiv + blog target | Fastest path to practitioner impact, bypass academic review cycles | Draft complete; ready for submission (cs.CR / q-fin.RM) |
+| Platform documentation as anchor | Grounds analysis in actual agent behavior rather than abstract theory | Confirmed — OpenClaw/Moltbook APIs provided concrete attack surface |
+| Synthetic data approach (Phase 1) | No public A2A transaction datasets existed | Validated in Phase 4; real data obtained in Phase 5 via Dune Analytics |
+| Dune Analytics MCP for real data | Only viable on-chain data source for ERC-8004 agents | 81,904 txns obtained; 665 agents labeled; recall transfers at 99.2% |
+| Value Flow weight restored 0.00→0.20 | Real timestamps available (unlike synthetic); F1 triples | F1 triples on real data — correct decision |
+| Detection threshold lowered 0.24→0.08 | Real data has compressed score distribution | Enables recall-focused operating point; FPR managed at 0.29 threshold |
+| Per-address scoring architecture | Standard anomaly detection approach | Sufficient for 7/8 chains; Chain 7 (Swarm) identified as structural gap requiring group-level extension |
 
 ---
 
-_Last updated: 2026-03-16 after initialization_
+_Last updated: 2026-04-05 — Phase 6 complete. All 6 phases finished. arXiv paper ready for submission._
