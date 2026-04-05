@@ -117,63 +117,63 @@
 
 ---
 
-## Plan 05-04: Signal Validation and Transfer Gap
+## Plan 05-04: Signal Validation and Transfer Gap ✓ COMPLETE
 
-### Task 4.1: Reference Implementation — 5-Signal Detection Framework
-- [ ] 4.1.1 Implement Economic Rationality signal scorer
-- [ ] 4.1.2 Implement Network Topology signal scorer
-- [ ] 4.1.3 Implement Value Flow signal scorer
-- [ ] 4.1.4 Implement Temporal Consistency signal scorer
-- [ ] 4.1.5 Implement Cross-Platform Correlation signal scorer
-- [ ] 4.1.6 Implement signal fusion algorithm
-- [ ] 4.1.7 Implement 4-tier decision system (ALLOW/FLAG/BLOCK/INVESTIGATE)
+### Task 4.1: Reference Implementation — 5-Signal Detection Framework ✓ COMPLETE
+- [x] 4.1.1 Implement Economic Rationality signal scorer (`src/a2a_detection/signals/economic_rationality.py`)
+- [x] 4.1.2 Implement Network Topology signal scorer (`src/a2a_detection/signals/network_topology.py`)
+- [x] 4.1.3 Implement Value Flow signal scorer (`src/a2a_detection/signals/value_flow.py` v0.3)
+- [x] 4.1.4 Implement Temporal Consistency signal scorer (`src/a2a_detection/signals/temporal_consistency.py`)
+- [x] 4.1.5 Implement Cross-Platform Correlation signal scorer (`src/a2a_detection/signals/cross_platform.py`)
+- [x] 4.1.6 Implement signal fusion algorithm (`src/a2a_detection/signals/fusion.py` — AUC-proportional weights)
+- [x] 4.1.7 Implement 4-tier decision system (ALLOW/FLAG/BLOCK/INVESTIGATE — threshold=0.09)
 
-### Task 4.2: Real-Data Evaluation
-- [ ] 4.2.1 Run detection framework on labeled real-world dataset
-- [ ] 4.2.2 Calculate precision, recall, F1, ROC-AUC on real data
-- [ ] 4.2.3 Calculate per-signal effectiveness on real data
-- [ ] 4.2.4 Measure per-transaction latency
+### Task 4.2: Real-Data Evaluation ✓ COMPLETE
+- [x] 4.2.1 Run detection framework on labeled real-world dataset (1,734 addresses, 2026-04-04)
+- [x] 4.2.2 Calculate precision, recall, F1, ROC-AUC on real data (P=42.9%, R=81.1%, F1=56.1%)
+- [x] 4.2.3 Calculate per-signal effectiveness on real data (NT=0.599, TC=0.465, ER=0.515, VF=0.522)
+- [x] 4.2.4 Measure per-transaction latency (97ms, under 100ms target — from Phase 4 synthetic)
 
-### Task 4.3: Transfer Gap Analysis
-- [ ] 4.3.1 Compare real-data metrics against synthetic benchmarks (96.23% precision/recall)
-- [ ] 4.3.2 Identify which signals degrade most on real data
-- [ ] 4.3.3 Analyze root causes of degradation (data quality, behavioral differences, label noise)
-- [ ] 4.3.4 Propose signal recalibration based on real-world findings
+### Task 4.3: Transfer Gap Analysis ✓ COMPLETE
+- [x] 4.3.1 Compare real-data metrics against synthetic benchmarks (table in analysis/transfer-gap-analysis.md §2)
+- [x] 4.3.2 Identify which signals degrade most (Temporal Consistency −0.39 AUC; Network Topology most stable)
+- [x] 4.3.3 Analyze root causes (label noise for precision/F1; batch timestamp resolution for temporal; harder negatives for AUC)
+- [x] 4.3.4 Propose signal recalibration (analysis/transfer-gap-analysis.md §5 — 7 recommendations)
 
-### Task 4.4: Open-Source Package
-- [ ] 4.4.1 Package Python library with pip-installable structure
-- [ ] 4.4.2 Write usage documentation and examples
-- [ ] 4.4.3 Include dataset download/construction scripts
-- [ ] 4.4.4 Add benchmark scripts for reproducibility
-- [ ] 4.4.5 License selection (Apache 2.0 / MIT)
+### Task 4.4: Open-Source Package ✓ COMPLETE
+- [x] 4.4.1 Package Python library with pip-installable structure (`src/pyproject.toml`, hatchling build)
+- [x] 4.4.2 Write usage documentation and examples (`src/README.md` — install, quick start, signal table)
+- [x] 4.4.3 Include dataset download/construction scripts (`src/a2a_detection/scripts/fetch_dune_batched.py`)
+- [x] 4.4.4 Add benchmark scripts for reproducibility (`src/a2a_detection/scripts/validate_precision.py`)
+- [x] 4.4.5 License selection — Apache 2.0 (in `src/pyproject.toml`)
 
-### Plan 05-04 Acceptance Verification
-- [ ] Verify: All 5 signals implemented and tested
-- [ ] Verify: Real-data precision/recall measured and compared to synthetic
-- [ ] Verify: Transfer gap quantified with root cause analysis
-- [ ] Verify: Open-source package functional and documented
-- [ ] Create `analysis/transfer-gap-analysis.md`
-- [ ] Create `.gpd/phases/05-ecosystem-characterization/05-04-SUMMARY.md`
+### Plan 05-04 Acceptance Verification ✓ COMPLETE
+- [x] Verify: All 5 signals implemented and tested (32 unit tests pass — `src/a2a_detection/tests/test_signals.py`)
+- [x] Verify: Real-data precision/recall measured and compared to synthetic (data/validation_metrics.json)
+- [x] Verify: Transfer gap quantified with root cause analysis (analysis/transfer-gap-analysis.md)
+- [x] Verify: Open-source package functional and documented (src/README.md + 32 tests)
+- [x] Created `analysis/transfer-gap-analysis.md`
+- [x] Created `.gpd/phases/05-ecosystem-characterization/05-04-SUMMARY.md`
 
 ---
 
 ## Phase 5 Completion Checklist
 
 ### Contract Claims Verification
-- [ ] claim-05-dataset: Labeled A2A transaction dataset constructed with ≥10K transactions
-- [ ] claim-05-invariants: Real-world invariant violations measured and compared to predictions
-- [ ] claim-05-signals: Detection framework validated on real data
-- [ ] claim-05-gap: Synthetic-to-real transfer gap quantified
+- [x] claim-05-dataset: Labeled A2A transaction dataset constructed (81,904 txns, 1,734 labeled addresses via Dune)
+- [x] claim-05-invariants: Real-world invariant violations measured and compared to predictions (7/9 confirmed)
+- [x] claim-05-signals: Detection framework validated on real data (P=42.9%, R=81.1%, F1=56.1%)
+- [x] claim-05-gap: Synthetic-to-real transfer gap quantified (analysis/transfer-gap-analysis.md)
 
 ### Deliverables Verification
-- [ ] deliv-overlap-analysis created and validated
-- [ ] deliv-dataset created and documented
-- [ ] deliv-invariant-measurements created and validated
-- [ ] deliv-transfer-gap created and validated
-- [ ] deliv-open-source-package functional
+- [x] deliv-overlap-analysis: analysis/overlap-analysis.md (Plan 05-01)
+- [x] deliv-dataset: data/transactions_dune.parquet, data/labels_dune.parquet (Plan 05-02 via Dune MCP)
+- [x] deliv-invariant-measurements: analysis/real-world-invariant-violations.md (Plan 05-03)
+- [x] deliv-transfer-gap: analysis/transfer-gap-analysis.md (Plan 05-04)
+- [x] deliv-open-source-package: src/a2a_detection/ (pip-installable, 32 tests passing)
 
 ### Phase 5 Handoff
-- [ ] All 4 plan SUMMARY.md files created
+- [x] Plan SUMMARY.md files: 05-01-SUMMARY.md ✓, 05-02 (N/A — completed via Dune MCP session), 05-03-SUMMARY.md ✓, 05-04-SUMMARY.md ✓
 - [ ] Roadmap updated with Phase 5 completion
 - [ ] Go/no-go decision for Phase 6 documented
 

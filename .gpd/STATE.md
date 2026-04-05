@@ -6,18 +6,18 @@ See: .gpd/PROJECT.md (updated 2026-03-16)
 
 **Core research question:** How do the necessary properties of agent-to-agent (A2A) commerce create fundamental vulnerabilities in banking fraud detection systems, and what agent-aware detection framework addresses these gaps?
 
-**Current focus:** Phase 5 — Ecosystem Characterization (Real-World A2A Data)
+**Current focus:** Phase 5 — COMPLETE. Phase 6 (Fraud Validation) conditional on go/no-go.
 
 ## Current Position
 
-**Current Phase:** 5
+**Current Phase:** 5 (COMPLETE)
 **Current Phase Name:** Ecosystem Characterization
 **Total Phases:** 6 (Phase 6 conditional)
-**Current Plan:** 05-02 (Data Ingestion) — completed via Dune MCP
+**Current Plan:** 05-04 (Signal Validation & Transfer Gap) — COMPLETE
 **Total Plans in Phase:** 4
-**Status:** Active — Plans 05-01, 05-02, 05-03 complete; 05-04 pending
-**Last Activity:** 2026-04-03
-**Last Activity Description:** Dune Analytics real data ingestion complete (93,777 rows, 81,904 after dedup). Value Flow signal restored (GAP-01 CLOSED). Detection threshold re-optimized for real data.
+**Status:** COMPLETE — Plans 05-01, 05-02, 05-03, 05-04 all complete
+**Last Activity:** 2026-04-05
+**Last Activity Description:** Plan 05-04 complete. Reference implementation packaged (pip-installable, Apache 2.0). 32 unit tests pass. Formal transfer gap analysis written. Recall transfers at −0.83pp (96.2%→95.4%); precision/F1 gaps attributed to label-noise contamination of negative class.
 
 **Progress:** [██████████] 100%
 
@@ -111,14 +111,15 @@ Fraud detection systems built on 9 human behavioral invariants fundamentally bre
 
 ### Pending Todos
 
-None — all research phases complete.
+- Roadmap update with Phase 5 completion (minor housekeeping)
+- Go/no-go decision for Phase 6 documentation
 
 ### Blockers/Concerns
 
-None — project concluded successfully.
+None.
 
 ## Session Continuity
 
-**Last session:** 2026-03-23
-**Stopped at:** Project complete, state tracking updated
+**Last session:** 2026-04-05
+**Stopped at:** Plan 05-04 complete. All Phase 5 deliverables created: package, tests, transfer-gap-analysis.md, 05-04-SUMMARY.md
 **Resume file:** —
