@@ -16,6 +16,14 @@
 - [x] 47 references resolve; 15 new June-2026 sources verified (4 arXiv IDs confirmed via arXiv; industry/incident sources cited as dated `@misc` with access dates).
 - [x] 47/47 unit tests pass; Stage-3 metrics reproduced bit-for-bit from committed data.
 
+## Originality / plagiarism audit (DONE — `GPD/ORIGINALITY-AUDIT.md`)
+
+- [x] GPD originality audit + web verbatim spot-check (15 auditor probes + 6 orchestrator probes): **overall risk LOW**. No verbatim copying found; OpenClaw/Moltbook docs paraphrased + cited; no self-plagiarism.
+- [x] One attribution gap fixed: the "broader impossibility result" claim in `evaluation.tex` now cites **Simchowitz et al. 2025 (arXiv:2503.09722)** — verified real via arXiv.
+- [ ] *Optional (not blocking):* add Herbert Simon for I9 bounded rationality; one multi-agent-security cite for the swarm gap.
+- [ ] *Out of plagiarism scope, flagged by the audit:* (a) minor CV-bound inconsistency (`threat_model.tex` "max CV = 0.008" vs `evaluation.tex`/appendix "CV < 0.005"); (b) verify OpenClaw params (`cleanup:"delete"`, `pruneAfter:"1h"`, `identityLinks`) against current docs — accuracy, not plagiarism.
+- [ ] *For certainty:* only a licensed iThenticate/Turnitin pass can certify against paywalled/closed corpora (GPD has no licensed scanner).
+
 ## Round-2 referee pass (DONE)
 
 - [x] GPD referee re-reviewed the revised manuscript (`GPD/REFEREE-REPORT-R2.md`): **minor revision**, all 7 round-1 changes confirmed resolved, all 4 June-2026 focus changes verified sound against committed data.
