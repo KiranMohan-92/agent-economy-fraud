@@ -26,9 +26,9 @@ sensitive to the resulting anomaly.
     Eight attack chains derived from OpenClaw platform capabilities.
     Difficulty reflects the sophistication required to execute the
     chain, not the difficulty of detection.
-    \textsuperscript{*}Impossible under current human-assumption
+    \textsuperscript{*}Out of scope for current human-assumption
     detection systems.
-    \textsuperscript{\dag}Impossible under per-address scoring
+    \textsuperscript{\dag}Out of scope for per-address scoring
     architectures.%
   }
   \label{tab:attack_chains}
@@ -47,16 +47,16 @@ sensitive to the resulting anomaly.
     CHAIN\_4 & Disposable Agent Army
       & Identity persistence   & Hard      & Network Topology \\
     CHAIN\_5 & Cross-Platform Identity
-      & Channel isolation      & Impossible\textsuperscript{*}
+      & Channel isolation      & Out-of-scope\textsuperscript{*}
       & Econ.\ Rationality, NT \\
     CHAIN\_6 & Behavioral Mimicry
-      & Unique fingerprint     & Impossible\textsuperscript{*}
+      & Unique fingerprint     & Out-of-scope\textsuperscript{*}
       & Temporal Consistency \\
     CHAIN\_7 & Swarm Intelligence
-      & Coordination latency   & Impossible\textsuperscript{\dag}
+      & Coordination latency   & Out-of-scope\textsuperscript{\dag}
       & Collective (gap) \\
     CHAIN\_8 & Market Manipulation
-      & Reaction time          & Impossible\textsuperscript{*}
+      & Reaction time          & Out-of-scope\textsuperscript{*}
       & Value Flow, ER \\
     \bottomrule
   \end{tabularx}
@@ -224,7 +224,7 @@ are precisely such systems.  A production deployment should
 maintain a whitelist of known automated services whose low-CV
 patterns are operationally expected.
 
-This is a fundamental result.  Traditional fraud detection looks for
+This is a bounded but important result.  Traditional fraud detection looks for
 anomalously \emph{irregular} behavior---spikes, outliers, deviations
 from the norm.  Agent-invariant detection must also look in the
 opposite direction: anomalous \emph{regularity} is equally
@@ -301,7 +301,7 @@ extracted data enabling subsequent layering attacks).
 An agent operating on multiple blockchains simultaneously---Base,
 Ethereum mainnet, Arbitrum---can exploit the channel-isolation
 assumption: no single-chain fraud detector sees the full picture.
-This chain is rated ``Impossible'' under current human-assumption
+This chain is out of scope for current human-assumption
 systems because humans rarely transact on multiple chains
 simultaneously.  The Cross-Platform Correlation signal
 (\cref{subsec:signals}) is designed for exactly this case, though it

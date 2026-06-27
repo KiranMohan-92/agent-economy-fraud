@@ -58,9 +58,19 @@ treats ``established reputation'' as a trust signal
 
 \paragraph{ERC-8004 (On-Chain Identity).}
 ERC-8004~\cite{erc8004} defines an identity standard for AI agents on
-Ethereum-compatible blockchains. As of April~2026, the registry reports
-16,549~agents on Base chain, 14,000 on Ethereum mainnet, and 34,278 on
-BNB Chain. The standard leverages the \texttt{CREATE2} opcode, which
+Ethereum-compatible blockchains and reached Ethereum mainnet on
+29~January 2026.\footnote{Because mainnet registration is recent, the
+January~2025 start of our transaction window (\cref{sec:eval_real})
+reflects the \emph{full} USDC history of addresses that later registered
+under ERC-8004, not their registration dates.} By mid-2026 it operates
+official registries across ten or more chains (including Ethereum, Base,
+BNB, Polygon, Avalanche, Arbitrum, Optimism, and Linea); as of
+April~2026 the Base, Ethereum-mainnet, and BNB registries alone reported
+on the order of $1.6\times10^{4}$, $1.4\times10^{4}$, and
+$3.4\times10^{4}$ agents respectively.\footnote{Per-chain registry counts
+are date-sensitive and grow continuously; the figures here are an
+April~2026 snapshot and should be re-read against a current registry at
+time of use.} The standard leverages the \texttt{CREATE2} opcode, which
 computes a contract address deterministically from the deployer address,
 a salt, and the bytecode hash. A direct consequence: a single agent can
 deploy contracts at \emph{identical addresses across multiple chains
@@ -68,7 +78,20 @@ simultaneously}, presenting the same identity on Base, Ethereum, and BNB
 in a single block interval. This violates the geographic invariant
 (Invariant~I4 in \cref{tab:invariants}) that underpins card-present
 verification and IP geolocation---a human cannot be physically present in
-three jurisdictions at once.
+multiple jurisdictions at once.
+
+\paragraph{Payment rails (x402 / AP2).}
+Settlement increasingly runs over agent-native payment standards rather
+than human-facing checkout flows. The HTTP-402 standard x402, governed by
+an industry foundation backed by major payment and cloud providers, had
+processed over 100~million agentic payments across Base and Solana by
+early 2026~\cite{chainalysis2026x402,x402foundation2026}, and Google's
+Agent Payments Protocol (AP2)~\cite{ap2protocol2025} standardizes
+mandate-based authorization including pre-authorized ``Human Not Present''
+flows. These rails make autonomous initiation, authorization, and
+settlement routine---and remove precisely the human-in-the-loop
+checkpoints (step-up authentication, manual review) on which several of
+the invariants in \cref{subsec:invariants} implicitly rely.
 
 %% ---------- 2.2 ----------
 \subsection{Human Behavioral Invariants in Fraud Detection}\label{subsec:invariants}
@@ -145,12 +168,12 @@ follow from the substrate.
 This distinction matters because it determines the \emph{kind} of
 failure that AI agents induce. If the invariants were merely empirical,
 a sufficiently clever detection system could replace them with new
-regularities learned from agent behavior. But because they are
-constitutive of biological agency, no amount of retraining on agent data
-will restore them---the property itself is absent. An AI agent has no
-sleep cycle to model, no single geographic location to verify, no
-reaction-time floor to measure. The detection signal is not noisy; it is
-\emph{gone}.
+regularities learned from agent behavior. But because several of the
+monitored properties are constitutive of biological agency, retraining
+alone cannot restore them. An AI agent has no biological sleep cycle,
+no single embodied location, and no human reaction-time floor. The
+signal may therefore be absent, or it may move into a different
+measurement space that human-assumption detectors do not observe.
 
 %% ---------- 2.3 ----------
 \subsection{The Hard-to-Vary Criterion}\label{subsec:hardtovary}
@@ -169,8 +192,8 @@ Our core claim is:
 
 \begin{quote}
 \itshape
-Fraud detection systems built on human behavioral invariants fail
-against AI agents \emph{necessarily}, not contingently.
+Fraud detection systems that rely only on human behavioral invariants
+have systematic blind spots under A2A commerce.
 \end{quote}
 
 \noindent To establish that this explanation is hard to vary, we
@@ -194,34 +217,38 @@ either contradicts evidence or collapses into the original claim:
     \cref{sec:detection}. But adaptation requires new signals drawn from
     agent-native properties (transaction graph topology, API call
     patterns, on-chain identity structure). Existing systems that rely
-    solely on the nine invariants cannot adapt, because the signals they
-    monitor have vanished. This variation does not contradict our claim;
-    it \emph{entails} it. Variation subsumed.
+    solely on the nine invariants cannot adapt without changing what they
+    measure. This variation does not contradict our claim; it identifies
+    the necessary repair. Variation narrowed.
 
   \item \textbf{``Agents will eventually adopt human-like patterns.''}
-    Empirically falsified by the agent activity documented in
-    \cref{sec:evaluation}: sustained throughput of 40~transactions per
+    The observed agent activity in \cref{sec:evaluation} already departs
+    from human baselines: sustained throughput of 40~transactions per
     day over 46~consecutive days, transaction precision to \$0.06, and
-    zero circadian variation. An agent \emph{could} be programmed to
-    mimic human patterns, but doing so would sacrifice the speed and
-    precision advantages that motivate agent commerce in the first
-    place. The variation requires agents to be economically irrational.
-    Variation rejected.
+    weak circadian structure. An agent \emph{could} be programmed to
+    mimic human patterns, but doing so sacrifices part of the speed and
+    precision advantages that motivate agent commerce. This variation
+    reduces the attacker's payoff rather than restoring the original
+    human invariant. Variation bounded.
 
   \item \textbf{``The attack surface is too small to matter.''} The
-    ERC-8004 registry alone lists over 65,000 agents across three
-    chains, with measurable on-chain economic activity
-    (\cref{sec:evaluation}). Moltbook hosts agent communities with
-    active service markets. The surface is not hypothetical; it is
-    instrumented and growing. Variation rejected.
+    ERC-8004 registry lists tens of thousands of agents across ten or
+    more chains, and industry data attributes on the order of
+    176~million transactions and tens of millions of dollars in
+    autonomous settlement to the agent economy in a single recent
+    year~\cite{usdcagentpayments2026,chainalysis2026x402}, with
+    measurable on-chain economic activity (\cref{sec:evaluation}).
+    Moltbook hosts agent communities with active service markets. The
+    surface is not hypothetical; it is instrumented and growing.
+    Variation rejected.
 
 \end{enumerate}
 
-\noindent All four variations either fail against the evidence or reduce
-to special cases of the original explanation. By the hard-to-vary
-criterion, the claim that human behavioral invariants \emph{necessarily}
-fail against AI agents qualifies as a good explanation: every detail
-(biological substrate, regulatory encoding, economic incentive, observed
-agent behavior) plays a functional role, and removing any one of them
-weakens the argument. This is the foundation on which the remainder of
-the paper builds.
+\noindent All four variations either fail against the evidence, require
+new agent-native signals, or reduce the attacker's economic advantage.
+By the hard-to-vary criterion, the scoped claim that human-invariant-only
+detectors have systematic A2A blind spots is a good explanation: every
+detail (biological substrate, regulatory encoding, economic incentive,
+observed agent behavior) plays a functional role, and removing any one
+of them weakens the argument. This is the foundation on which the
+remainder of the paper builds.

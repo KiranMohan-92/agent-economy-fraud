@@ -1,0 +1,28 @@
+{
+  "manuscript_path": "GPD/review-input/agent-economy-fraud-arxiv.md",
+  "target_journal": "arxiv_preprint",
+  "final_recommendation": "minor_revision",
+  "final_confidence": "high",
+  "stage_artifacts": [
+    "GPD/publication/gpd-review-input-agent-economy-fraud-arxiv-7d338b035256/review/STAGE-reader-R2.json",
+    "GPD/publication/gpd-review-input-agent-economy-fraud-arxiv-7d338b035256/review/STAGE-literature-R2.json",
+    "GPD/publication/gpd-review-input-agent-economy-fraud-arxiv-7d338b035256/review/STAGE-math-R2.json",
+    "GPD/publication/gpd-review-input-agent-economy-fraud-arxiv-7d338b035256/review/STAGE-physics-R2.json",
+    "GPD/publication/gpd-review-input-agent-economy-fraud-arxiv-7d338b035256/review/STAGE-interestingness-R2.json"
+  ],
+  "central_claims_supported": true,
+  "claim_scope_proportionate_to_evidence": true,
+  "physical_assumptions_justified": true,
+  "proof_audit_coverage_complete": true,
+  "theorem_proof_alignment_adequate": true,
+  "unsupported_claims_are_central": false,
+  "reframing_possible_without_new_results": true,
+  "mathematical_correctness": "adequate",
+  "novelty": "adequate",
+  "significance": "adequate",
+  "venue_fit": "adequate",
+  "literature_positioning": "adequate",
+  "unresolved_major_issues": 0,
+  "unresolved_minor_issues": 1,
+  "blocking_issue_ids": []
+}

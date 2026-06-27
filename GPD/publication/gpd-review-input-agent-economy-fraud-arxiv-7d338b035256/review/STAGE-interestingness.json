@@ -1,0 +1,48 @@
+{
+    "version":  1,
+    "round":  1,
+    "stage_id":  "interestingness",
+    "stage_kind":  "interestingness",
+    "manuscript_path":  "GPD/review-input/agent-economy-fraud-arxiv.md",
+    "manuscript_sha256":  "b898a5cdc8ede4de639d6748e5fdf47a39d2b6b7a351340ec69a4e068157ae08",
+    "claims_reviewed":  [
+                            "CLM-001",
+                            "CLM-002",
+                            "CLM-003",
+                            "CLM-004",
+                            "CLM-005"
+                        ],
+    "summary":  "The topic is significant and timely for arXiv cs.CR or an industry-facing preprint, but the present manuscript needs major revision before its claims and evidence are proportionate.",
+    "strengths":  [
+                      "Timely problem selection.",
+                      "Useful open negative result around CHAIN_7.",
+                      "Actionable implementation orientation."
+                  ],
+    "findings":  [
+                     {
+                         "issue_id":  "REF-007",
+                         "claim_ids":  [
+                                           "CLM-001",
+                                           "CLM-004",
+                                           "CLM-005"
+                                       ],
+                         "severity":  "major",
+                         "summary":  "The paper is interesting, but venue readiness depends on reframing from definitive result to pre-crime measurement study.",
+                         "rationale":  "The contribution is timely and useful for arXiv/practitioner audiences. Still, the current framing asks readers to accept broad banking-system conclusions from a blockchain-heavy, label-noisy measurement base.",
+                         "evidence_refs":  [
+                                               "GPD/review-input/agent-economy-fraud-arxiv.md#Contributions GPD/review-input/agent-economy-fraud-arxiv.md#Limitations"
+                                           ],
+                         "manuscript_locations":  [
+                                                      "GPD/review-input/agent-economy-fraud-arxiv.md:1 GPD/review-input/agent-economy-fraud-arxiv.md:7"
+                                                  ],
+                         "support_status":  "partially_supported",
+                         "blocking":  true,
+                         "required_action":  "Reframe the submission as an early measurement and detection-framework paper, with the strongest claims reserved for the attack chains and datasets actually tested."
+                     }
+                 ],
+    "proof_audits":  [
+
+                     ],
+    "confidence":  "medium",
+    "recommendation_ceiling":  "major_revision"
+}

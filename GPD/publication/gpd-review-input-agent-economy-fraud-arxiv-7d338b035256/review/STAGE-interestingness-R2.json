@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "round": 2,
+  "stage_id": "interestingness",
+  "stage_kind": "interestingness",
+  "manuscript_path": "GPD/review-input/agent-economy-fraud-arxiv.md",
+  "manuscript_sha256": "3246d71037387a1d5bafc76becd9cdb40b7cac1179f8c60f7a2867a8f79c6f5b",
+  "claims_reviewed": [
+    "CLM-R2-001",
+    "CLM-R2-005",
+    "CLM-R2-006"
+  ],
+  "summary": "The paper is now framed as an early measurement and detection-framework preprint, which is the right venue posture for the evidence. The Chain 7 negative result remains the most interesting contribution because it defines a precise next architecture target.",
+  "strengths": [
+    "Timely agent-economy security problem.",
+    "Clear operational taxonomy tied to platform capabilities.",
+    "Candid handling of weak real-data AUC and collective-detection failure."
+  ],
+  "findings": [],
+  "confidence": "high",
+  "recommendation_ceiling": "minor_revision"
+}

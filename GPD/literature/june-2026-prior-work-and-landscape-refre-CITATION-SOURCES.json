@@ -1,0 +1,132 @@
+[
+  {
+    "source_type": "paper",
+    "reference_id": "ref-zhang2026sok",
+    "bibtex_key": "zhang2026sok",
+    "title": "SoK: Blockchain Agent-to-Agent Payments",
+    "authors": ["Yuanzhe Zhang", "Yuexin Xiang", "Yuchen Lei", "Qin Wang", "Tian Qiu", "Yujing Sun", "Spiridon Zarkov", "Tsz Hon Yuen", "Andreas Deppeler", "Jiangshan Yu", "Kwok-Yan Lam"],
+    "year": "2026",
+    "arxiv_id": "2604.03733",
+    "url": "https://arxiv.org/abs/2604.03733"
+  },
+  {
+    "source_type": "paper",
+    "reference_id": "ref-li2026a402",
+    "bibtex_key": "li2026a402",
+    "title": "A402: Binding Cryptocurrency Payments to Service Execution for Agentic Commerce",
+    "authors": ["Yue Li", "Lei Wang", "Kaixuan Wang", "Zhiqiang Yang", "Ke Wang", "Zhi Guan", "Jianbo Gao"],
+    "year": "2026",
+    "arxiv_id": "2603.01179",
+    "url": "https://arxiv.org/abs/2603.01179"
+  },
+  {
+    "source_type": "paper",
+    "reference_id": "ref-lazer2026agentic",
+    "bibtex_key": "lazer2026agentic",
+    "title": "A Survey of Agentic AI and Cybersecurity: Challenges, Opportunities and Use-case Prototypes",
+    "authors": ["Sahaya Jestus Lazer", "Kshitiz Aryal", "Maanak Gupta", "Elisa Bertino"],
+    "year": "2026",
+    "arxiv_id": "2601.05293",
+    "url": "https://arxiv.org/abs/2601.05293"
+  },
+  {
+    "source_type": "paper",
+    "reference_id": "ref-mao2026sok",
+    "bibtex_key": "mao2026sok",
+    "title": "SoK: Security of Autonomous LLM Agents in Agentic Commerce",
+    "authors": ["Qian'ang Mao", "Jiaxin Wang", "Ya Liu", "Li Zhu", "Cong Ma", "Jiaqi Yan"],
+    "year": "2026",
+    "arxiv_id": "2604.15367",
+    "url": "https://arxiv.org/abs/2604.15367"
+  },
+  {
+    "source_type": "website",
+    "reference_id": "ref-datadome2026",
+    "bibtex_key": "datadome2026",
+    "title": "The AI Traffic Report: High Volume, Low Visibility, and a Growing Risk",
+    "authors": ["DataDome"],
+    "year": "2026",
+    "url": "https://datadome.co/threat-research/ai-traffic-report/"
+  },
+  {
+    "source_type": "website",
+    "reference_id": "ref-trmlabs2026",
+    "bibtex_key": "trmlabs2026",
+    "title": "Autonomous AI Agents and Financial Crime: Risk, Responsibility, and Accountability",
+    "authors": ["TRM Labs"],
+    "year": "2026",
+    "url": "https://www.trmlabs.com/resources/blog/autonomous-ai-agents-and-financial-crime-risk-responsibility-and-accountability"
+  },
+  {
+    "source_type": "website",
+    "reference_id": "ref-financialbrand2026",
+    "bibtex_key": "financialbrand2026",
+    "title": "'Know Your Agent' is a Must When Autonomous Payments Can Be Fraudsters' Entry Point",
+    "authors": ["The Financial Brand"],
+    "year": "2026",
+    "url": "https://thefinancialbrand.com/news/payments-trends/know-your-agent-is-a-must-when-autonomous-payments-can-be-fraudsters-entry-point-195876"
+  },
+  {
+    "source_type": "website",
+    "reference_id": "ref-chainalysis2026x402",
+    "bibtex_key": "chainalysis2026x402",
+    "title": "Inside x402: 100M Agentic Payments on Base",
+    "authors": ["Chainalysis"],
+    "year": "2026",
+    "url": "https://www.chainalysis.com/blog/x402-agentic-payments-adoption/"
+  },
+  {
+    "source_type": "website",
+    "reference_id": "ref-x402foundation2026",
+    "bibtex_key": "x402foundation2026",
+    "title": "Launching the x402 Foundation with Coinbase, and support for x402 transactions",
+    "authors": ["Cloudflare"],
+    "year": "2026",
+    "url": "https://blog.cloudflare.com/x402/"
+  },
+  {
+    "source_type": "website",
+    "reference_id": "ref-ap2protocol2025",
+    "bibtex_key": "ap2protocol2025",
+    "title": "Announcing Agent Payments Protocol (AP2)",
+    "authors": ["Google Cloud"],
+    "year": "2025",
+    "url": "https://cloud.google.com/blog/products/ai-machine-learning/announcing-agents-to-payments-ap2-protocol"
+  },
+  {
+    "source_type": "website",
+    "reference_id": "ref-metamask2026agentwallet",
+    "bibtex_key": "metamask2026agentwallet",
+    "title": "MetaMask launches Agent Wallet, giving AI agents full DeFi access with default security on every transaction",
+    "authors": ["MetaMask"],
+    "year": "2026",
+    "url": "https://metamask.io/news/metamask-launches-agent-wallet-giving-ai-agents-full-defi-access-with-default-security-on-every-transaction"
+  },
+  {
+    "source_type": "website",
+    "reference_id": "ref-usdcagentpayments2026",
+    "bibtex_key": "usdcagentpayments2026",
+    "title": "USDC Dominates 98.6% of AI Agent Payments as They Settle $73M Autonomously",
+    "authors": ["Coinbase", "Tempo", "Virtuals"],
+    "year": "2026",
+    "url": "https://cryptocurrencyhelp.com/news/usdc-dominates-ai-agent-payments/"
+  },
+  {
+    "source_type": "website",
+    "reference_id": "ref-grokbankr2026",
+    "bibtex_key": "grokbankr2026",
+    "title": "AI Prompt Injection Exploit Drains Grok-Linked Crypto Wallet (Grok/Bankr incident)",
+    "authors": ["OECD.AI Incidents Monitor"],
+    "year": "2026",
+    "url": "https://oecd.ai/en/incidents/2026-05-04-4a73"
+  },
+  {
+    "source_type": "website",
+    "reference_id": "ref-unit42openclaw2026",
+    "bibtex_key": "unit42openclaw2026",
+    "title": "OpenClaw's Skill Marketplace and the Emerging AI Supply Chain Threat",
+    "authors": ["Palo Alto Networks Unit 42"],
+    "year": "2026",
+    "url": "https://unit42.paloaltonetworks.com/openclaw-ai-supply-chain-risk/"
+  }
+]

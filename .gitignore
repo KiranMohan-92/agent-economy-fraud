@@ -30,3 +30,20 @@ data/*.json
 # OS
 .DS_Store
 Thumbs.db
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.out
+*.synctex.gz
+paper/*.log
+paper/main.pdf
+
+# Agent / editor tooling state
+.omc/
+.obsidian/
+*.lock
+
+# arXiv package staging tree (regenerable from paper/; the tarball is committed)
+GPD/publication/*/arxiv/submission/

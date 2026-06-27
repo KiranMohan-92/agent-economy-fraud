@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "round": 2,
+  "stage_id": "literature",
+  "stage_kind": "literature",
+  "manuscript_path": "GPD/review-input/agent-economy-fraud-arxiv.md",
+  "manuscript_sha256": "3246d71037387a1d5bafc76becd9cdb40b7cac1179f8c60f7a2867a8f79c6f5b",
+  "claims_reviewed": [
+    "CLM-R2-001",
+    "CLM-R2-002",
+    "CLM-R2-006"
+  ],
+  "summary": "The revision repairs the most visible literature-positioning defects for the paper's narrowed scope. The LaTeX bibliography now replaces the incorrect Tesfatsion entry and adds standard anomaly-detection, credit-card-fraud, adversarial-ML, and adversarial-policy references. The review-facing Markdown no longer contains placeholder language.",
+  "strengths": [
+    "Related work now distinguishes anomaly detection, financial fraud, adversarial ML, bot detection, and agent security.",
+    "Novelty is framed as an intersectional gap rather than as an unsupported blanket claim.",
+    "Policy recommendations are no longer presented as direct empirical consequences."
+  ],
+  "findings": [
+    {
+      "issue_id": "REF-R2-LIT-001",
+      "claim_ids": [
+        "CLM-R2-006"
+      ],
+      "severity": "minor",
+      "summary": "The platform sources for Moltbook and OpenClaw remain project-local or product-source references rather than archival academic references.",
+      "rationale": "This is acceptable for an early measurement preprint grounded in current platform capabilities, but a formal venue submission should preserve snapshots or archival links.",
+      "evidence_refs": [
+        "paper/references.bib",
+        "analysis/openclaw-platform-analysis.md",
+        "analysis/moltbook-platform-analysis.md"
+      ],
+      "support_status": "partially_supported",
+      "blocking": false,
+      "required_action": "Archive or snapshot platform documentation before external submission."
+    }
+  ],
+  "confidence": "medium",
+  "recommendation_ceiling": "minor_revision"
+}

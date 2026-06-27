@@ -1,0 +1,70 @@
+{
+    "version":  1,
+    "round":  1,
+    "stage_id":  "math",
+    "stage_kind":  "math",
+    "manuscript_path":  "GPD/review-input/agent-economy-fraud-arxiv.md",
+    "manuscript_sha256":  "b898a5cdc8ede4de639d6748e5fdf47a39d2b6b7a351340ec69a4e068157ae08",
+    "claims_reviewed":  [
+                            "CLM-001",
+                            "CLM-003",
+                            "CLM-004",
+                            "CLM-006"
+                        ],
+    "summary":  "The numerical quantities in the standalone manuscript are mostly interpretable, but the logical bridge from empirical observations to necessity/completeness claims needs sharper formal scaffolding.",
+    "strengths":  [
+                      "The CHAIN_3 velocity amplification calculation is straightforward and directionally sound.",
+                      "The paper exposes the negative CHAIN_7 result rather than hiding it."
+                  ],
+    "findings":  [
+                     {
+                         "issue_id":  "REF-003",
+                         "claim_ids":  [
+                                           "CLM-001",
+                                           "CLM-004"
+                                       ],
+                         "severity":  "major",
+                         "summary":  "The central hard-to-vary and validation arguments are not formalized enough for the strength of the conclusion.",
+                         "rationale":  "The velocity amplification calculation is transparent, but the nine-invariant completeness claim, the hard-to-vary rejection tests, and the transfer-gap interpretation are asserted more than derived in the reviewed artifact. The argument may be correct, but the manuscript needs a more explicit claim-to-test mapping.",
+                         "evidence_refs":  [
+                                               "GPD/review-input/agent-economy-fraud-arxiv.md#Hard-to-Vary-Explanation GPD/review-input/agent-economy-fraud-arxiv.md#Cross-Stage-Analysis"
+                                           ],
+                         "manuscript_locations":  [
+                                                      "GPD/review-input/agent-economy-fraud-arxiv.md:2.3 GPD/review-input/agent-economy-fraud-arxiv.md:5.4"
+                                                  ],
+                         "support_status":  "partially_supported",
+                         "blocking":  true,
+                         "required_action":  "Add a compact table mapping each central claim to the exact test, dataset, threshold, and failure mode that supports it; narrow any claim that lacks such support."
+                     }
+                 ],
+    "proof_audits":  [
+                         {
+                             "claim_id":  "CLM-006",
+                             "theorem_assumptions_checked":  [
+                                                                 "Each transaction initiation is bounded by a 400 ms channel-rate interval",
+                                                                 "timeoutSeconds=0 returns without waiting for transaction completion"
+                                                             ],
+                             "theorem_parameters_checked":  [
+                                                                "channel-rate interval",
+                                                                "transactions per second",
+                                                                "transactions per hour"
+                                                            ],
+                             "proof_locations":  [
+                                                     "GPD/review-input/agent-economy-fraud-arxiv.md#3.1"
+                                                 ],
+                             "uncovered_assumptions":  [
+
+                                                       ],
+                             "uncovered_parameters":  [
+
+                                                      ],
+                             "coverage_gaps":  [
+
+                                               ],
+                             "alignment_status":  "aligned",
+                             "notes":  "The arithmetic follows directly: 1 / 0.4 s = 2.5 tx/s, and 2.5 * 3600 = 9000 tx/hour. The separate broader necessity claim remains a scoped-evidence issue, not a proof-audit failure for this calculation."
+                         }
+                     ],
+    "confidence":  "medium",
+    "recommendation_ceiling":  "major_revision"
+}

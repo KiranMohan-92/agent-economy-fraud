@@ -255,8 +255,8 @@ simultaneous multi-chain presence, the signature of CHAIN\_5.
 An entity that transacts on Base, Ethereum mainnet, and Arbitrum
 within the same minute---especially if the transactions are
 economically linked (same token, complementary amounts)---is
-exhibiting behavior that is effectively impossible for a human
-operator managing multiple interfaces concurrently.
+exhibiting behavior that is not plausible for a single human operator
+managing multiple interfaces concurrently without automation.
 
 In the current implementation, CP is \textbf{inactive}: our
 validation dataset covers only Base~L2 transactions, and
@@ -393,12 +393,12 @@ in $[0, 1]$.  The fusion module combines individual scores via
 \cref{tab:decision_tiers}.
 
 \paragraph{Testing and validation.}
-The package includes 32 unit tests covering signal computation,
+The package includes 47 tests covering signal computation,
 edge cases (single-transaction addresses, zero-value transfers),
-and fusion arithmetic.  End-to-end validation was performed on
-81,904 on-chain USDC transactions from Base~L2, sourced via Dune
-Analytics~\cite{dune2026} and labeled using ERC-8004 agent
-registry data~\cite{erc8004}.
+threshold calibration, attack injection, label loading, and fusion
+arithmetic.  End-to-end validation was performed on 81,904 on-chain
+USDC transactions from Base~L2, sourced via Dune Analytics~\cite{dune2026}
+and labeled using ERC-8004 agent registry data~\cite{erc8004}.
 
 \paragraph{Requirements.}
 The implementation targets Python $\geq 3.10$ and depends on four

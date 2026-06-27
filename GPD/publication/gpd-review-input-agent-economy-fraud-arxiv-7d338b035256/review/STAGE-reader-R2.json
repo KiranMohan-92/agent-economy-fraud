@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "round": 2,
+  "stage_id": "reader",
+  "stage_kind": "reader",
+  "manuscript_path": "GPD/review-input/agent-economy-fraud-arxiv.md",
+  "manuscript_sha256": "3246d71037387a1d5bafc76becd9cdb40b7cac1179f8c60f7a2867a8f79c6f5b",
+  "claims_reviewed": [
+    "CLM-R2-001",
+    "CLM-R2-002",
+    "CLM-R2-003",
+    "CLM-R2-004",
+    "CLM-R2-005",
+    "CLM-R2-006"
+  ],
+  "summary": "The revision substantially resolves the R1 reader concerns. The manuscript now states a scoped main claim, foregrounds the weak real-data ranking result, treats the 6-12 month timing as a planning scenario, and presents Chain 7 as the central unresolved architectural boundary.",
+  "strengths": [
+    "The abstract now carries the fixed-threshold recall, re-optimized recall, and cleaned AUC caveats.",
+    "The main claim is narrow and testable.",
+    "The synchronized review copy no longer contains stale necessity, impossibility, or production-readiness claims."
+  ],
+  "findings": [],
+  "proof_audits": [],
+  "confidence": "high",
+  "recommendation_ceiling": "minor_revision"
+}

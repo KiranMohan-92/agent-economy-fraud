@@ -1,0 +1,61 @@
+{
+    "version":  1,
+    "round":  1,
+    "stage_id":  "physics",
+    "stage_kind":  "physics",
+    "manuscript_path":  "GPD/review-input/agent-economy-fraud-arxiv.md",
+    "manuscript_sha256":  "b898a5cdc8ede4de639d6748e5fdf47a39d2b6b7a351340ec69a4e068157ae08",
+    "claims_reviewed":  [
+                            "CLM-003",
+                            "CLM-004",
+                            "CLM-005"
+                        ],
+    "summary":  "For this applied-security manuscript, the physical/empirical interpretation is promising but too assertive. The data support a real detection gap and a useful prototype, not yet the full deployment-strength or forecast claims.",
+    "strengths":  [
+                      "The paper clearly identifies the per-address versus population-level regime boundary.",
+                      "The limitations section is unusually candid about label noise and inactive cross-platform data."
+                  ],
+    "findings":  [
+                     {
+                         "issue_id":  "REF-004",
+                         "claim_ids":  [
+                                           "CLM-004"
+                                       ],
+                         "severity":  "major",
+                         "summary":  "The empirical support is recall-heavy and does not yet justify deployment-strength claims.",
+                         "rationale":  "The manuscript acknowledges low precision and noisy negative labels, but still foregrounds 95.4% recall and 7/8 perfect chain recall. AUC drops to 0.515 on the cleaned set, and Cross-Platform is inactive. Those facts require stronger caveats in the abstract, conclusion, and recommendations.",
+                         "evidence_refs":  [
+                                               "GPD/review-input/agent-economy-fraud-arxiv.md#Stage-2-Real-On-Chain-Validation GPD/review-input/agent-economy-fraud-arxiv.md#Conclusion"
+                                           ],
+                         "manuscript_locations":  [
+                                                      "GPD/review-input/agent-economy-fraud-arxiv.md:5.2 GPD/review-input/agent-economy-fraud-arxiv.md:8"
+                                                  ],
+                         "support_status":  "partially_supported",
+                         "blocking":  true,
+                         "required_action":  "Move label-noise and low-AUC caveats into the abstract/results summary, report confidence intervals or sensitivity analysis, and avoid implying production readiness until precision and CP coverage are resolved."
+                     },
+                     {
+                         "issue_id":  "REF-005",
+                         "claim_ids":  [
+                                           "CLM-003"
+                                       ],
+                         "severity":  "minor",
+                         "summary":  "Some recommendations do not cleanly follow from the demonstrated agent-invariant signals.",
+                         "rationale":  "For example, biometric authentication for transactions from agent platforms may authenticate the controller but not the autonomous transaction process; it is not directly validated by the five-signal framework.",
+                         "evidence_refs":  [
+                                               "GPD/review-input/agent-economy-fraud-arxiv.md#Industry-Recommendations"
+                                           ],
+                         "manuscript_locations":  [
+                                                      "GPD/review-input/agent-economy-fraud-arxiv.md:6.1"
+                                                  ],
+                         "support_status":  "unclear",
+                         "blocking":  false,
+                         "required_action":  "Separate recommendations validated by the framework from policy proposals that need independent threat-model analysis."
+                     }
+                 ],
+    "proof_audits":  [
+
+                     ],
+    "confidence":  "medium",
+    "recommendation_ceiling":  "major_revision"
+}

@@ -1,0 +1,126 @@
+{
+    "version":  1,
+    "round":  1,
+    "manuscript_path":  "GPD/review-input/agent-economy-fraud-arxiv.md",
+    "issues":  [
+                   {
+                       "issue_id":  "REF-001",
+                       "opened_by_stage":  "reader",
+                       "severity":  "major",
+                       "blocking":  true,
+                       "claim_ids":  [
+                                         "CLM-001",
+                                         "CLM-005"
+                                     ],
+                       "summary":  "The title, abstract, and conclusion state necessity and timing claims more strongly than the artifact trail supports.",
+                       "rationale":  "The manuscript repeatedly uses structural language such as necessarily, impossible, fundamental, and likely within 6-12 months, but the reviewed artifact does not carry enough falsification criteria or external evidence for the strongest versions of those claims.",
+                       "evidence_refs":  [
+                                             "GPD/review-input/agent-economy-fraud-arxiv.md#Abstract GPD/review-input/agent-economy-fraud-arxiv.md#Conclusion"
+                                         ],
+                       "required_action":  "Narrow the central claim to the demonstrated failure modes, separate empirical findings from forecasts, and add explicit evidence for the 6-12 month timing claim or demote it to a scenario.",
+                       "status":  "open"
+                   },
+                   {
+                       "issue_id":  "REF-006",
+                       "opened_by_stage":  "reader",
+                       "severity":  "minor",
+                       "blocking":  false,
+                       "claim_ids":  [
+                                         "CLM-003",
+                                         "CLM-004"
+                                     ],
+                       "summary":  "The implementation and test-count statements are internally inconsistent.",
+                       "rationale":  "The body says the package has 32 unit tests, while Appendix C says 47 tests pass. This undermines reproducibility confidence even if the core result is not invalidated.",
+                       "evidence_refs":  [
+                                             "GPD/review-input/agent-economy-fraud-arxiv.md#Implementation GPD/review-input/agent-economy-fraud-arxiv.md#Appendix-C"
+                                         ],
+                       "required_action":  "Reconcile the test count and point to the exact test command/output used for the submission version.",
+                       "status":  "open"
+                   },
+                   {
+                       "issue_id":  "REF-002",
+                       "opened_by_stage":  "literature",
+                       "severity":  "major",
+                       "blocking":  true,
+                       "claim_ids":  [
+                                         "CLM-001",
+                                         "CLM-002",
+                                         "CLM-005"
+                                     ],
+                       "summary":  "The literature and source positioning is too thin for the novelty and urgency claims.",
+                       "rationale":  "The reference list is mostly placeholders or broad sources. Moltbook is not concretely identified, the ERC-8004 and Dune sources are not enough to support the broader banking-fraud and historical-lag claims, and the manuscript itself says additional references remain to be completed.",
+                       "evidence_refs":  [
+                                             "GPD/review-input/agent-economy-fraud-arxiv.md#References GPD/review-input/agent-economy-fraud-arxiv.md#Limitations"
+                                         ],
+                       "required_action":  "Complete the bibliography from the literature survey, add concrete Moltbook source metadata, and cite specific fraud-lag and banking-fraud-detection literature for the novelty and timing claims.",
+                       "status":  "open"
+                   },
+                   {
+                       "issue_id":  "REF-003",
+                       "opened_by_stage":  "math",
+                       "severity":  "major",
+                       "blocking":  true,
+                       "claim_ids":  [
+                                         "CLM-001",
+                                         "CLM-004"
+                                     ],
+                       "summary":  "The central hard-to-vary and validation arguments are not formalized enough for the strength of the conclusion.",
+                       "rationale":  "The velocity amplification calculation is transparent, but the nine-invariant completeness claim, the hard-to-vary rejection tests, and the transfer-gap interpretation are asserted more than derived in the reviewed artifact. The argument may be correct, but the manuscript needs a more explicit claim-to-test mapping.",
+                       "evidence_refs":  [
+                                             "GPD/review-input/agent-economy-fraud-arxiv.md#Hard-to-Vary-Explanation GPD/review-input/agent-economy-fraud-arxiv.md#Cross-Stage-Analysis"
+                                         ],
+                       "required_action":  "Add a compact table mapping each central claim to the exact test, dataset, threshold, and failure mode that supports it; narrow any claim that lacks such support.",
+                       "status":  "open"
+                   },
+                   {
+                       "issue_id":  "REF-004",
+                       "opened_by_stage":  "physics",
+                       "severity":  "major",
+                       "blocking":  true,
+                       "claim_ids":  [
+                                         "CLM-004"
+                                     ],
+                       "summary":  "The empirical support is recall-heavy and does not yet justify deployment-strength claims.",
+                       "rationale":  "The manuscript acknowledges low precision and noisy negative labels, but still foregrounds 95.4% recall and 7/8 perfect chain recall. AUC drops to 0.515 on the cleaned set, and Cross-Platform is inactive. Those facts require stronger caveats in the abstract, conclusion, and recommendations.",
+                       "evidence_refs":  [
+                                             "GPD/review-input/agent-economy-fraud-arxiv.md#Stage-2-Real-On-Chain-Validation GPD/review-input/agent-economy-fraud-arxiv.md#Conclusion"
+                                         ],
+                       "required_action":  "Move label-noise and low-AUC caveats into the abstract/results summary, report confidence intervals or sensitivity analysis, and avoid implying production readiness until precision and CP coverage are resolved.",
+                       "status":  "open"
+                   },
+                   {
+                       "issue_id":  "REF-005",
+                       "opened_by_stage":  "physics",
+                       "severity":  "minor",
+                       "blocking":  false,
+                       "claim_ids":  [
+                                         "CLM-003"
+                                     ],
+                       "summary":  "Some recommendations do not cleanly follow from the demonstrated agent-invariant signals.",
+                       "rationale":  "For example, biometric authentication for transactions from agent platforms may authenticate the controller but not the autonomous transaction process; it is not directly validated by the five-signal framework.",
+                       "evidence_refs":  [
+                                             "GPD/review-input/agent-economy-fraud-arxiv.md#Industry-Recommendations"
+                                         ],
+                       "required_action":  "Separate recommendations validated by the framework from policy proposals that need independent threat-model analysis.",
+                       "status":  "open"
+                   },
+                   {
+                       "issue_id":  "REF-007",
+                       "opened_by_stage":  "interestingness",
+                       "severity":  "major",
+                       "blocking":  true,
+                       "claim_ids":  [
+                                         "CLM-001",
+                                         "CLM-004",
+                                         "CLM-005"
+                                     ],
+                       "summary":  "The paper is interesting, but venue readiness depends on reframing from definitive result to pre-crime measurement study.",
+                       "rationale":  "The contribution is timely and useful for arXiv/practitioner audiences. Still, the current framing asks readers to accept broad banking-system conclusions from a blockchain-heavy, label-noisy measurement base.",
+                       "evidence_refs":  [
+                                             "GPD/review-input/agent-economy-fraud-arxiv.md#Contributions GPD/review-input/agent-economy-fraud-arxiv.md#Limitations"
+                                         ],
+                       "required_action":  "Reframe the submission as an early measurement and detection-framework paper, with the strongest claims reserved for the attack chains and datasets actually tested.",
+                       "status":  "open"
+                   }
+               ]
+}

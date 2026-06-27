@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "round": 2,
+  "stage_id": "math",
+  "stage_kind": "math",
+  "manuscript_path": "GPD/review-input/agent-economy-fraud-arxiv.md",
+  "manuscript_sha256": "3246d71037387a1d5bafc76becd9cdb40b7cac1179f8c60f7a2867a8f79c6f5b",
+  "claims_reviewed": [
+    "CLM-R2-001",
+    "CLM-R2-003",
+    "CLM-R2-004",
+    "CLM-R2-005"
+  ],
+  "summary": "The R1 concern that the hard-to-vary and validation arguments lacked a claim-test map has been addressed. The revised evaluation includes a claim-evidence map, and the review artifact summarizes the same evidence boundaries.",
+  "strengths": [
+    "The main claim is limited to human-invariant-only detectors under tested A2A scenarios.",
+    "The fixed-threshold and re-optimized-threshold recall figures are reported separately.",
+    "The per-address framework's 0% recall on Chain 7 is framed as an unresolved architectural boundary."
+  ],
+  "findings": [],
+  "proof_audits": [
+    {
+      "claim_id": "CLM-R2-001",
+      "theorem_assumptions_checked": [
+        "The detector family relies only on human behavioral invariants",
+        "The evaluated scenarios are the A2A cases described in the manuscript",
+        "Agent-native signals are not included in the baseline detector family"
+      ],
+      "theorem_parameters_checked": [
+        "detector family",
+        "A2A scenario set",
+        "human behavioral invariant set"
+      ],
+      "proof_locations": [
+        "GPD/review-input/agent-economy-fraud-arxiv.md"
+      ],
+      "uncovered_assumptions": [],
+      "uncovered_parameters": [],
+      "coverage_gaps": [],
+      "alignment_status": "aligned",
+      "notes": "The proposition is scoped to human-invariant-only detectors and the tested A2A scenarios. The revised manuscript no longer asserts a universal detector impossibility theorem."
+    }
+  ],
+  "confidence": "high",
+  "recommendation_ceiling": "minor_revision"
+}

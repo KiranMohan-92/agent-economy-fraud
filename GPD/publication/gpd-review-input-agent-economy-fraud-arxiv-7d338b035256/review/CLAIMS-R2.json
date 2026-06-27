@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "manuscript_path": "GPD/review-input/agent-economy-fraud-arxiv.md",
+  "manuscript_sha256": "3246d71037387a1d5bafc76becd9cdb40b7cac1179f8c60f7a2867a8f79c6f5b",
+  "claims": [
+    {
+      "claim_id": "CLM-R2-001",
+      "claim_type": "main_result",
+      "claim_kind": "proposition",
+      "text": "Fraud detection systems that rely only on human behavioral invariants have systematic blind spots under the A2A scenarios tested here.",
+      "artifact_path": "GPD/review-input/agent-economy-fraud-arxiv.md",
+      "section": "Introduction",
+      "supporting_artifacts": [
+        "paper/introduction.tex",
+        "paper/background.tex",
+        "paper/threat_model.tex"
+      ],
+      "theorem_assumptions": [
+        "The detector family relies only on human behavioral invariants",
+        "The evaluated scenarios are the A2A cases described in the manuscript",
+        "Agent-native signals are not included in the baseline detector family"
+      ],
+      "theorem_parameters": [
+        "detector family",
+        "A2A scenario set",
+        "human behavioral invariant set"
+      ]
+    },
+    {
+      "claim_id": "CLM-R2-002",
+      "claim_type": "method",
+      "claim_kind": "result",
+      "text": "The five-signal framework measures agent-native economic rationality, network topology, value flow, temporal consistency, and cross-platform correlation, with CP inactive in the current single-chain deployment.",
+      "artifact_path": "GPD/review-input/agent-economy-fraud-arxiv.md",
+      "section": "Detection Framework",
+      "supporting_artifacts": [
+        "paper/detection_framework.tex",
+        "analysis/agent-invariant-signals.md"
+      ],
+      "theorem_assumptions": [],
+      "theorem_parameters": []
+    },
+    {
+      "claim_id": "CLM-R2-003",
+      "claim_type": "main_result",
+      "claim_kind": "result",
+      "text": "Synthetic validation reaches F1 = 88.71% and ROC-AUC = 0.97 on 100,000 synthetic addresses.",
+      "artifact_path": "GPD/review-input/agent-economy-fraud-arxiv.md",
+      "section": "Evaluation / Stage 1",
+      "supporting_artifacts": [
+        "paper/evaluation.tex"
+      ],
+      "theorem_assumptions": [],
+      "theorem_parameters": []
+    },
+    {
+      "claim_id": "CLM-R2-004",
+      "claim_type": "main_result",
+      "claim_kind": "result",
+      "text": "Real-data transfer is partial: recall is 61.4% at the fixed synthetic threshold and 95.4% only after threshold re-optimization, while cleaned-label composite ROC-AUC is 0.515.",
+      "artifact_path": "GPD/review-input/agent-economy-fraud-arxiv.md",
+      "section": "Evaluation / Stage 2",
+      "supporting_artifacts": [
+        "paper/evaluation.tex",
+        "paper/limitations.tex"
+      ],
+      "theorem_assumptions": [],
+      "theorem_parameters": []
+    },
+    {
+      "claim_id": "CLM-R2-005",
+      "claim_type": "main_result",
+      "claim_kind": "result",
+      "text": "Attack-injection validation detects 7 of 8 injected attack chains at 100% recall, while Chain 7 exposes a population-level detection gap for per-address scoring.",
+      "artifact_path": "GPD/review-input/agent-economy-fraud-arxiv.md",
+      "section": "Evaluation / Stage 3",
+      "supporting_artifacts": [
+        "paper/evaluation.tex",
+        "paper/limitations.tex"
+      ],
+      "theorem_assumptions": [],
+      "theorem_parameters": []
+    },
+    {
+      "claim_id": "CLM-R2-006",
+      "claim_type": "significance",
+      "claim_kind": "claim",
+      "text": "The practical contribution is a bounded research and implementation agenda: deploy low-regret P0/P1 overlays, build population-level detection, collect cleaner labels, activate multi-chain correlation, and treat policy recommendations as hypotheses.",
+      "artifact_path": "GPD/review-input/agent-economy-fraud-arxiv.md",
+      "section": "Conclusion",
+      "supporting_artifacts": [
+        "paper/recommendations.tex",
+        "paper/limitations.tex",
+        "paper/conclusions.tex"
+      ],
+      "theorem_assumptions": [],
+      "theorem_parameters": []
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+    "version":  1,
+    "manuscript_path":  "GPD/review-input/agent-economy-fraud-arxiv.md",
+    "manuscript_sha256":  "b898a5cdc8ede4de639d6748e5fdf47a39d2b6b7a351340ec69a4e068157ae08",
+    "claims":  [
+                   {
+                       "claim_id":  "CLM-001",
+                       "claim_type":  "main_result",
+                       "claim_kind":  "claim",
+                       "text":  "Fraud detection systems built on human behavioral invariants fail against AI agents necessarily, not contingently.",
+                       "artifact_path":  "GPD/review-input/agent-economy-fraud-arxiv.md",
+                       "section":  "Introduction",
+                       "equation_refs":  [
+
+                                         ],
+                       "figure_refs":  [
+
+                                       ],
+                       "supporting_artifacts":  [
+
+                                                ],
+                       "theorem_assumptions":  [
+
+                                               ],
+                       "theorem_parameters":  [
+
+                                              ]
+                   },
+                   {
+                       "claim_id":  "CLM-002",
+                       "claim_type":  "method",
+                       "claim_kind":  "result",
+                       "text":  "The paper identifies nine human behavioral invariants and maps them to AI-agent violations using OpenClaw, Moltbook, and ERC-8004 as case studies.",
+                       "artifact_path":  "GPD/review-input/agent-economy-fraud-arxiv.md",
+                       "section":  "Background",
+                       "equation_refs":  [
+
+                                         ],
+                       "figure_refs":  [
+
+                                       ],
+                       "supporting_artifacts":  [
+                                                    "analysis/openclaw-platform-analysis.md",
+                                                    "analysis/moltbook-platform-analysis.md"
+                                                ],
+                       "theorem_assumptions":  [
+
+                                               ],
+                       "theorem_parameters":  [
+
+                                              ]
+                   },
+                   {
+                       "claim_id":  "CLM-003",
+                       "claim_type":  "method",
+                       "claim_kind":  "result",
+                       "text":  "A five-signal agent-invariant detection framework detects agent behavior using economic rationality, network topology, value flow, temporal consistency, and cross-platform correlation signals.",
+                       "artifact_path":  "GPD/review-input/agent-economy-fraud-arxiv.md",
+                       "section":  "Five-Signal Detection Framework",
+                       "equation_refs":  [
+
+                                         ],
+                       "figure_refs":  [
+
+                                       ],
+                       "supporting_artifacts":  [
+                                                    "src/a2a_detection/",
+                                                    "analysis/agent-invariant-signals.md"
+                                                ],
+                       "theorem_assumptions":  [
+
+                                               ],
+                       "theorem_parameters":  [
+
+                                              ]
+                   },
+                   {
+                       "claim_id":  "CLM-004",
+                       "claim_type":  "main_result",
+                       "claim_kind":  "result",
+                       "text":  "Three validation stages show strong recall on synthetic, real on-chain, and injected-attack datasets, with 7 of 8 attack chains detected at 100% per-chain recall and CHAIN_7 exposing a collective-detection gap.",
+                       "artifact_path":  "GPD/review-input/agent-economy-fraud-arxiv.md",
+                       "section":  "Evaluation",
+                       "equation_refs":  [
+
+                                         ],
+                       "figure_refs":  [
+
+                                       ],
+                       "supporting_artifacts":  [
+                                                    "data/detection_results.csv",
+                                                    "data/fraud_detection_metrics.json",
+                                                    "analysis/fraud-detection-validation.md"
+                                                ],
+                       "theorem_assumptions":  [
+
+                                               ],
+                       "theorem_parameters":  [
+
+                                              ]
+                   },
+                   {
+                       "claim_id":  "CLM-005",
+                       "claim_type":  "significance",
+                       "claim_kind":  "claim",
+                       "text":  "Systematic A2A fraud exploitation is likely within 6-12 months, creating a narrow industry response window.",
+                       "artifact_path":  "GPD/review-input/agent-economy-fraud-arxiv.md",
+                       "section":  "Conclusion",
+                       "equation_refs":  [
+
+                                         ],
+                       "figure_refs":  [
+
+                                       ],
+                       "supporting_artifacts":  [
+
+                                                ],
+                       "theorem_assumptions":  [
+
+                                               ],
+                       "theorem_parameters":  [
+
+                                              ]
+                   },
+                   {
+                       "claim_id":  "CLM-006",
+                       "claim_type":  "method",
+                       "claim_kind":  "proposition",
+                       "text":  "With sessions_send timeoutSeconds=0 and a 400 ms channel-rate interval, an agent can initiate 2.5 transactions per second, or 9,000 transactions per hour.",
+                       "artifact_path":  "GPD/review-input/agent-economy-fraud-arxiv.md",
+                       "section":  "Threat Model: CHAIN_3",
+                       "equation_refs":  [
+
+                                         ],
+                       "figure_refs":  [
+
+                                       ],
+                       "supporting_artifacts":  [
+
+                                                ],
+                       "theorem_assumptions":  [
+                                                   "Each transaction initiation is bounded by a 400 ms channel-rate interval",
+                                                   "timeoutSeconds=0 returns without waiting for transaction completion"
+                                               ],
+                       "theorem_parameters":  [
+                                                  "channel-rate interval",
+                                                  "transactions per second",
+                                                  "transactions per hour"
+                                              ]
+                   }
+               ]
+}

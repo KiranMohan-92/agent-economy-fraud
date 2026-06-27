@@ -1,0 +1,66 @@
+{
+    "version":  1,
+    "round":  1,
+    "stage_id":  "reader",
+    "stage_kind":  "reader",
+    "manuscript_path":  "GPD/review-input/agent-economy-fraud-arxiv.md",
+    "manuscript_sha256":  "b898a5cdc8ede4de639d6748e5fdf47a39d2b6b7a351340ec69a4e068157ae08",
+    "claims_reviewed":  [
+                            "CLM-001",
+                            "CLM-002",
+                            "CLM-003",
+                            "CLM-004",
+                            "CLM-005"
+                        ],
+    "summary":  "The manuscript has a coherent narrative and a clear applied-security contribution, but it overstates necessity, impossibility, and forecast timing relative to the evidence shown in the standalone artifact.",
+    "strengths":  [
+                      "Clear threat taxonomy tied to concrete platform primitives.",
+                      "The CHAIN_7 negative result is a useful and candid architectural finding.",
+                      "The paper separates synthetic, real-data, and injected-attack validation stages."
+                  ],
+    "findings":  [
+                     {
+                         "issue_id":  "REF-001",
+                         "claim_ids":  [
+                                           "CLM-001",
+                                           "CLM-005"
+                                       ],
+                         "severity":  "major",
+                         "summary":  "The title, abstract, and conclusion state necessity and timing claims more strongly than the artifact trail supports.",
+                         "rationale":  "The manuscript repeatedly uses structural language such as necessarily, impossible, fundamental, and likely within 6-12 months, but the reviewed artifact does not carry enough falsification criteria or external evidence for the strongest versions of those claims.",
+                         "evidence_refs":  [
+                                               "GPD/review-input/agent-economy-fraud-arxiv.md#Abstract GPD/review-input/agent-economy-fraud-arxiv.md#Conclusion"
+                                           ],
+                         "manuscript_locations":  [
+                                                      "GPD/review-input/agent-economy-fraud-arxiv.md:1 GPD/review-input/agent-economy-fraud-arxiv.md:Conclusion"
+                                                  ],
+                         "support_status":  "partially_supported",
+                         "blocking":  true,
+                         "required_action":  "Narrow the central claim to the demonstrated failure modes, separate empirical findings from forecasts, and add explicit evidence for the 6-12 month timing claim or demote it to a scenario."
+                     },
+                     {
+                         "issue_id":  "REF-006",
+                         "claim_ids":  [
+                                           "CLM-003",
+                                           "CLM-004"
+                                       ],
+                         "severity":  "minor",
+                         "summary":  "The implementation and test-count statements are internally inconsistent.",
+                         "rationale":  "The body says the package has 32 unit tests, while Appendix C says 47 tests pass. This undermines reproducibility confidence even if the core result is not invalidated.",
+                         "evidence_refs":  [
+                                               "GPD/review-input/agent-economy-fraud-arxiv.md#Implementation GPD/review-input/agent-economy-fraud-arxiv.md#Appendix-C"
+                                           ],
+                         "manuscript_locations":  [
+                                                      "GPD/review-input/agent-economy-fraud-arxiv.md:Implementation GPD/review-input/agent-economy-fraud-arxiv.md:Appendix C"
+                                                  ],
+                         "support_status":  "partially_supported",
+                         "blocking":  false,
+                         "required_action":  "Reconcile the test count and point to the exact test command/output used for the submission version."
+                     }
+                 ],
+    "proof_audits":  [
+
+                     ],
+    "confidence":  "medium",
+    "recommendation_ceiling":  "major_revision"
+}

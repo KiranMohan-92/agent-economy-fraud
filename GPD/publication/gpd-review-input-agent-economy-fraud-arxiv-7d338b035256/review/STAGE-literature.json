@@ -1,0 +1,45 @@
+{
+    "version":  1,
+    "round":  1,
+    "stage_id":  "literature",
+    "stage_kind":  "literature",
+    "manuscript_path":  "GPD/review-input/agent-economy-fraud-arxiv.md",
+    "manuscript_sha256":  "b898a5cdc8ede4de639d6748e5fdf47a39d2b6b7a351340ec69a4e068157ae08",
+    "claims_reviewed":  [
+                            "CLM-001",
+                            "CLM-002",
+                            "CLM-005"
+                        ],
+    "summary":  "Novelty is plausible at the intersection of A2A commerce and fraud detection, but the standalone manuscript does not yet demonstrate that novelty with a complete, auditable literature position.",
+    "strengths":  [
+                      "The manuscript identifies relevant adjacent areas: botnet detection, HFT manipulation, reputation attacks, and adversarial ML.",
+                      "The local project contains a much richer literature survey that can be folded into the paper."
+                  ],
+    "findings":  [
+                     {
+                         "issue_id":  "REF-002",
+                         "claim_ids":  [
+                                           "CLM-001",
+                                           "CLM-002",
+                                           "CLM-005"
+                                       ],
+                         "severity":  "major",
+                         "summary":  "The literature and source positioning is too thin for the novelty and urgency claims.",
+                         "rationale":  "The reference list is mostly placeholders or broad sources. Moltbook is not concretely identified, the ERC-8004 and Dune sources are not enough to support the broader banking-fraud and historical-lag claims, and the manuscript itself says additional references remain to be completed.",
+                         "evidence_refs":  [
+                                               "GPD/review-input/agent-economy-fraud-arxiv.md#References GPD/review-input/agent-economy-fraud-arxiv.md#Limitations"
+                                           ],
+                         "manuscript_locations":  [
+                                                      "GPD/review-input/agent-economy-fraud-arxiv.md:References"
+                                                  ],
+                         "support_status":  "partially_supported",
+                         "blocking":  true,
+                         "required_action":  "Complete the bibliography from the literature survey, add concrete Moltbook source metadata, and cite specific fraud-lag and banking-fraud-detection literature for the novelty and timing claims."
+                     }
+                 ],
+    "proof_audits":  [
+
+                     ],
+    "confidence":  "medium",
+    "recommendation_ceiling":  "major_revision"
+}

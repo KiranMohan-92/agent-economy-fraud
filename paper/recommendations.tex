@@ -3,10 +3,14 @@
 \section{Industry Recommendations}\label{sec:recommendations}
 
 We translate our detection-framework findings into a prioritized
-roadmap for financial institutions.  Each recommendation is scored on a
-weighted composite of \emph{impact} (40\%), \emph{urgency} (30\%),
-\emph{feasibility} (20\%), and \emph{cost} (10\%), then assigned to one
-of four priority tiers.
+roadmap for financial institutions.  P0 and P1 recommendations are
+directly supported by the framework's implemented signals or measured
+gaps.  P2 and P3 recommendations are policy and infrastructure
+hypotheses motivated by the threat model; they require independent legal,
+privacy, and operational validation before deployment.  Each
+recommendation is scored on a weighted composite of \emph{impact}
+(40\%), \emph{urgency} (30\%), \emph{feasibility} (20\%), and
+\emph{cost} (10\%), then assigned to one of four priority tiers.
 
 %% -----------------------------------------------------------------
 \subsection{Priority Matrix}\label{subsec:priorities}
@@ -61,10 +65,16 @@ of four priority tiers.
     \midrule
     \multicolumn{4}{@{}l}{\textit{P2 --- Medium-term (12--24 months, \$500K--\$2M)}} \\
     \addlinespace[2pt]
-    R6 & Biometric authentication mandate
+    R6 & Controller step-up authentication
        & P2 / 12--24\,mo
-       & Require step-up biometric verification for agent-initiated
-         transactions exceeding \$1{,}000. \\
+       & Require additional authentication of the controlling human or
+         legal entity for high-risk agent-initiated transactions. The
+         feasibility of this control is no longer hypothetical: production
+         agent wallets now ship default transaction-time step-up and
+         policy limits~\cite{metamask2026agentwallet}, and AP2 standardizes
+         consent mandates~\cite{ap2protocol2025}; the open item is
+         banking-side integration, and the biometric modality, if any,
+         should be selected only after privacy and accessibility review. \\
     \addlinespace[2pt]
     R7 & Forensic data retention
        & P2 / 12--24\,mo
@@ -136,7 +146,8 @@ protection and financial-crime regulations:
 \end{itemize}
 
 \noindent
-In summary, the P0 and P1 tiers are implementable today without
-regulatory friction; P2 items (R6--R8) will benefit from forthcoming
-guidance on AI-agent financial activity that several jurisdictions are
-actively developing.
+In summary, the P0 and P1 tiers are the recommendations most directly
+grounded in the measurements reported here.  P2 items (R6--R8) remain
+policy proposals: they may be useful, but they should be treated as
+requirements for further institutional and regulatory analysis rather
+than as validated outcomes of the detection experiment.

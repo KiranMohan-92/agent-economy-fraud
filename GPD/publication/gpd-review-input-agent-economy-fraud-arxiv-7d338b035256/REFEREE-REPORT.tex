@@ -1,0 +1,29 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\begin{document}
+\section*{Referee Report}
+\textbf{Recommendation:} major revision\\
+\textbf{Confidence:} medium\\
+\textbf{Manuscript:} \texttt{GPD/review-input/agent-economy-fraud-arxiv.md}
+
+The manuscript identifies a timely and plausible security problem: A2A commerce breaks several assumptions behind human-oriented fraud detection. The taxonomy, five-signal framework, and CHAIN\_7 negative result are useful. The paper is not ready in its current form because the title, abstract, and conclusion make stronger necessity, novelty, and deployment-timing claims than the standalone artifact supports.
+
+\section*{Major Issues}
+\begin{enumerate}[leftmargin=*]
+\item Claim scope is too strong; narrow necessity and 6--12 month exploitation claims to what is directly supported.
+\item Literature positioning is incomplete and must be made auditable against adjacent fraud-detection and adversarial-ML work.
+\item The hard-to-vary and completeness arguments need a claim-test map.
+\item Empirical claims need stronger caveats around cleaned-set AUC, label noise, precision, and inactive Cross-Platform coverage.
+\item Venue/readiness framing should shift toward an early measurement and detection-framework preprint.
+\end{enumerate}
+
+\section*{Minor Issues}
+\begin{itemize}[leftmargin=*]
+\item Reconcile the implementation test count: 32 versus 47 tests.
+\item Separate validated detection recommendations from broader policy proposals.
+\end{itemize}
+
+\section*{Required Revision Direction}
+A successful revision should narrow the main claim, complete the bibliography, add a claim-evidence table, move label-noise and inactive-signal caveats into the abstract/results, and present CHAIN\_7 as the most important architectural gap.
+\end{document}
