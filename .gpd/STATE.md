@@ -115,7 +115,29 @@ None — all 6 phases complete.
 
 ### Blockers/Concerns
 
-None.
+**REOPENED 2026-07-09 by post-completion critical review** (see `analysis/CRITIQUE-and-fixes-2026-07.md`).
+The prior "PASSED / 0 blocking issues" final verification was incorrect. Findings:
+
+- **BLOCKER (construct validity):** The real-data evaluation measures *agent identification*
+  (agent vs. human), not *fraud detection* (fraud vs. legitimate). Positives are all
+  ERC-8004 agents regardless of fraud. No experiment detects real agent fraud on real data.
+  Reframe applied to paper abstract + new limitation §; not resolvable without adjudicated
+  fraud labels (do not exist).
+- **FIXED (fusion defect):** Shipped composite AUC 0.515 was *below* best single signal
+  (NT 0.599) because below-chance TC (0.4647) held the 2nd-largest weight, derived from
+  non-reproducing phantom AUCs. Re-weighted by max(0, AUC−0.5) in `fusion.py`;
+  composite AUC now 0.622 (0.61±0.02 CV); 47/47 tests pass. *(2026-07-10: this
+  corrected AUC is provisional until preserved in an immutable end-to-end run
+  manifest; only the historical 0.5147 is reproduced by the preserved audit. See
+  `GPD/CLAIM-LEDGER.md` AEF-C006.)*
+- **FLAGGED (injection):** Self-validating + underpowered (address reuse collapses most
+  chains to a single scored address; "100% per-chain recall" ≈ 1 address). Demoted to
+  design-envelope sanity check in paper.
+- **FIXED (metric contradictions):** 665/548 agent-count conflation, phantom AUCs, test
+  count 32→47 corrected across paper + PROJECT.md. See `.gpd/AUDIT-metric-consistency.md`.
+- **OPEN (author action):** verify concurrent-work arXiv citations exist (not web-verified
+  here); add confidence intervals; specify the "+49.1%" baseline; consider PDF rebuild
+  (no LaTeX toolchain in this environment).
 
 ## Session Continuity
 

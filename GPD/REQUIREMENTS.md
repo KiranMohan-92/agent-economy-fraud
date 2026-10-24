@@ -1,113 +1,54 @@
-# Requirements: Agent Economy and Financial Fraud Prevention
+# Research-integrity and confirmatory requirements
 
-**Defined:** 2026-03-16
-**Core Research Question:** How do the necessary properties of agent-to-agent (A2A) commerce create fundamental vulnerabilities in banking fraud detection systems, and what agent-aware detection framework addresses these gaps?
+**Defined:** 2026-07-09  
+**Status vocabulary:** `complete`, `blocked-external`, `pending`, `withdrawn`
 
-## Primary Requirements
+## Integrity repair
 
-Requirements for the main research deliverable. Each maps to roadmap phases.
+| ID | Requirement | Status | Evidence |
+|---|---|---|---|
+| IR-01 | Separate observed registry proxy from autonomy, humanity, and fraud constructs. | complete | manuscript, code labels, claim ledger |
+| IR-02 | Replace the nine-invariant claim with a causal mandate-to-settlement model and explicit falsifiers. | complete | discovery, threat model |
+| IR-03 | Separate control, wallet, settlement, entity, market, and outcome observation planes. | complete | threat model |
+| IR-04 | Recompute historical metrics and correct averaging/threshold semantics. | complete | empirical audit, audit script |
+| IR-05 | Detect and repair event identity loss; fail closed without `evt_index`. | complete in code; historical data invalid | query, bridge, data manifest |
+| IR-06 | Repair injection pseudoreplication and demote results to motif sensitivity. | complete in code; old metrics withdrawn | generator, tests, audit |
+| IR-07 | Remove fraud decisions/adverse-action tiers from the research score. | complete | fusion implementation, manuscript |
+| IR-08 | Remove embedded credentials and document provider-side rotation. | code complete; rotation requires owner | ingestion scripts, SECURITY.md |
+| IR-09 | Mark legacy artifacts and prior final verification superseded. | complete | analysis/STATUS.md, VERIFICATION-FINAL.md |
+| IR-10 | Create a source-backed claim ledger and deep GPD discovery. | complete | GPD artifacts |
+| IR-11 | Run current software, static, manuscript, GPD regression, and adversarial review gates. | pending verification | verification report |
 
-### Discovery and Analysis
+## Confirmatory data and labels
 
-- [ ] **DISC-01**: Survey and analyze OpenClaw platform documentation for agent-to-agent messaging and session management behavior
-- [ ] **DISC-02**: Survey and analyze Moltbook platform documentation for agent social platform behavior, listings, and reputation systems
-- [ ] **DISC-03**: Conduct literature survey on multi-agent economic systems and fraud detection theory
-- [ ] **DISC-04**: Research data acquisition methods for A2A transaction data (API access, public datasets, synthetic generation)
+| ID | Requirement | Status | Pass condition |
+|---|---|---|---|
+| CD-01 | Immutable event-complete transaction release. | blocked-external | versioned query/cutoff, `(chain, tx_hash, evt_index)`, schema, license, SHA-256 |
+| CD-02 | Verified executor/control labels with explicit unknown class. | blocked-external | registry owner, current wallet, service, execution and controller evidence separated |
+| CD-03 | Independently adjudicated task outcomes. | blocked-external | authorization, deception, victim harm, proceeds/manipulation and case disposition as applicable |
+| CD-04 | Post-registration and entity-resolved inclusion flow. | blocked-external | cohort diagram and timestamped evidence without future leakage |
+| CD-05 | Privacy/governance review. | blocked-external | lawful basis, minimization, access/retention, DPIA assessment, sharing controls |
 
-### Taxonomy Development
+## Confirmatory methods
 
-- [ ] **TAXO-01**: Map human behavioral invariants that fraud detection relies on (velocity limits, biometrics, device fingerprinting, location constraints)
-- [ ] **TAXO-02**: Identify agent properties that violate each human invariant
-- [ ] **TAXO-03**: Classify A2A fraud attack vectors by invariant violation type
-- [ ] **TAXO-04**: Validate taxonomy using Deutsch's hard-to-vary criterion
+| ID | Requirement | Status | Pass condition |
+|---|---|---|---|
+| CM-01 | Preregister construct, unit, features, direction, benign twins, model, metrics and kill criteria. | pending | timestamped plan before final holdout |
+| CM-02 | Outer temporal or connected-component holdout. | pending | cohort cleaning, graph construction, fitting, calibration and thresholding all train-only |
+| CM-03 | Compare with established control baselines. | pending | incremental lift and uncertainty on untouched data |
+| CM-04 | Capacity and intervention evaluation. | pending | calibrated precision/recall at capacity plus measured harm reduction |
+| CM-05 | Independent red team and held-out generators. | pending | realistic histories, benign automation twins, sufficient entity counts |
+| CM-06 | Clean-checkout and external reproduction. | pending | one command from immutable inputs produces machine-checked tables |
 
-### Framework Design
+## Claim gates
 
-- [ ] **FRAM-01**: Design agent-aware fraud detection methodology addressing identified blind spots
-- [ ] **FRAM-02**: Specify agent-invariant signals for fraudulent transaction detection
-- [ ] **FRAM-03**: Analyze privacy preservation requirements for proposed detection methods
-- [ ] **FRAM-04**: Define computational requirements for real-time detection
-
-### Validation and Recommendations
-
-- [ ] **VALD-01**: Test framework recommendations against available A2A transaction data or realistic simulation
-- [ ] **VALD-02**: Verify hard-to-vary criterion for core explanations
-- [ ] **VALD-03**: Synthesize industry recommendations with implementation guidance
-- [ ] **VALD-04**: Produce priority-ranked action items for banking/fintech adaptation
-
-## Follow-up Requirements
-
-Deferred to future work or follow-up paper. Tracked but not in current roadmap.
-
-### Extended Analysis
-
-- **EXT-01**: Empirical validation with production-scale A2A transaction data
-- **EXT-02**: Legal and regulatory framework analysis for agent commerce liability
-- **EXT-03**: Cross-platform analysis beyond OpenClaw/Moltbook ecosystem
-
-## Out of Scope
-
-Explicitly excluded. Documented to prevent scope creep.
-
-| Topic                   | Reason                                                     |
-| ----------------------- | ---------------------------------------------------------- |
-| General AI adversarial ML | Only agent-specific properties are in scope              |
-| Policy implementation    | Framework design only; implementation details are separate |
-| Crypto-specific attacks  | Focus on banking rails, not blockchain-specific vectors    |
-
-## Accuracy and Validation Criteria
-
-Standards that results must meet before being considered complete.
-
-| Requirement      | Accuracy Target                      | Validation Method                                    |
-| --------------- | ------------------------------------ | --------------------------------------------------- |
-| DISC-01 to 04   | Complete coverage of documentation   | Cross-reference with platform sources                |
-| TAXO-01 to 04   | Complete mapping of invariants        | Internal consistency validation                     |
-| FRAM-01 to 04   | Self-consistent framework design      | Review against defined requirements                  |
-| VALD-01         | Detects agent fraud human systems miss | Empirical testing on A2A data or simulation           |
-| VALD-02         | Meets hard-to-vary criterion          | Human review of explanatory power                   |
-
-## Contract Coverage
-
-Make the scoping contract visible in requirement form so planning does not drift.
-
-| Requirement    | Decisive Output / Deliverable              | Anchor / Benchmark / Reference                | Prior Inputs / Baselines | False Progress To Reject                  |
-| -------------- | ----------------------------------------- | --------------------------------------------- | ------------------------ | ----------------------------------------- |
-| DISC-01 to 04  | Platform analysis + literature survey      | OpenClaw/Moltbook docs, academic literature   | None                     | Abstract analysis without platform grounding|
-| TAXO-01 to 04  | A2A fraud attack taxonomy                  | Human invariant mapping                      | Platform analysis         | Generic classification without invariant basis |
-| FRAM-01 to 04  | Agent-aware detection framework            | Empirical validation requirement              | Taxonomy                 | Theoretical-only framework without testing  |
-| VALD-01 to 04  | Industry recommendations + validation       | Empirical test against A2A data               | Framework                 | Recommendations without implementation path |
-
-## Traceability
-
-Which phases cover which requirements. Updated during roadmap creation.
-
-| Requirement | Phase                              | Status  |
-| ----------- | ---------------------------------- | ------- |
-| DISC-01     | Phase 1: Discovery and Taxonomy      | Pending |
-| DISC-02     | Phase 1: Discovery and Taxonomy      | Pending |
-| DISC-03     | Phase 1: Discovery and Taxonomy      | Pending |
-| DISC-04     | Phase 1: Discovery and Taxonomy      | Pending |
-| TAXO-01     | Phase 2: Modeling and Analysis       | Pending |
-| TAXO-02     | Phase 2: Modeling and Analysis       | Pending |
-| TAXO-03     | Phase 2: Modeling and Analysis       | Pending |
-| TAXO-04     | Phase 2: Modeling and Analysis       | Pending |
-| FRAM-01     | Phase 3: Detection Framework Design  | Pending |
-| FRAM-02     | Phase 3: Detection Framework Design  | Pending |
-| FRAM-03     | Phase 3: Detection Framework Design  | Pending |
-| FRAM-04     | Phase 3: Detection Framework Design  | Pending |
-| VALD-01     | Phase 4: Validation and Recommendations | Pending |
-| VALD-02     | Phase 4: Validation and Recommendations | Pending |
-| VALD-03     | Phase 4: Validation and Recommendations | Pending |
-| VALD-04     | Phase 4: Validation and Recommendations | Pending |
-
-**Coverage:**
-
-- Primary requirements: 16 total
-- Mapped to phases: 16
-- Unmapped: 0
-
----
-
-_Requirements defined: 2026-03-16_
-_Last updated: 2026-03-16 after initial definition_
+- No `agent` claim above registry association without the corresponding evidence
+  tier.
+- No `fraud`, `AML`, or `market abuse` metric without task-specific adjudicated
+  labels.
+- No `false-positive rate` when the comparison class is unknown.
+- No `robustness` claim when the detector informed the generator.
+- No banking or production claim from public Base-chain transfers.
+- No deployment recommendation before CM-04 and governance review pass.
+- No completion claim based only on file presence, internal arithmetic, or unit
+  tests.

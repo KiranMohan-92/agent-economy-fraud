@@ -1,324 +1,184 @@
-% =============================================================
-%  Section 3 — Threat Model: Eight Attack Chains
-% =============================================================
+% threat_model.tex --- role-, plane-, and outcome-aware threat hypotheses
 
-\section{Threat Model: Eight Attack Chains}\label{sec:threat}
+\section{Threat Model: Roles, Data Planes, and Outcomes}\label{sec:threat}
 
-The preceding section established that agent-to-agent (A2A) commerce
-introduces transaction patterns for which no human behavioral prior
-exists.  We now make this concrete: starting from the \emph{documented}
-capabilities of the OpenClaw platform~\cite{openclaw2026}, we derive
-eight attack chains that exploit the gap between what fraud-detection
-systems assume and what autonomous agents can actually do.
+We model failures of delegated payment authority, not ``fraudulent agents'' as
+an actor class.  An adversary may be a malicious principal, a party that
+compromises an otherwise legitimate agent, a malicious tool or counterparty, or
+a set of colluding controllers.  The agent may therefore be an instrument, a
+victim, or a participant.  A financial-crime conclusion additionally requires
+evidence of the relevant outcome.
 
-Each chain is grounded in a specific API call or composition of calls
-available to any OpenClaw session.  We emphasize that none of these
-chains require zero-day exploits or undocumented behavior; they follow
-directly from the platform's published interface.
-\Cref{tab:attack_chains} summarizes all eight chains, their difficulty
-rating, the invariant each violates, and the detection signal most
-sensitive to the resulting anomaly.
+\subsection{Scope and Preconditions}
 
-% ---- Summary table ----
+The observed environment is a public blockchain settlement plane, optionally
+joined to control- and wallet-plane telemetry.  We assume that an agent can
+invoke tools only when a deployment grants that capability, and that a transfer
+can settle only when a wallet or custodian authorizes a valid transaction.
+Session orchestration APIs such as those documented by OpenClaw
+\cite{openclaw2026} demonstrate control-plane composition; they are not payment
+primitives and do not by themselves create wallets, keys, balances, or signed
+transactions.  Account-abstraction and agent-payment designs make the missing
+authorization layer explicit\cite{erc4337,ap2protocol2025,zhang2026sok}.
+
+The protected assets are (i) mandate integrity, (ii) instruction and tool-call
+provenance, (iii) wallet credentials and policy, (iv) funds and market
+integrity, and (v) evidence needed for investigation.  Consensus attacks,
+cryptographic breaks, and physical coercion are outside scope.  We also do not
+assume that registry membership, automation, high velocity, or cross-chain
+activity is harmful.
+
+\subsection{Eight Stable Scenario Handles}
+
+\Cref{tab:attack_chains} retains the eight scenario identifiers used by the
+experiments, but reclassifies them by mechanism and required evidence.  They
+are threat hypotheses and test handles, not fraud labels or difficulty tiers.
+
 \begin{table}[t]
   \centering
-  \caption{%
-    Eight attack chains derived from OpenClaw platform capabilities.
-    Difficulty reflects the sophistication required to execute the
-    chain, not the difficulty of detection.
-    \textsuperscript{*}Out of scope for current human-assumption
-    detection systems.
-    \textsuperscript{\dag}Out of scope for per-address scoring
-    architectures.%
-  }
+  \caption{Threat hypotheses by role, observable plane, and outcome status.}
   \label{tab:attack_chains}
   \small
-  \begin{tabularx}{\textwidth}{@{}l l X l l@{}}
+  \begin{tabularx}{\textwidth}{@{}c p{2.9cm} p{3.1cm} X@{}}
     \toprule
-    \textbf{Chain} & \textbf{Attack} & \textbf{Invariant Violated}
-      & \textbf{Difficulty} & \textbf{Primary Signal} \\
+    \textbf{ID} & \textbf{Scenario} & \textbf{Primary plane} &
+      \textbf{What is required for a financial-crime claim} \\
     \midrule
-    CHAIN\_1 & Agent Enumeration
-      & Account visibility     & Easy      & Network Topology \\
-    CHAIN\_2 & History Extraction
-      & Transaction privacy    & Medium    & NT, Value Flow \\
-    CHAIN\_3 & Async Flooding
-      & Velocity               & Medium    & Temporal Consistency \\
-    CHAIN\_4 & Disposable Agent Army
-      & Identity persistence   & Hard      & Network Topology \\
-    CHAIN\_5 & Cross-Platform Identity
-      & Channel isolation      & Out-of-scope\textsuperscript{*}
-      & Econ.\ Rationality, NT \\
-    CHAIN\_6 & Behavioral Mimicry
-      & Unique fingerprint     & Out-of-scope\textsuperscript{*}
-      & Temporal Consistency \\
-    CHAIN\_7 & Swarm Intelligence
-      & Coordination latency   & Out-of-scope\textsuperscript{\dag}
-      & Collective (gap) \\
-    CHAIN\_8 & Market Manipulation
-      & Reaction time          & Out-of-scope\textsuperscript{*}
-      & Value Flow, ER \\
+    1 & Agent enumeration & Control & Unauthorized discovery plus a linked
+      harmful action; discovery alone is reconnaissance. \\
+    2 & Context/history extraction & Control & Unauthorized access or use;
+      an on-chain transfer graph cannot establish a private read. \\
+    3 & High-rate execution & Wallet, settlement & A valid payment capability
+      and evidence that the execution exceeded mandate or caused harm. \\
+    4 & Disposable identity or wallet fan-out & Wallet, settlement & Distinct
+      credentials, funding/control linkage, and an abusive objective. \\
+    5 & Cross-domain identity and value movement & Settlement, outcome & Entity
+      resolution plus a specified laundering, sanctions, or fraud hypothesis;
+      multi-chain presence is otherwise benign. \\
+    6 & Behavioral mimicry & Any monitored plane & A linked predicate offense;
+      mimicry is an evasion method, not an outcome. \\
+    7 & Coordinated multi-entity execution & Settlement, outcome & Evidence of
+      common control or coordination and a harmful collective objective. \\
+    8 & Manipulation or laundering pattern & Settlement, market, outcome &
+      Typology-specific trade, ownership, market-impact, or proceeds evidence. \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-The remainder of this section details the four chains that are most
-instructive for detection design: async flooding (\cref{subsec:chain3}),
-disposable agent armies (\cref{subsec:chain4}), the behavioral mimicry
-paradox (\cref{subsec:chain6}), and swarm intelligence
-(\cref{subsec:chain7}).  The other four chains are summarized in
-\cref{subsec:chains_other}.
+\subsection{CHAIN\_3: High-Rate Execution}\label{subsec:chain3}
 
+Automation can compress the interval between instruction and attempted action.
+That is an amplifier, not a complete attack.  The causal scenario is:
 
-% ============================================================
-\subsection{CHAIN\_3: Async Flooding}\label{subsec:chain3}
+\begin{center}
+compromised or malicious instruction $\rightarrow$ authorized payment tool
+$\rightarrow$ repeated wallet approvals $\rightarrow$ settlement and harm.
+\end{center}
 
-\paragraph{Mechanism.}
-The OpenClaw \texttt{sessions\_send} API accepts a
-\texttt{timeoutSeconds} parameter.  When set to zero, the call returns
-immediately---it fires a transaction without waiting for confirmation.
-An agent can therefore issue transactions as fast as the network will
-accept them, bounded only by RPC round-trip latency (approximately
-400\,ms on Base~L2).
+The necessary preconditions are an accessible payment tool, signing authority,
+funds, and a rail that accepts the transactions.  Wallet limits, nonce rules,
+gas, service quotas, and policy checks can all bind throughput.  A
+fire-and-forget messaging call establishes none of these facts.  Conversely,
+high throughput can be legitimate in market making, payroll, treasury, or
+machine-to-machine settlement.  Detection therefore requires mandate deviation
+or outcome evidence in addition to rate.
 
-\paragraph{Velocity arithmetic.}
-The resulting throughput is straightforward to compute:
-\begin{equation}\label{eq:async_velocity}
-  v_{\text{async}} = \frac{1}{0.4\;\text{s}}
-                    = 2.5\;\text{tx/s}
-                    = 9{,}000\;\text{tx/h}.
-\end{equation}
-For comparison, a human operator interacting through a banking
-interface sustains roughly 100 transactions per day on average
-($v_{\text{human,avg}} \approx 4.2$\;tx/h).  A power user
-executing rapid successive transactions through a mobile app
-achieves at most $v_{\text{human,peak}} \approx 20$\;tx/h.
-We report the velocity amplification factor as a \emph{peak-to-peak}
-comparison, which we consider the fairest baseline:
-\begin{equation}\label{eq:velocity_amp}
-  \alpha_{v,\text{peak}} = \frac{v_{\text{async}}}{v_{\text{human,peak}}}
-           = \frac{9{,}000\;\text{tx/h}}{20\;\text{tx/h}}
-           = 450.
-\end{equation}
-For completeness, the average-to-average factor is
-$\alpha_{v,\text{avg}} = 9{,}000 / 4.2 \approx 2{,}143$, and the
-peak-agent-to-average-human factor exceeds $10^{6}$ when computed
-on a daily basis---but this last comparison is apples-to-oranges
-and we do not rely on it.  The qualitative conclusion is robust
-across all three comparisons: agent throughput exceeds human
-throughput by at least two orders of magnitude, far beyond any
-velocity threshold in production rule engines.
-Critically, this is not a theoretical upper bound---it is the
-\emph{default} behavior of a single agent calling a documented
-API with a single parameter change.
+Useful controls exist primarily before settlement: per-mandate value and count
+limits, beneficiary scopes, contract allowlists, transaction simulation,
+step-up authorization, and rapid revocation.  Settlement velocity may support
+triage, but a human-rate threshold is neither necessary nor sufficient for
+fraud.
 
-\paragraph{Why this matters for detection.}
-No velocity cap in a traditional rule engine is calibrated for
-throughput six orders of magnitude above human norms.
-The Temporal Consistency signal (\cref{subsec:signals}) catches
-async flooding through two sub-signals: burst detection, which
-flags sustained inter-transaction intervals below 400\,ms, and
-circadian violation, which flags activity outside any plausible
-human waking window when sustained at this rate.  Importantly, an
-attacker who throttles the flood to evade velocity rules
-sacrifices the economic advantage of the attack, creating a
-natural deterrent even without perfect detection.
+\subsection{CHAIN\_4: Disposable Identity or Wallet Fan-Out}\label{subsec:chain4}
 
+Creating an agent process is not the same as creating a financially capable
+identity.  A Sybil payment scenario requires distinct accounts or credentials,
+funding, and authority to transact.  Regulated accounts can also impose
+onboarding and beneficial-owner controls even when software instances are cheap.
+The classical Sybil problem therefore remains relevant\cite{douceur2002}, but
+its cost must be measured at the wallet, account, and funding layers rather
+than inferred from session creation.
 
-% ============================================================
-\subsection{CHAIN\_4: Disposable Agent Army}\label{subsec:chain4}
+The settlement-plane hypothesis is a group of recently activated addresses
+linked by common funding, beneficiaries, contract interactions, or timing.
+Those features can support entity resolution or coordinated-abuse detection;
+they do not establish intent on their own.  Legitimate distributors, relayers,
+batch processors, and account-abstraction infrastructure are necessary benign
+comparators.  Cleanup of an off-chain session does not erase immutable
+settlement records, although it may remove useful control-plane provenance if
+logs are not retained under an appropriate policy.
 
-\paragraph{Mechanism.}
-The \texttt{sessions\_spawn} API creates sub-agents with configurable
-lifecycle parameters.  Two parameters are critical:
-\texttt{cleanup: "delete"} removes all traces of the agent after the
-session ends, and \texttt{pruneAfter: "1h"} sets an automatic
-expiration.  Combined, these allow an orchestrator to create agents
-that exist just long enough to execute a transaction and then vanish.
+\subsection{CHAIN\_6: Behavioral Mimicry}\label{subsec:chain6}
 
-\paragraph{Scale.}
-Each spawn call completes in under one second.  An orchestrator
-can therefore instantiate 100 sub-agents in fewer than 100 seconds,
-each of which receives a fresh address with a clean reputation
-slate.  After one hour, every sub-agent is pruned, leaving no
-persistent identity for reputation systems to score.
+Mimicry is an evasion strategy applied to another threat, not a standalone
+financial crime.  An adaptive executor can reduce conspicuous regularity by
+sampling times, amounts, and counterparties from conditional distributions.
+Deterministic low-variance replay is one possible strategy, but modern software
+can also use pseudorandom or learned stochastic policies.  It is therefore not
+generally true that machine imitation must be ``too perfect.''
 
-\paragraph{The identity-persistence assumption.}
-Contemporary fraud-detection systems universally assume that an
-identity, whether a bank account, a wallet address, or a user ID,
-persists long enough to accumulate a behavioral history.  Reputation
-scores, velocity counters, and behavioral models all depend on
-this assumption.  The disposable agent army violates it
-categorically: each agent's history is at most one hour long,
-and typically consists of a single transaction.
+The current injection tests only a deliberately regular generator.  Its
+detection shows that the implementation responds to that signature; it does
+not establish an impossibility result for mimicry.  A credible evaluation must
+hold out attack generators, include adaptive stochastic policies, and test
+whether the signal adds value at a fixed false-positive budget.  Provenance,
+mandate, and wallet-policy evidence is less dependent on behavioral appearance
+than timing alone.
 
-\paragraph{Detection via Network Topology.}
-Although individual disposable agents are difficult to fingerprint,
-the \emph{orchestrator} that spawns them is not.  The Network
-Topology signal (\cref{subsec:signals}) detects this pattern through
-sender centrality: a single address that fans out to dozens of
-previously unseen addresses within a narrow time window produces an
-anomalous hub in the transaction graph.  The addresses themselves
-may be ephemeral, but the star topology they form is a durable
-structural invariant of the attack.
+\subsection{CHAIN\_7: Coordinated Multi-Entity Execution}\label{subsec:chain7}
 
+Coordination can distribute activity so that each address has little history.
+This creates a unit-of-analysis problem for the present per-address scorer: a
+collective pattern cannot be inferred from isolated address histories.  The
+appropriate unit may instead be an entity cluster, funding component,
+beneficiary neighborhood, or synchronized event window.  Graph-based fraud and
+AML research already provides relevant methods\cite{pourhabibi2020,wei2021};
+the empirical question is whether they improve detection for a specified
+agentic-payment outcome.
 
-% ============================================================
-\subsection{CHAIN\_6: Behavioral Mimicry Paradox}\label{subsec:chain6}
+Simultaneity and equal amounts are not sufficient evidence of collusion.
+Airdrops, payroll, bridges, market infrastructure, and batched contract calls
+can generate similar patterns.  A collective detector therefore needs benign
+process labels, controller or funding linkage, and an independently established
+harm predicate.
 
-\paragraph{Mechanism.}
-The \texttt{sessions\_history} API returns the complete behavioral
-profile of any agent---its transaction timestamps, amounts,
-counterparties, and message contents.  A malicious agent can query
-this history, compute the target's statistical fingerprint (mean
-inter-transaction interval, amount distribution, preferred
-counterparties), and mimic it in its own transactions.
+\subsection{Remaining Scenario Handles}\label{subsec:chains_other}
 
-\paragraph{Mimicry quality.}
-An agent programmed to replicate a target's timing distribution can
-achieve a coefficient of variation (CV) in inter-transaction intervals
-below 0.01---effectively perfect regularity.  This might seem like a
-successful evasion: the mimic's transactions ``look like'' the
-target's.
+\paragraph{CHAIN\_1: Enumeration.}
+Registry or session discovery can be intended platform behavior.  Unauthorized
+enumeration is a control-plane access problem.  Unless the discovery operation
+itself emits a transaction, transfer topology cannot observe it; a dust-transfer
+proxy tests a different behavior.
 
-\paragraph{The paradox.}
-In practice, this mimicry makes the agent \emph{more} detectable, not
-less.  The reason is that real agents---even automated ones operating
-legitimately---exhibit substantial timing variability due to network
-latency jitter, queue contention, rate-limit backoffs, and varying
-computational loads.  Empirically, we observe $\cvt = 1.87$ for
-genuine agent traffic (see \cref{sec:evaluation}).  An entity
-transacting with $\cvt < 0.05$ is performing an act that no real
-system produces organically: it is \emph{too regular}.
+\paragraph{CHAIN\_2: Context or history extraction.}
+The relevant evidence is an authorization decision and access log for private
+context.  Repeated transfers to one address do not demonstrate that a history
+API was read.  Any later fraud or market-abuse claim must link the access to a
+separate harmful action.
 
-\begin{equation}\label{eq:mimicry_paradox}
-  \cvt_{\text{mimic}} < 0.05 \ll \cvt_{\text{real}} \approx 1.87
-  \quad \Longrightarrow \quad
-  \text{``too perfect'' regularity is an agent-invariant signal.}
-\end{equation}
+\paragraph{CHAIN\_5: Cross-domain identity and value movement.}
+The same controller may legitimately operate across chains, venues, or payment
+rails.  Cross-domain activity becomes relevant only under a specified hypothesis
+such as laundering, sanctions evasion, account compromise, or inconsistent
+mandate.  Testing that hypothesis requires entity linkage and outcome context;
+a single-chain micro-payment pattern is not a substitute.
 
-\paragraph{Empirical justification of the CV\,=\,0.05 threshold.}
-The decision boundary at $\cvt = 0.05$ was derived from the observed
-CV distributions across three populations in our evaluation data:
-\begin{itemize}[nosep]
-  \item \textbf{ERC-8004 registered agents} ($n = 665$):
-    median CV = 1.87, interquartile range [0.92, 2.64].
-    No registered agent falls below CV = 0.31.
-  \item \textbf{Cleaned human counterparties} ($n = 1{,}069$):
-    median CV = 1.42, interquartile range [0.68, 2.21].
-    Two addresses (0.19\%) fall below CV = 0.05, both
-    identified on manual inspection as automated market-maker
-    contracts misclassified as human.
-  \item \textbf{Simulated mimicry agents} (CHAIN\_6 injection,
-    $n = 82$): median CV = 0.003, maximum CV = 0.008.
-    All fall below 0.05 by a factor of $\geq 6\times$.
-\end{itemize}
-The threshold of 0.05 sits in a natural gap: it is $6.2\times$ below
-the lowest legitimate-agent CV (0.31) and $10\times$ above the
-highest mimicry CV (0.008).  At this threshold, the false-positive
-rate against known-human traffic is 0.19\% (2/1,069), and 0\% against
-registered agents.  We acknowledge that automated-but-legitimate
-systems (market makers, scheduled payments, bridge relayers) may
-produce low-CV traffic; the two false positives at this threshold
-are precisely such systems.  A production deployment should
-maintain a whitelist of known automated services whose low-CV
-patterns are operationally expected.
+\paragraph{CHAIN\_8: Manipulation or laundering.}
+Market manipulation and money laundering must not be merged into a generic
+``fraud'' class.  Wash-trading analysis requires trades, venue mechanics,
+beneficial-control hypotheses, and market effects\cite{victor2021}.  Layering
+analysis instead concerns source, destination, intermediaries, and criminal
+proceeds.  Transfer-only features can generate leads, but adjudication depends
+on the typology-specific evidence plane.
 
-This is a bounded but important result.  Traditional fraud detection looks for
-anomalously \emph{irregular} behavior---spikes, outliers, deviations
-from the norm.  Agent-invariant detection must also look in the
-opposite direction: anomalous \emph{regularity} is equally
-diagnostic.  The Temporal Consistency signal captures this through its
-timing-regularity sub-signal, which fires on both tails of the CV
-distribution (\cref{subsec:signals}).
+\subsection{Evidence Boundaries and Falsification}
 
-
-% ============================================================
-\subsection{CHAIN\_7: Swarm Intelligence}\label{subsec:chain7}
-
-\paragraph{Mechanism.}
-The \texttt{sessions\_send} API supports broadcast delivery: a single
-message can instruct 100 or more agents simultaneously.  Each agent
-in the swarm executes exactly one transaction---say, purchasing a
-small amount of the same token---and then goes silent.
-
-\paragraph{Individual invisibility.}
-From the perspective of any per-address detection system, each swarm
-member is unremarkable: a single transaction of modest value,
-performed at a plausible time, from an address with no prior
-suspicious history.  No velocity rule fires.  No behavioral model
-has enough data to score.  The agent is individually invisible.
-
-\paragraph{Collective visibility.}
-Zoom out, however, and the swarm is unmistakable.  Fifty or more
-addresses, previously dormant, execute transactions of similar
-amounts to the same target within the same block or narrow time
-window.  The coordination is visible in the population distribution,
-even though it is invisible in any single address's history.
-
-\paragraph{The architectural blind spot.}
-This is not a detection failure per se---the signal is present in the
-data.  It is an \emph{architectural} failure: current fraud-detection
-systems score individual addresses, not populations.  There is no
-module that asks ``did 50 unrelated addresses just do the same thing
-at the same time?''  We identify this as a \textbf{collective blind
-spot} in~\cref{tab:attack_chains}, and the absence of a validated
-population-level signal is a known gap in our detection framework
-(\cref{subsec:signals}).
-
-\paragraph{Implications.}
-Closing this gap requires a fundamentally different detection
-primitive: one that operates on \emph{sets of addresses} rather than
-individual addresses.  We discuss candidate approaches---including
-graph-community detection over sliding windows and statistical tests
-for coordinated activation---in \cref{sec:recommendations}, while
-acknowledging that no validated implementation exists at the time of
-writing.
-
-
-% ============================================================
-\subsection{Remaining Attack Chains}\label{subsec:chains_other}
-
-\paragraph{CHAIN\_1: Agent Enumeration.}
-The OpenClaw agent registry is publicly queryable.  An adversary can
-enumerate all registered agents, their capabilities, and their
-communication endpoints, building a complete map of the agent
-ecosystem.  This violates the account-visibility invariant that
-underpins privacy-by-obscurity assumptions in traditional finance.
-The Network Topology signal detects enumeration through path-anomaly
-scoring: systematic querying of many endpoints produces a distinctive
-star-shaped access pattern.
-
-\paragraph{CHAIN\_2: History Extraction.}
-As noted in CHAIN\_6, the \texttt{sessions\_history} API exposes full
-transaction histories.  Even without mimicry, this violates
-transaction privacy: an adversary can reconstruct the complete
-financial profile of any agent.  Detection relies on a combination of
-Network Topology (unusual query patterns) and Value Flow (the
-extracted data enabling subsequent layering attacks).
-
-\paragraph{CHAIN\_5: Cross-Platform Identity.}
-An agent operating on multiple blockchains simultaneously---Base,
-Ethereum mainnet, Arbitrum---can exploit the channel-isolation
-assumption: no single-chain fraud detector sees the full picture.
-This chain is out of scope for current human-assumption
-systems because humans rarely transact on multiple chains
-simultaneously.  The Cross-Platform Correlation signal
-(\cref{subsec:signals}) is designed for exactly this case, though it
-remains inactive in our current single-chain implementation.
-
-\paragraph{CHAIN\_8: Market Manipulation.}
-Agents can react to on-chain events in milliseconds---faster than any
-human trader and faster than most monitoring systems.  By front-running
-price movements or exploiting stale oracle data, an agent can extract
-value in ways that violate the reaction-time invariant of human-paced
-markets.  The Value Flow and Economic Rationality signals detect the
-resulting anomalies: transactions that are economically rational only
-if the actor has sub-second information access.
-
-\medskip
-\noindent
-Taken together, these eight chains demonstrate that the A2A commerce
-surface is not merely larger than the human-commerce surface---it is
-\emph{qualitatively different}.  The next section presents a detection
-framework designed for this new surface.
+Each scenario is falsifiable at its claimed level.  A documented API supports
+capability only if its stated preconditions are met.  A synthetic pattern
+supports detector response only for that generator.  Registry-associated
+separation supports attribution only for the sampled owners and counterparties.
+Fraud, AML, or market-abuse effectiveness requires independent outcome labels.
+If joined mandate and wallet evidence shows that high-rate or coordinated
+transactions were authorized and legitimate, actor type and behavioral
+regularity must not override that evidence.  This ordering prevents an
+attribution score from becoming a proxy accusation.

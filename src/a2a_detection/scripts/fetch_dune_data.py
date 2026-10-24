@@ -19,9 +19,15 @@ PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DATA_DIR = PROJECT_ROOT / "data"
 QUERIES_DIR = PROJECT_ROOT / "queries"
 
-DUNE_API_KEY = os.environ.get("DUNE_API_KEY", "HrBeJCELgfMTjUBuGQgxvv3hafVS5YzB")
 DUNE_BASE = "https://api.dune.com/api/v1"
-HEADERS = {"x-dune-api-key": DUNE_API_KEY}
+
+
+def _dune_headers() -> dict[str, str]:
+    """Build authenticated headers without shipping a credential fallback."""
+    api_key = os.environ.get("DUNE_API_KEY")
+    if not api_key:
+        raise RuntimeError("DUNE_API_KEY is required; set it in the environment")
+    return {"x-dune-api-key": api_key}
 
 POLL_INTERVAL = 5  # seconds
 MAX_WAIT = 600  # 10 minutes
@@ -56,7 +62,7 @@ def create_query_via_mcp(name: str, sql: str) -> int:
     resp = httpx.post(
         DUNE_MCP_URL,
         headers={
-            **HEADERS,
+            **_dune_headers(),
             "Content-Type": "application/json",
             "Accept": "application/json, text/event-stream",
         },
@@ -111,7 +117,7 @@ def _mcp_call(tool_name: str, arguments: dict, timeout: int = 120) -> dict:
     resp = httpx.post(
         DUNE_MCP_URL,
         headers={
-            **HEADERS,
+            **_dune_headers(),
             "Content-Type": "application/json",
             "Accept": "application/json, text/event-stream",
         },
@@ -275,6 +281,7 @@ WITH agents(addr) AS (
 SELECT
     'base' AS chain,
     t.evt_tx_hash,
+    t.evt_index,
     t.evt_block_number,
     t.evt_block_time,
     t."from" AS sender,
@@ -284,12 +291,14 @@ FROM erc20_base.evt_transfer t
 INNER JOIN agents a ON t."from" = a.addr
 WHERE t.contract_address = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
   AND t.evt_block_date >= DATE '2024-06-01'
+  AND t.evt_block_date < DATE '2026-04-04'
 
 UNION ALL
 
 SELECT
     'base' AS chain,
     t.evt_tx_hash,
+    t.evt_index,
     t.evt_block_number,
     t.evt_block_time,
     t."from" AS sender,
@@ -299,12 +308,14 @@ FROM erc20_base.evt_transfer t
 INNER JOIN agents a ON t."to" = a.addr
 WHERE t.contract_address = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
   AND t.evt_block_date >= DATE '2024-06-01'
+  AND t.evt_block_date < DATE '2026-04-04'
 
 UNION ALL
 
 SELECT
     'ethereum' AS chain,
     t.evt_tx_hash,
+    t.evt_index,
     t.evt_block_number,
     t.evt_block_time,
     t."from" AS sender,
@@ -314,12 +325,14 @@ FROM erc20_ethereum.evt_transfer t
 INNER JOIN agents a ON t."from" = a.addr
 WHERE t.contract_address = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
   AND t.evt_block_date >= DATE '2024-06-01'
+  AND t.evt_block_date < DATE '2026-04-04'
 
 UNION ALL
 
 SELECT
     'ethereum' AS chain,
     t.evt_tx_hash,
+    t.evt_index,
     t.evt_block_number,
     t.evt_block_time,
     t."from" AS sender,
@@ -329,12 +342,14 @@ FROM erc20_ethereum.evt_transfer t
 INNER JOIN agents a ON t."to" = a.addr
 WHERE t.contract_address = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
   AND t.evt_block_date >= DATE '2024-06-01'
+  AND t.evt_block_date < DATE '2026-04-04'
 
 UNION ALL
 
 SELECT
     'bnb' AS chain,
     t.evt_tx_hash,
+    t.evt_index,
     t.evt_block_number,
     t.evt_block_time,
     t."from" AS sender,
@@ -344,12 +359,14 @@ FROM erc20_bnb.evt_transfer t
 INNER JOIN agents a ON t."from" = a.addr
 WHERE t.contract_address = 0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d
   AND t.evt_block_date >= DATE '2024-06-01'
+  AND t.evt_block_date < DATE '2026-04-04'
 
 UNION ALL
 
 SELECT
     'bnb' AS chain,
     t.evt_tx_hash,
+    t.evt_index,
     t.evt_block_number,
     t.evt_block_time,
     t."from" AS sender,
@@ -359,6 +376,7 @@ FROM erc20_bnb.evt_transfer t
 INNER JOIN agents a ON t."to" = a.addr
 WHERE t.contract_address = 0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d
   AND t.evt_block_date >= DATE '2024-06-01'
+  AND t.evt_block_date < DATE '2026-04-04'
 
 ORDER BY evt_block_time ASC"""
 
@@ -391,7 +409,6 @@ def run_query_05():
 
 def main():
     print("Dune Analytics Data Fetch for A2A Fraud Research")
-    print(f"API Key: {DUNE_API_KEY[:8]}...{DUNE_API_KEY[-4:]}")
     print()
 
     # Query 04: Base chain full histories (closes GAP-01 + GAP-02)

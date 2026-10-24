@@ -1513,6 +1513,7 @@ WITH agents(addr) AS (
 -- Outbound transfers (agent is sender)
 SELECT
     t.evt_tx_hash,
+    t.evt_index,
     t.evt_block_number,
     t.evt_block_time,
     t."from" AS sender,
@@ -1522,12 +1523,14 @@ FROM erc20_base.evt_transfer t
 INNER JOIN agents a ON t."from" = a.addr
 WHERE t.contract_address = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
   AND t.evt_block_date >= DATE '2025-01-01'
+  AND t.evt_block_date < DATE '2026-04-04'
 
 UNION ALL
 
 -- Inbound transfers (agent is receiver)
 SELECT
     t.evt_tx_hash,
+    t.evt_index,
     t.evt_block_number,
     t.evt_block_time,
     t."from" AS sender,
@@ -1537,5 +1540,6 @@ FROM erc20_base.evt_transfer t
 INNER JOIN agents a ON t."to" = a.addr
 WHERE t.contract_address = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
   AND t.evt_block_date >= DATE '2025-01-01'
+  AND t.evt_block_date < DATE '2026-04-04'
 
 ORDER BY evt_block_time ASC

@@ -1,37 +1,61 @@
-% limitations.tex — Section 8: Limitations and Future Work
+\section{Limitations and Claim Boundary}\label{sec:limitations}
 
-\section{Limitations and Future Work}\label{sec:limitations}
+\paragraph{Construct validity.}
+ERC-8004 registry ownership is not proof of a current verified agent wallet,
+operational service, autonomous execution, payment purpose, or fraud.  The
+comparison class is unknown, not human or legitimate.  The project therefore
+cannot estimate agent prevalence, fraud risk, or a human--agent error gap.
 
-We identify five limitations that bound the validity of our results and define the highest-priority directions for future work. We present these in order of estimated impact on reported metrics.
+\paragraph{Data integrity and availability.}
+The retained Stage~2 data were built with a lossy transaction-hash deduplication
+rule, and the corrected event-complete extraction has not yet been released.
+Load-bearing CSV, parquet, and result files are ignored by version control.
+Without an immutable public dataset, cutoff, query provenance, license, and
+hash manifest, third parties cannot reproduce the numerical audit from a clean
+checkout.
 
-\subsection{Label Quality}\label{sec:limit_labels}
+\paragraph{Selection, dependence, and leakage.}
+The cohort contains only registry proxies with observable Base USDC activity
+and counterparties surviving an activity filter.  Addresses share edges and
+components.  Feature design, cleaning, weighting, and threshold exploration
+used the same population, while graph features were computed before random
+address folds.  Nominal bootstrap and cross-fold intervals therefore understate
+model-selection and graph-dependence uncertainty.
 
-The most consequential limitation is the quality of negative-class labels. Our positive class---665 ERC-8004-registered agents~\cite{erc8004}---has verifiable on-chain provenance. The negative class, however, is constructed heuristically: counterparty addresses of known agents are labeled as human at approximately 0.7 confidence after the minimum-activity filter described in \cref{sec:eval_real}. This heuristic is fragile. Many ``human'' counterparties are in fact automated contracts: DEX routers, MEV bots, token distributors, and bridge relayers that exhibit programmatic behavioral signatures indistinguishable from those of autonomous agents. Their presence in the negative class inflates measured precision by rewarding the classifier for detecting automation that happens not to be ERC-8004-registered.
+\paragraph{Synthetic external validity.}
+Stage~1 is not reconstructable.  Stage~3 motifs were designed around the score,
+lack independently sampled benign twins, and originally reused addresses.
+They test code sensitivity, not real incidence, causal attack completion,
+adversarial robustness, or expected loss reduction.
 
-Obtaining verified human-controlled externally owned accounts (EOAs)---for example, addresses with hardware wallet signatures or proof-of-personhood attestations---would provide a clean negative class against which precision can be measured without circularity. We estimate that with clean labels, true precision lies in the 60--80\% range rather than the 82.36\% reported on synthetic data. The recall figure of 95.4\% on real data is less affected, since agent-class labels are derived from an on-chain registry rather than from heuristics.
+\paragraph{Observation gaps.}
+Public transfers do not reveal controller intent, mandate scope, prompt/tool
+provenance, wallet policy, key compromise, customer consent, deception, victim
+harm, case disposition, beneficial ownership, off-chain transfers, or order-book
+effects.  These gaps cannot be repaired by more elaborate modeling of the same
+four transaction features.
 
-\subsection{Collective Detection Architecture}\label{sec:limit_collective}
+\paragraph{Domain transfer.}
+Base USDC activity is not banking data.  Banks and payment providers observe
+authenticated customers, beneficiaries, devices, rails, payment messages,
+claims, sanctions/KYC context, investigations, and interventions.  No result
+here establishes transfer to bank fraud controls.  Fraud, AML, sanctions, and
+market-abuse surveillance also require separate legal hypotheses, labels,
+metrics, and operating processes.
 
-CHAIN\_7 (Swarm Intelligence) in our attack taxonomy (\cref{sec:threat}) requires population-level detection: identifying coordinated multi-agent behavior that is individually invisible. Our current framework scores each address independently. It cannot detect a swarm of agents that individually mimic human behavior but collectively execute a synchronized attack.
+\paragraph{Privacy and governance.}
+Publicly visible addresses and transaction metadata can remain personal data
+when linkable.  Entity resolution, profiling, and cross-institutional sharing
+require purpose limitation, minimization, access control, retention rules,
+lawful-basis analysis, and potentially a data-protection impact assessment.
+This work is not legal advice and has not undergone specialist privacy,
+financial-crime, fairness, or model-risk review.
 
-Addressing this gap requires a fundamentally different architecture. We propose three components: (1)~time-window clustering that groups transactions into overlapping windows at block-level granularity, (2)~amount synchronization detection that identifies statistically improbable value correlations across independent addresses within each window, and (3)~activation correlation scoring that measures the pairwise temporal co-occurrence of address activity over rolling horizons. Together, these components would enable per-population detection rather than per-address detection.
-
-This is an open problem. No production system implements collective behavioral detection at the 2-second block granularity required by Base chain transaction throughput. We consider this the highest-priority architectural gap in the agent fraud detection landscape.
-
-\subsection{Cross-Platform Signal}\label{sec:limit_cross_platform}
-
-The Cross-Platform (CP) signal receives zero weight in the composite detector because all evaluation data originates from a single chain (Base). CP is designed to detect behavioral inconsistencies when the same agent identity operates across multiple blockchains---for example, exhibiting different value distributions on Ethereum mainnet versus Base, or maintaining incompatible transaction schedules across chains. With single-chain data, CP provides no discriminative information and is correctly zeroed out by the AUC-proportional weighting scheme.
-
-Multi-chain evaluation data spanning Ethereum, BNB Chain, and Polygon would activate CP and likely improve composite AUC above the best single-signal AUC of 0.599 (Network Topology) reported in \cref{sec:eval_real}. The CREATE2 address derivation pattern documented in \cref{sec:introduction}---where agents deploy identical bytecode across chains to obtain deterministic addresses---provides a natural linkage mechanism for cross-chain identity resolution. We emphasize that this is no longer a peripheral ``future work'' item: with ERC-8004 now operating registries across ten or more chains and agent identities routinely spanning them, multi-chain behavior is the \emph{dominant} operating reality of the agent economy rather than an edge case. The inactivity of CP is therefore the single most consequential gap in the current single-chain evaluation, and collecting validated multi-chain agent transaction data is the highest-leverage next step.
-
-\subsection{Temporal Consistency as Canary Signal}\label{sec:limit_tc_canary}
-
-Temporal Consistency (TC) exhibits the steepest performance degradation between pre-cleaning and post-cleaning evaluation sets: AUC drops from 0.5683 to 0.4647, a decline of 18.2\%. This makes TC the most sensitive signal to label noise, but it also reveals a deeper structural vulnerability. TC detects deviations from human circadian and session-length patterns. These patterns are precisely the first behavioral dimension that agents can learn to mimic, because temporal regularities are low-dimensional, publicly observable, and trivially parameterizable.
-
-We therefore designate TC as the \emph{canary signal}: the first indicator that agent behavioral sophistication has advanced. We offer a testable prediction grounded in the framework of hard-to-vary explanations~\cite{deutsch2011}: within 12 months of this publication, TC standalone AUC will fall to $\leq 0.52$ on comparable datasets, while Network Topology (NT) will remain at $\geq 0.58$. NT is structurally harder to mimic because it depends on the global graph position of an address---a property that cannot be faked without acquiring genuine, diverse counterparty relationships. Monitoring the TC/NT divergence provides a quantitative early warning system for agent capability evolution.
-
-\subsection{Threat-Model Validity: From Pre-Crime to Early Documented Crime}\label{sec:limit_precrime}
-
-When the first draft of this work was prepared, no documented agent-payment fraud existed in the public record. That is no longer true. As of mid-2026 there are documented on-chain agent-payment incidents---most prominently a May~2026 prompt-injection attack that drained roughly \$150K--\$200K from an agent-controlled wallet on Base~\cite{grokbankr2026}---and operational telemetry documenting agent-impersonation fraud at scale (16.4~million spoofed agent requests in a two-month window~\cite{datadome2026}). We must therefore narrow our claim precisely: what remains undocumented is not agent-payment fraud in general, but \emph{systematic A2A-commerce fraud that exploits the specific behavioral-invariant blind spots modeled here}. The documented Base incident is an agent-\emph{as-victim} hijacking (external prompt injection capturing one agent's wallet), not the agent-\emph{as-fraudster} A2A commerce our threat model addresses; the DataDome figures are Web2 HTTP-layer impersonation, adjacent to but not identical with our on-chain payment model. Both corroborate the underlying invariant-failure mechanism (I2, I5, I6) without validating our detection framework against an in-scope incident.
-
-The epistemic status of our threat model is therefore mixed: the invariant-failure \emph{mechanism} is now evidenced in production, while the specific A2A-commerce attack chains remain demonstrated-feasible rather than observed-at-scale. The broader industry transition we anticipated is no longer a forward-dated scenario---it is underway: risk analyses report that autonomous agents compress financial-crime timelines~\cite{trmlabs2026}, banking guidance now calls explicitly for ``Know Your Agent'' behavioral monitoring~\cite{financialbrand2026}, and self-custodial agent wallets ship default transaction-time controls~\cite{metamask2026agentwallet}. Rather than forecast a 6--12 month window, we frame this paper as supplying the detection framework, open-source implementation, and institutional recommendations needed to measure the in-scope attack surface \emph{as} it is exercised, and we flag a confirmed in-scope A2A-commerce fraud case as the decisive future falsification test of the threat model.
+\paragraph{Current status.}
+The repository is a repaired research prototype with an explicit negative
+result and future protocol.  It is \textbf{not submission-ready as an empirical
+detection paper and not deployment-ready}.  The publication gate remains
+closed until the event-complete corpus and execution/outcome labels exist, an
+untouched confirmatory evaluation is run, the package reproduces from a clean
+checkout, and an independent review finds no blocking construct or provenance
+defect.

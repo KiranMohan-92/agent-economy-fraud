@@ -1,153 +1,147 @@
-% recommendations.tex — Section 7: Industry Recommendations
+% recommendations.tex --- evidence-gated research and control agenda
 
-\section{Industry Recommendations}\label{sec:recommendations}
+\section{Research and Control Recommendations}\label{sec:recommendations}
 
-We translate our detection-framework findings into a prioritized
-roadmap for financial institutions.  P0 and P1 recommendations are
-directly supported by the framework's implemented signals or measured
-gaps.  P2 and P3 recommendations are policy and infrastructure
-hypotheses motivated by the threat model; they require independent legal,
-privacy, and operational validation before deployment.  Each
-recommendation is scored on a weighted composite of \emph{impact}
-(40\%), \emph{urgency} (30\%), \emph{feasibility} (20\%), and
-\emph{cost} (10\%), then assigned to one of four priority tiers.
+The present evidence supports an offline attribution study and a threat-model
+agenda.  It does not support transaction blocking, fraud claims about
+registry-associated owners, or a production rollout.  Recommendations are
+therefore organized as evidence gates and control hypotheses rather than as a
+deployment roadmap.
 
-%% -----------------------------------------------------------------
-\subsection{Priority Matrix}\label{subsec:priorities}
+\subsection{Keep the Programs Separate}
 
-\Cref{tab:priorities} summarizes the full roadmap.
+Institutions and researchers should maintain separate objectives, labels, and
+success criteria for:
+\begin{enumerate}[leftmargin=*,nosep]
+  \item \textbf{owner or automation attribution}, including registry
+    association and verified controller type;
+  \item \textbf{control-plane security}, including prompt or tool injection,
+    credential compromise, mandate escalation, and provenance loss;
+  \item \textbf{fraud}, using authorization, deception, victim, loss, and case
+    outcomes;
+  \item \textbf{AML and sanctions}, using entity, source-of-funds, typology, and
+    investigative evidence; and
+  \item \textbf{market abuse}, using trades, beneficial-control hypotheses,
+    venue mechanics, and market impact.
+\end{enumerate}
+
+An attribution score may later be tested as one contextual feature in the other
+programs.  It should not supply their ground truth or trigger an adverse action
+by itself.
+
+\subsection{Control Hypotheses by Data Plane}
+
+The causal model points first to preventive and evidentiary controls that bind
+delegated authority.  \Cref{tab:control_hypotheses} lists candidate controls;
+the present experiment does not validate their operational effectiveness.
 
 \begin{table}[t]
   \centering
-  \caption{Recommended deployment roadmap, ordered by composite
-    priority score.  Cost estimates assume a mid-tier U.S.\ financial
-    institution.}
-  \label{tab:priorities}
+  \caption{Candidate controls implied by the causal model.}
+  \label{tab:control_hypotheses}
   \small
-  \begin{tabularx}{\textwidth}{@{}c l c X@{}}
+  \begin{tabularx}{\textwidth}{@{}p{2.6cm} p{5.0cm} X@{}}
     \toprule
-    \textbf{ID} & \textbf{Recommendation} & \textbf{Tier / Horizon} & \textbf{Rationale} \\
+    \textbf{Plane} & \textbf{Candidate control} & \textbf{Evidence to retain} \\
     \midrule
-    \multicolumn{4}{@{}l}{\textit{P0 --- Immediate (0--6 months, \$80K--\$200K)}} \\
-    \addlinespace[2pt]
-    R1 & Economic Rationality + Network Topology signals
-       & P0 / 0--6\,mo
-       & Highest individual AUC signals (NT\,=\,0.5990, ER\,=\,0.5152 on
-         cleaned labels; see \cref{tab:signal_auc}).
-         Deployable as scoring overlays on existing transaction-monitoring
-         pipelines.  Estimated cost: \$80K. \\
-    \addlinespace[2pt]
-    R2 & Agent-platform metadata detection
-       & P0 / 0--6\,mo
-       & Parse session metadata for OpenClaw session-key patterns
-         and ERC-8004 registry lookups.  Low engineering effort;
-         estimated cost: \$20K. \\
-    \midrule
-    \multicolumn{4}{@{}l}{\textit{P1 --- Near-term (6--12 months, \$100K--\$500K)}} \\
-    \addlinespace[2pt]
-    R3 & Velocity-threshold adjustment
-       & P1 / 6--12\,mo
-       & Current thresholds ($>$1{,}000\,tx/hr) miss agent-speed
-         activity.  Reduce to $>$100\,tx/hr for addresses flagged
-         by R1--R2. \\
-    \addlinespace[2pt]
-    R4 & Cross-channel identity correlation
-       & P1 / 6--12\,mo
-       & Detect \texttt{identityLinks}-type aggregation across
-         payment rails, flagging accounts whose identity graph
-         expands faster than human norms. \\
-    \addlinespace[2pt]
-    R5 & Collective-behavior detection prototype
-       & P1 / 6--12\,mo
-       & Time-window clustering for \textsc{Chain\_7}:
-         $\geq$10 new addresses transacting the same amount within
-         a narrow time window. \\
-    \midrule
-    \multicolumn{4}{@{}l}{\textit{P2 --- Medium-term (12--24 months, \$500K--\$2M)}} \\
-    \addlinespace[2pt]
-    R6 & Controller step-up authentication
-       & P2 / 12--24\,mo
-       & Require additional authentication of the controlling human or
-         legal entity for high-risk agent-initiated transactions. The
-         feasibility of this control is no longer hypothetical: production
-         agent wallets now ship default transaction-time step-up and
-         policy limits~\cite{metamask2026agentwallet}, and AP2 standardizes
-         consent mandates~\cite{ap2protocol2025}; the open item is
-         banking-side integration, and the biometric modality, if any,
-         should be selected only after privacy and accessibility review. \\
-    \addlinespace[2pt]
-    R7 & Forensic data retention
-       & P2 / 12--24\,mo
-       & Preserve session transcripts, tool-call logs, and agent
-         provenance metadata for 7~years to support post-incident
-         investigation. \\
-    \addlinespace[2pt]
-    R8 & Agent KYC framework
-       & P2 / 12--24\,mo
-       & Extend KYC/AML obligations to the controlling human or
-         legal entity behind agent wallets that transact above
-         regulatory thresholds. \\
-    \midrule
-    \multicolumn{4}{@{}l}{\textit{P3 --- Long-term (24--36 months, \$2M+)}} \\
-    \addlinespace[2pt]
-    R9  & Multi-chain monitoring integration
-        & P3 / 24--36\,mo
-        & Extend detection to Ethereum L1, Arbitrum, Optimism, and
-          Solana as agent activity spreads across chains. \\
-    \addlinespace[2pt]
-    R10 & Industry-standard agent-transaction labeling
-        & P3 / 24--36\,mo
-        & Contribute to or adopt a cross-industry standard for
-          tagging agent-originated transactions in SWIFT/ISO~20022
-          messages and on-chain metadata. \\
+    Control & Authenticated, bounded mandate; tool least privilege; separation
+      of content from executable instructions; versioned policy & Principal,
+      mandate, prompt/message provenance, tool call and policy decision \\
+    Wallet authorization & Per-mandate amount and count limits; beneficiary and
+      contract scopes; simulation; step-up; revocation and emergency stop &
+      Custody context, evaluated rule, approval, signature and denial log \\
+    Settlement & Typology-specific monitoring of new beneficiaries, shared
+      funding, flow and entity graph; rail-level rate limits where justified &
+      Transaction, fee, contract, chain, counterparty and entity-resolution data \\
+    Outcome & Delivery confirmation, dispute and loss capture, investigator
+      adjudication, model-feedback controls & Service result, customer claim,
+      case rationale, disposition and intervention outcome \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-\paragraph{Sequencing rationale.}
-P0 items deliver the highest risk-adjusted return: they leverage the two
-strongest signals identified in \Cref{sec:evaluation} (Network Topology
-AUC\,=\,0.5990, Economic Rationality AUC\,=\,0.5152 on cleaned labels) and require only
-rule-layer additions to existing transaction-monitoring systems.
-P1~items address velocity and coordination patterns that become
-exploitable once agents operate at scale.  P2 and P3~items require
-cross-functional investment (legal, compliance, infrastructure) and are
-sequenced to align with anticipated regulatory timelines.
+Mandate-bearing payment protocols and programmable wallets provide concrete
+design patterns for the first two planes
+\cite{ap2protocol2025,li2026a402,metamask2026agentwallet}.  Their presence does
+not prove that a given deployment is safe; it makes the policy and evidence
+requirements testable.
 
-%% -----------------------------------------------------------------
-\subsection{Privacy Compliance}\label{subsec:privacy}
+\subsection{Evidence Gates Before Operational Use}
 
-All P0 recommendations are designed to comply with applicable data
-protection and financial-crime regulations:
+The following gates should be satisfied in order.  Failure at an earlier gate
+invalidates later performance claims.
 
-\begin{itemize}[nosep]
-  \item \textbf{On-chain data.}  Blockchain transaction records are
-    publicly available by design.  Analyzing agent addresses, transfer
-    volumes, and temporal patterns on Base chain does not constitute
-    processing of personal data under GDPR~\cite{gdpr2016} or
-    CCPA~\cite{ccpa2018}, because on-chain addresses are pseudonymous
-    and our detection pipeline does not attempt to link them to natural
-    persons.
-  \item \textbf{Agent-address analysis.}  The Economic Rationality and
-    Network Topology signals operate on transaction-graph features
-    (degree distribution, value entropy, timing regularity).  No
-    personally identifiable information is ingested or produced.
-  \item \textbf{Agent KYC (R8).}  When KYC obligations apply---\ie
-    when agent-controlled wallets transact above thresholds set by the
-    Bank Secrecy Act~\cite{bsa1970} and its implementing
-    regulations---the obligation attaches to the \emph{controlling human
-    or legal entity}, not to the agent itself.  This preserves the
-    existing beneficial-ownership framework while closing the
-    agent-intermediation gap.
-  \item \textbf{Session-transcript retention (R7).}  Forensic retention
-    of agent session logs must be implemented with appropriate access
-    controls and data-minimization safeguards consistent with GDPR
-    Article~5(1)(c) and GLBA Safeguards Rule requirements.
+\begin{enumerate}[leftmargin=*,nosep,label=\textbf{G\arabic*.}]
+  \item \textbf{Construct gate.} State the target, unit of analysis, role,
+    decision, and excluded interpretations.  Rename the current target
+    registered-identity owner discrimination.
+  \item \textbf{Label gate.} Verify registry timing and owner semantics; classify
+    contracts and service entities; retain an unknown class; obtain independent
+    outcome labels for any fraud, AML, or market-abuse experiment.
+  \item \textbf{Split and leakage gate.} Use post-registration observations,
+    temporal holdouts, and controller- or entity-grouped splits so linked
+    addresses cannot appear across training and test partitions.
+  \item \textbf{Baseline gate.} Compare with registry lookup, simple rules,
+    calibrated supervised models, and graph/entity baselines.  Report
+    incremental lift rather than performance in isolation.
+  \item \textbf{Adversarial gate.} Use independently produced, held-out attack
+    generators, stochastic and adaptive policies, realistic address histories,
+    and legitimate automated twins.
+  \item \textbf{Operational gate.} Evaluate prospectively in shadow mode using
+    calibration, precision--recall, precision at investigator capacity, false
+    positives by entity type, intervention outcomes, and stability under drift.
+  \item \textbf{Governance gate.} Complete legal, privacy, model-risk, security,
+    and human-review assessments for the actual institution and jurisdiction.
+\end{enumerate}
+
+The current study does not pass the label gate for fraud or the operational
+gate.  Its real-data result should remain a research benchmark until those gaps
+are closed.
+
+\subsection{Evaluation and Falsification Criteria}
+
+Future work should preregister both hypotheses and stop conditions.  At minimum,
+the research claim should be rejected or narrowed if:
+\begin{itemize}[leftmargin=*,nosep]
+  \item registry-associated separation disappears under post-registration,
+    entity-grouped temporal evaluation;
+  \item the score adds no lift beyond registry status and standard graph or
+    transaction baselines;
+  \item performance cannot meet a prespecified false-positive or investigator
+    capacity constraint;
+  \item held-out adaptive generators evade the tested signatures; or
+  \item joined mandate and outcome evidence shows that the flagged behavior was
+    authorized and legitimate.
 \end{itemize}
 
-\noindent
-In summary, the P0 and P1 tiers are the recommendations most directly
-grounded in the measurements reported here.  P2 items (R6--R8) remain
-policy proposals: they may be useful, but they should be treated as
-requirements for further institutional and regulatory analysis rather
-than as validated outcomes of the detection experiment.
+For rare financial-crime outcomes, ROC-AUC alone is insufficient.  Studies
+should report class prevalence, precision--recall curves, calibration,
+confidence intervals, alert volume, case-level rather than address-level
+metrics, and the effect of any intervention.  Synthetic injections should be
+described as implementation or design-envelope checks unless external attack
+generation and realistic histories justify a stronger term.
+
+\subsection{Privacy, Retention, and Accountability}\label{subsec:privacy}
+
+Public availability does not by itself make on-chain data anonymous or exempt
+from data-protection law.  Addresses and linked behavioral profiles can become
+personal data when they are reasonably associated with a natural person;
+pseudonymization reduces some risks but does not remove all obligations
+\cite{gdpr2016,ccpa2018}.  The applicable lawful basis, purpose limitation,
+access controls, retention period, data-subject rights, and impact assessment
+must be determined for the actual use case and jurisdiction.
+
+Cross-platform linkage and control-plane transcripts are particularly
+sensitive because they can join identity, communications, and financial
+behavior.  They should not be collected ``just in case'' or retained under a
+blanket period.  Collection and retention should be tied to a documented
+purpose, minimized, access-controlled, and reviewed by qualified privacy and
+legal functions.  Financial-crime information sharing and reporting likewise
+requires scheme- and jurisdiction-specific authority; the present technical
+study supplies no legal safe harbor.
+
+Finally, accountability should follow the role and mandate chain.  The relevant
+questions are who authorized the agent, which policy and wallet enforced the
+delegation, what evidence was preserved, and what outcome occurred.  Treating
+software as the accountable ``fraudster'' obscures those questions and weakens
+both prevention and investigation.

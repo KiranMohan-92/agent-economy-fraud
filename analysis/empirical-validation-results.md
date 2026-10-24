@@ -1,3 +1,8 @@
+> [!CAUTION]
+> **WITHDRAWN DRAFT (July 2026): Stage 1 results are withdrawn; see
+> [README](../README.md) and [GPD/CLAIM-LEDGER.md](../GPD/CLAIM-LEDGER.md).
+> Kept for the record.**
+
 # Empirical Validation Results: Agent-Aware Fraud Detection Framework
 
 **Phase:** 04-validation-recommendations, Plan 04-01

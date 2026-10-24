@@ -1,225 +1,125 @@
-% related_work.tex — Section 6: Related Work
+% ===========================================================================
+% WITHDRAWN DRAFT (July 2026): Stage 1 results are withdrawn; see README and
+% GPD/CLAIM-LEDGER.md. Kept for the record.
+% ===========================================================================
+
+% related_work.tex --- scoped positioning of the construct audit and threat model
 
 \section{Related Work}\label{sec:related}
 
-Our work draws on several research threads---multi-agent economics,
-financial fraud detection, blockchain analytics, adversarial machine
-learning, Web2 bot detection, AI agent security, and the recently active
-agentic-commerce-security literature---while occupying a position that
-none of them does: the empirical, on-chain \emph{detection} of agent
-activity grounded in the structural instability of human behavioral
-invariants when autonomous AI agents become the transacting entities.
+The present study sits at the intersection of agentic-payment security,
+software-actor attribution, financial-crime detection, and blockchain
+analytics.  These literatures answer different questions.  Protocol-security
+work asks whether delegated actions are authorized; bot detection asks whether
+an actor is automated; fraud and AML research asks whether activity satisfies a
+harm or proceeds-related target; blockchain analytics asks what can be inferred
+from public settlement data.  Our contribution is to keep those constructs
+separate while auditing an early registered-identity dataset.
 
-%% -----------------------------------------------------------------
-\subsection{Multi-Agent Economic Systems}\label{subsec:rw-maes}
+\subsection{Agentic Commerce and Payment Authorization}\label{subsec:rw-agentcommerce}
 
-Agent-based computational economics (ACE) models heterogeneous agents
-that interact through market institutions.  Tesfatsion's foundational
-ACE framework~\cite{tesfatsion2006} demonstrates how macroscopic
-economic phenomena emerge from micro-level agent rules, while
-Lowe~\etal\cite{lowe2017} extend multi-agent reinforcement learning
-(MARL) to mixed cooperative--competitive settings where agents must
-simultaneously collaborate and compete.
+Recent systematizations organize agentic payments across discovery,
+authorization, execution, and accounting layers.  Zhang~\etal
+\cite{zhang2026sok} identify failures such as weak intent binding and misuse
+under valid authorization; Mao~\etal\cite{mao2026sok} analyze threats spanning
+ERC-8004, AP2, x402, and related systems.  This lifecycle view supports our
+separation of control, wallet, settlement, and outcome planes.
 
-On the mechanism-design side, Nisan~\etal\cite{nisan2007} provide the
-algorithmic game-theory foundations for strategic allocation and auction
-problems, while Babaioff~\etal\cite{babaioff2021} study approximately
-optimal mechanisms for additive buyers.  More recently,
-Park~\etal\cite{park2023} construct generative agents---LLM-driven
-entities that simulate believable human behavior in sandboxed
-environments.
+Prevention-oriented designs address particular links in that chain.  AP2 uses
+mandates to carry payment intent\cite{ap2protocol2025}; A402 binds payment
+finalization to verified service execution\cite{li2026a402}; programmable
+wallets can enforce transaction policies, limits, and step-up controls
+\cite{erc4337,metamask2026agentwallet}.  These mechanisms do not eliminate
+detection needs, but they show why actor type is not the primary causal
+variable: a well-bound automated payment can be legitimate, whereas a broken
+mandate or wallet policy can create loss under several executor types.
 
-A common thread unites all of these lines: agents are modeled as
-\emph{participants in} markets designed for (and by) humans.  None
-considers the case where agents autonomously \emph{initiate}
-transactions, hold wallet keys, and operate at machine speed---precisely
-the setting enabled by A2A commerce platforms such as OpenClaw and
-Moltbook.  Our threat model (\Cref{sec:threat}) fills this gap by
-deriving fraud chains directly from documented platform capabilities.
+Our work is complementary.  It does not evaluate a payment protocol or prove
+that a session platform settles payments.  OpenClaw is used only as an example
+of control-plane orchestration\cite{openclaw2026}.  The threat model asks what
+additional wallet and outcome evidence would be required before a documented
+orchestration capability supported a financial-crime claim.
 
-%% -----------------------------------------------------------------
-\subsection{Financial Fraud Detection}\label{subsec:rw-fraud}
+\subsection{AI Agent and Tool-Use Security}\label{subsec:rw-aisec}
 
-Graph-based approaches dominate recent fraud-detection research.
-Pourhabibi~\etal\cite{pourhabibi2020} provide a systematic review of
-graph-based anomaly detection in payment networks, while
-Hilal~\etal\cite{hilal2022} offer a broader survey of anomaly-detection
-techniques covering statistical, machine-learning, and deep-learning
-methods applied to credit-card fraud, insurance fraud, and money
-laundering.  Chandola~\etal\cite{chandola2009} supply the broader
-anomaly-detection taxonomy on which many financial applications build,
-and Carcillo~\etal\cite{carcillo2021} show how supervised and
-unsupervised learning can be combined for credit-card fraud detection.
+Indirect prompt injection can cause an LLM-integrated application to execute
+attacker-influenced instructions\cite{greshake2023}.  More broadly, agentic-AI
+security research covers tool misuse, compromised dependencies, coordination,
+and accountability\cite{lazer2026agentic,unit42openclaw2026}.  A documented
+agent-wallet incident on Base illustrates the agent-as-victim pathway
+\cite{grokbankr2026}.  Such evidence establishes that control-plane compromise
+can reach a payment-capable deployment; it does not imply that registered
+agents are generally malicious or validate every settlement-layer typology.
 
-These methods generally assume that the target distribution is stable
-enough for deviations to be meaningful.  In consumer banking, that
-distribution is shaped by human behavioral baselines: circadian
-transaction patterns, geographic plausibility, spending-category
-distributions, and biometric-backed authentication signals.  Our
-invariant analysis (\Cref{sec:detection}) studies the narrower failure
-mode that occurs when the transacting entity is an AI agent rather than
-a human and those baselines are no longer stable.
+This literature motivates our role model: principal, agent executor, tool,
+wallet, counterparty, and victim are distinct.  Security evidence must identify
+which role was compromised and how authority propagated to settlement.
 
-%% -----------------------------------------------------------------
+\subsection{Automation and Owner Attribution}\label{subsec:rw-botdetect}
+
+Distinguishing software-mediated activity from human interaction has a long
+history.  CAPTCHA research documents the erosion of challenge--response
+assumptions\cite{bursztein2014}; Web bot detection combines timing, interaction,
+and device features\cite{iliou2021,jonker2019}.  This work demonstrates that
+automation can shift behavioral distributions, but also that the relevant
+features are contingent on channel and adversary rather than universal
+biological invariants.
+
+Our real-data task is narrower still.  It distinguishes addresses associated
+with one registry from a selected counterparty class.  Because the negative
+class may contain other automation and the positive label does not prove
+autonomous execution for every transaction, the result is best understood as
+registered-identity owner discrimination.  It should not be compared directly
+with a verified human-versus-bot benchmark.
+
+\subsection{Fraud, AML, and Graph Detection}\label{subsec:rw-fraud}
+
+Financial-fraud research combines supervised labels, anomaly detection, and
+graph structure\cite{chandola2009,carcillo2021,hilal2022}.  Graph-based methods
+are especially relevant for shared funding, common beneficiaries, and
+population-level behavior\cite{pourhabibi2020,wei2021}.  These methods do not
+depend exclusively on human embodiment; many already model relationships and
+value flow across accounts or entities.
+
+The comparison clarifies the boundary of our study.  Fraud requires labels for
+unauthorized or deceptive harm.  AML concerns suspicious proceeds and
+transaction structure under a different legal and investigative process.
+Market abuse requires trading and market-impact evidence.  Registry association
+is none of these targets.  The exploratory features in this paper may later be
+tested as contextual covariates, but the present labels cannot measure their
+incremental financial-crime value.
+
 \subsection{Blockchain Analytics}\label{subsec:rw-blockchain}
 
-Address clustering and de-anonymization have matured considerably since
-Meiklejohn~\etal\cite{meiklejohn2016} characterized Bitcoin payment
-flows through heuristic clustering.  Chen~\etal\cite{chen2020} extend
-graph analysis to Ethereum, exploiting smart-contract call graphs and
-token-transfer patterns.  Victor and Weintraud~\cite{victor2021} develop
-methods to detect and quantify wash trading on decentralized exchanges,
-identifying coordinated self-dealing through temporal and volumetric
-anomalies.
+Public-ledger research uses address clustering, transaction graphs, and
+contract-call structure to infer entities and behavior
+\cite{meiklejohn2016,chen2020}.  Specialized work detects wash-trading patterns
+using trade and ownership hypotheses\cite{victor2021}.  These methods establish
+what can be learned from the settlement plane while also exposing its limits:
+an on-chain edge does not reveal the originating prompt, the applicable mandate,
+service delivery, or investigative disposition.
 
-Our work extends blockchain analytics in two directions.  First, we
-target the specific on-chain footprint of AI agents with documented
-platform capabilities (\eg ERC-8004 registrations, ERC-4337 account
-abstraction wallets).  Second, we validate our threat-model predictions
-against real Base-chain transaction data (\Cref{sec:evaluation}),
-bridging the gap between theoretical attack taxonomies and empirical
-on-chain evidence.
+Our empirical contribution is an early measurement of registry-associated
+address separation in Base-chain USDC data.  The construct audit is as important
+as the score: it identifies which upstream and downstream variables are absent
+and therefore which causal conclusions cannot be drawn.
 
-%% -----------------------------------------------------------------
-\subsection{Adversarial ML for Transaction Monitoring}\label{subsec:rw-advml}
+\subsection{Adversarial Evaluation}\label{subsec:rw-advml}
 
-A substantial body of work studies adversarial evasion of ML-based
-detectors.  Biggio~\etal\cite{biggio2013} formalize evasion attacks
-against classifiers at test time, and Biggio and Roli~\cite{biggio2018}
-review the broader adversarial-machine-learning trajectory and its
-evaluation pitfalls.  In multi-agent reinforcement learning,
-Gleave~\etal\cite{gleave2020} show that adversarial policies can attack
-victim agents through the environment rather than by directly modifying
-inputs.  Earlier, Aleskerov~\etal\cite{aleskerov1997} introduced
-\textsc{CardWatch}, a neural-network fraud detector that established
-many of the behavioral features still used today.
+Adversarial-ML research shows that adaptive evaluation must distinguish model
+performance from performance against a particular attack generator
+\cite{biggio2013,biggio2018,cartella2021}.  An attack designed by the detector's
+authors and encoded as a conspicuous synthetic signature is useful for checking
+implementation response, but it is not an independent robustness test.  This
+principle is especially important for behavioral mimicry: stochastic policies
+can vary timing and amounts, so detection of deterministic low-variance replay
+does not establish a general mimicry paradox.
 
-Our invariant-shift argument differs from this literature in a key
-respect.  Adversarial ML attacks perturb \emph{individual inputs} to
-cross a decision boundary while remaining close to the original
-distribution.  The agent-economy threat is structurally different: agents do
-not need to perturb their behavior to evade detection---their
-\emph{normal operating behavior} falls outside the distribution on
-which detectors were trained.  Conversely, when agents \emph{do}
-attempt mimicry (CHAIN\_6), the behavioral mimicry paradox
-(\cref{subsec:chain6}) shows that deterministic imitation of a
-stochastic process produces a distinct statistical signature that is
-\emph{easier} to detect than the original agent behavior.  This
-contrasts with the adversarial ML setting, where evasion generally
-makes detection harder.
-
-%% -----------------------------------------------------------------
-\subsection{Web2 Bot Detection}\label{subsec:rw-botdetect}
-
-The problem of distinguishing automated actors from humans has decades
-of history in web security.  Bursztein~\etal\cite{bursztein2014}
-demonstrate generic CAPTCHA-solving attacks, showing that
-challenge--response mechanisms---the canonical defense against
-bots---are increasingly fragile.  Iliou~\etal\cite{iliou2021} combine
-web-server logs with mouse behavioral biometrics to detect advanced
-web bots, achieving high accuracy through features that overlap
-significantly with our Temporal Consistency signal: timing regularity,
-interaction cadence, and session-length distributions.
-Jonker~\etal\cite{jonker2019} study fingerprint surface-based
-detection of bot detectors, documenting the adversarial arms race
-between bot operators and detection systems.
-
-The nine invariants identified in our threat model
-(\cref{sec:threat}) generalize several assumptions underlying Web2
-bot detection: that users exhibit circadian patterns, that
-interaction timing is stochastic, and that identity creation carries
-nontrivial cost.  All three assumptions fail for AI agents, just as
-they have progressively eroded for sophisticated web bots.  The
-evasion--counter-evasion dynamics documented in two decades of bot
-detection research~\cite{bursztein2014,jonker2019} provide a useful
-precedent for anticipating how agent-economy fraud will evolve:
-initial reliance on simple behavioral heuristics, followed by an
-arms race toward structural and graph-based signals---precisely the
-trajectory our detection framework anticipates.
-
-%% -----------------------------------------------------------------
-\subsection{AI Agent Security}\label{subsec:rw-aisec}
-
-The AI-security community has focused primarily on compromising agents
-from the outside.  Greshake~\etal\cite{greshake2023} demonstrate
-indirect prompt injection against LLM-integrated applications, and
-Carlini~\etal\cite{carlini2023} show that training-time poisoning can
-implant persistent backdoors.  Emerging interoperability standards---the
-Agent-to-Agent (A2A) protocol~\cite{a2aprotocol2025} and the Model
-Context Protocol (MCP)~\cite{mcp2024}---define how agents discover and
-invoke one another's capabilities, yet neither specifies fraud-detection
-hooks or transaction-rate governance.
-
-Orthogonally, Sybil attacks have been studied since
-Douceur~\cite{douceur2002} formalized the problem, with
-Jiang~\etal\cite{jiang2020} proposing reputation-based defenses for
-peer-to-peer networks.  Our \textsc{Chain\_4} threat
-(Disposable Agent Army, \Cref{sec:threat}) is a Sybil attack executed at
-machine speed with near-zero marginal cost: each disposable agent is
-created, used for a single fraudulent transaction, and discarded before
-reputation systems can respond.
-
-Beyond external compromise of individual agents, the broader systemic
-risks of agentic AI---including agent collusion and coordinated
-multi-agent behavior---have been surveyed by
-Lazer~\etal\cite{lazer2026agentic}, which frames at the security level
-the same collective-behavior problem our \textsc{Chain\_7} swarm gap
-(\Cref{sec:limitations}) targets at the detection level.  Documented
-incidents now exist: in May 2026, a hidden Morse-code prompt injection
-delivered through a social-media reply caused an agent to drain roughly
-\$150K--\$200K from an agent-controlled wallet on the same Base chain we
-study~\cite{grokbankr2026}.  Such incidents are agent-\emph{as-victim}
-hijackings---squarely within the indirect-prompt-injection thread of
-Greshake~\etal\cite{greshake2023}---rather than the agent-\emph{as-fraudster}
-A2A commerce our threat model addresses, but they confirm that
-agent-mediated on-chain payment fraud has moved from hypothesis to public
-record.
-
-%% -----------------------------------------------------------------
-\subsection{Agentic Commerce Security}\label{subsec:rw-agentcommerce}
-
-Concurrent with this work, a systematization literature on
-agentic-commerce security has emerged.  Zhang~\etal\cite{zhang2026sok}
-systematize blockchain agent-to-agent payments across a
-discovery--authorization--execution--accounting lifecycle and identify
-failure classes including weak intent binding and misuse under valid
-authorization.  Mao~\etal\cite{mao2026sok} build a unified security
-framework spanning ERC-8004, AP2, x402, and related standards,
-enumerating twelve cross-layer attack vectors and a layered defense
-architecture; several of their categories overlap our taxonomy (their
-\emph{market manipulation} with our \textsc{Chain\_8}, their
-\emph{inter-agent trust} with \textsc{Chain\_4}/\textsc{Chain\_5}).  These
-works taxonomize the threat and protocol surface, but neither measures
-whether agent activity is distinguishable on real transaction data, nor
-defines the behavioral invariants whose failure explains \emph{why}
-human-assumption detectors miss agents.  Our contribution is
-complementary and detection-side: we operationalize a subset of these
-threat classes as five on-chain signals and report three-stage empirical
-validation, including an intentionally weak real-data ranking result
-(AUC\,=\,0.515) that the taxonomy literature has no mechanism to surface.
-
-On the prevention side, Li~\etal\cite{li2026a402} propose A402, which
-binds payment finalization to verified service execution using
-TEE-assisted atomic service channels, closing the payment--service
-decoupling that plain x402 leaves open.  A402 prevents unauthorized
-release by construction at the protocol layer; our framework instead
-provides post-hoc behavioral detection over agents and protocols that
-lack such guarantees, including the plain-USDC Base population we study.
-The two approaches are non-competing and most effective in combination.
-
-%% -----------------------------------------------------------------
-\paragraph{Key differentiation.}
-To our knowledge, this is the only work that pairs a behavioral-invariant
-account of detection failure with empirical on-chain detection metrics on
-real agent transactions.  Recent systematizations~\cite{zhang2026sok,mao2026sok}
-catalog the threat and protocol surface, and protocol
-designs~\cite{li2026a402} harden individual payments, but none reports
-detection performance on observed agent activity.  The transition we
-anticipated is already underway in 2026: industry guidance now calls
-explicitly for ``Know Your Agent'' behavioral
-monitoring~\cite{financialbrand2026}, operational telemetry documents
-agent-impersonation fraud at scale~\cite{datadome2026}, and risk analyses
-report that autonomous agents compress financial-crime
-timelines~\cite{trmlabs2026}.  We therefore position this paper not as a
-first warning but as an early empirical, detection-side complement to a
-now-active agentic-commerce-security literature.
+\paragraph{Positioning.}
+We make no claim to replace protocol controls, existing fraud systems, or graph
+analytics.  The paper contributes (i) a construct audit of an early ERC-8004
+transaction dataset, (ii) an exploratory registered-owner discrimination
+benchmark, and (iii) a role- and data-plane threat model that states what
+additional evidence would be needed for fraud, AML, market-abuse, or operational
+claims.  This positioning is deliberately narrower than prior versions of the
+manuscript and matches the evidence currently available.

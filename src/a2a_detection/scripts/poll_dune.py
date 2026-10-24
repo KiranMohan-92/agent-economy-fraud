@@ -2,18 +2,25 @@
 
 import csv
 import json
+import os
 import sys
 import time
 
 import httpx
 
-DUNE_API_KEY = "HrBeJCELgfMTjUBuGQgxvv3hafVS5YzB"
 DUNE_MCP_URL = "https://api.dune.com/mcp/v1"
-HEADERS = {
-    "x-dune-api-key": DUNE_API_KEY,
-    "Content-Type": "application/json",
-    "Accept": "application/json, text/event-stream",
-}
+
+
+def _dune_headers() -> dict[str, str]:
+    """Build authenticated headers without shipping a credential fallback."""
+    api_key = os.environ.get("DUNE_API_KEY")
+    if not api_key:
+        raise RuntimeError("DUNE_API_KEY is required; set it in the environment")
+    return {
+        "x-dune-api-key": api_key,
+        "Content-Type": "application/json",
+        "Accept": "application/json, text/event-stream",
+    }
 
 
 def mcp_call(tool, args, timeout=60):
@@ -23,7 +30,7 @@ def mcp_call(tool, args, timeout=60):
         "params": {"name": tool, "arguments": args},
         "id": 1,
     }
-    resp = httpx.post(DUNE_MCP_URL, headers=HEADERS, json=payload, timeout=timeout)
+    resp = httpx.post(DUNE_MCP_URL, headers=_dune_headers(), json=payload, timeout=timeout)
     resp.raise_for_status()
     for line in resp.text.splitlines():
         if not line.startswith("data:"):

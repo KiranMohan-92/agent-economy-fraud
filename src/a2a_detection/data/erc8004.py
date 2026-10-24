@@ -1,8 +1,16 @@
-"""ERC-8004 Identity Registry client.
+"""ERC-8004 Identity Registry owner-proxy client.
 
 Queries the on-chain ERC-8004 (Trustless Agents) Identity Registry to extract
-all registered agent addresses. These serve as ground-truth labels for the
-agent-vs-human classification task.
+registry owners or mint recipients. These addresses are weak registry-
+association proxies; they are not fraud labels and do not by themselves prove
+a current verified ``agentWallet``, live service, autonomous execution, or
+agent-originated payment.
+
+ERC-8004 stores ``agentWallet`` separately. It is initially the owner address,
+can be changed only with wallet-control proof, and is cleared when the identity
+NFT is transferred. This client does not yet reconstruct that state. Callers
+must therefore retain the evidence fields emitted by ``to_dataframe`` and must
+not describe ``address`` as verified current agent control.
 
 Registry contract: 0x8004A169FB4a3325136EB29fA0ceB6D2e539a432
 Chains: Ethereum, Base, BNB (same address via CREATE2)
@@ -44,7 +52,7 @@ ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 
 @dataclass
 class AgentRegistration:
-    """A single ERC-8004 agent registration."""
+    """A registry identity and the observed owner/default-wallet proxy."""
 
     address: str
     token_id: int
@@ -53,6 +61,8 @@ class AgentRegistration:
     registration_tx: str | None = None
     metadata_uri: str | None = None
     metadata: dict | None = None
+    address_evidence: str = "registry_owner_or_mint_recipient"
+    current_agent_wallet_verified: bool = False
 
 
 @dataclass
@@ -63,7 +73,13 @@ class AgentRegistry:
 
     @property
     def addresses(self) -> set[str]:
+        """Backward-compatible set of registry owner/default-wallet proxies."""
         return {a.address.lower() for a in self.agents}
+
+    @property
+    def owner_proxies(self) -> set[str]:
+        """Addresses associated with registry ownership observations."""
+        return self.addresses
 
     @property
     def by_chain(self) -> dict[str, list[AgentRegistration]]:
@@ -81,6 +97,8 @@ class AgentRegistry:
                 "registration_time": a.registration_time,
                 "registration_tx": a.registration_tx,
                 "metadata_uri": a.metadata_uri,
+                "address_evidence": a.address_evidence,
+                "current_agent_wallet_verified": a.current_agent_wallet_verified,
             }
             for a in self.agents
         ]
@@ -103,6 +121,12 @@ class AgentRegistry:
                 registration_time=row.get("registration_time"),
                 registration_tx=row.get("registration_tx"),
                 metadata_uri=row.get("metadata_uri"),
+                address_evidence=row.get(
+                    "address_evidence", "registry_owner_or_mint_recipient"
+                ),
+                current_agent_wallet_verified=bool(
+                    row.get("current_agent_wallet_verified", False)
+                ),
             )
             for _, row in df.iterrows()
         ]
@@ -114,7 +138,7 @@ async def fetch_agents_subgraph(
     batch_size: int = 1000,
     max_agents: int | None = None,
 ) -> list[AgentRegistration]:
-    """Fetch all ERC-8004 registrations from The Graph subgraph.
+    """Fetch ERC-8004 registry identities and their indexed owner field.
 
     Uses pagination to handle large result sets. The subgraph indexes
     all Transfer events from address(0) on the Identity Registry contract.
@@ -174,7 +198,7 @@ async def fetch_agents_subgraph(
                 agents = agents[:max_agents]
                 break
 
-    logger.info(f"[{chain}] Total: {len(agents)} registered agents")
+    logger.info(f"[{chain}] Total: {len(agents)} registry-owner proxies")
     return agents
 
 
@@ -212,7 +236,8 @@ async def fetch_agents_rpc(
 
     agents = []
     for log in result:
-        # topic[2] = to address (agent owner), topic[3] or data = tokenId
+        # topic[2] is the mint recipient. It is the initial owner/default wallet,
+        # not proof of the current verified agentWallet after later transfers.
         to_address = "0x" + log["topics"][2][-40:]
         token_id = int(log["topics"][3], 16) if len(log["topics"]) > 3 else 0
 
@@ -225,12 +250,12 @@ async def fetch_agents_rpc(
             )
         )
 
-    logger.info(f"[{chain}] Fetched {len(agents)} agents via RPC")
+    logger.info(f"[{chain}] Fetched {len(agents)} registry-owner proxies via RPC")
     return agents
 
 
 async def fetch_all_agents(chains: list[str] | None = None) -> AgentRegistry:
-    """Fetch agent registrations from all specified chains.
+    """Fetch registry identities and owner proxies from specified chains.
 
     Default chains: base, ethereum, bnb (in order of agent count).
     """
@@ -247,7 +272,7 @@ async def fetch_all_agents(chains: list[str] | None = None) -> AgentRegistry:
 
     registry = AgentRegistry(agents=all_agents)
     logger.info(
-        f"Total: {len(registry.agents)} agents across {len(chains)} chains, "
+        f"Total: {len(registry.agents)} registry identities across {len(chains)} chains, "
         f"{len(registry.addresses)} unique addresses"
     )
     return registry

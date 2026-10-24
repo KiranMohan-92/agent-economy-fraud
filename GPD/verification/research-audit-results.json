@@ -1,0 +1,159 @@
+{
+  "audit_schema_version": 1,
+  "claims_not_established": [
+    "verified outcome detection",
+    "verified human-negative error rates",
+    "independent attack robustness",
+    "production action thresholds"
+  ],
+  "deterministic_output": true,
+  "overall_status": "invalid_or_stale_artifacts",
+  "sections": {
+    "event_identity": {
+      "distinct_observed_event_tuples": 104205,
+      "event_identity_available": false,
+      "exact_duplicate_rows": 2913,
+      "historical_hash_only_rows_discarded": 13539,
+      "minimum_distinct_events_lost_by_hash_dedupe": 10626,
+      "rows": 107118,
+      "safe_event_dedupe_possible": false,
+      "source": {
+        "file": "dune_agent_transactions.csv",
+        "sha256": "f1dba355adc899c34aafb2d25addefd8236d446fbdb48700f68c8c4f19a69484"
+      },
+      "status": "invalid_missing_event_index",
+      "unique_transaction_hashes": 93579
+    },
+    "injection_sender_uniqueness": {
+      "attack_instances": 69,
+      "chains": {
+        "CHAIN_1": {
+          "instance_specific_sender_identity": false,
+          "instances": 10,
+          "rows": 300,
+          "senders_reused_across_instances": 1,
+          "unique_sender_instance_pairs": 10,
+          "unique_senders": 1
+        },
+        "CHAIN_2": {
+          "instance_specific_sender_identity": false,
+          "instances": 10,
+          "rows": 250,
+          "senders_reused_across_instances": 1,
+          "unique_sender_instance_pairs": 10,
+          "unique_senders": 1
+        },
+        "CHAIN_3": {
+          "instance_specific_sender_identity": false,
+          "instances": 5,
+          "rows": 2500,
+          "senders_reused_across_instances": 1,
+          "unique_sender_instance_pairs": 5,
+          "unique_senders": 1
+        },
+        "CHAIN_4": {
+          "instance_specific_sender_identity": false,
+          "instances": 10,
+          "rows": 1500,
+          "senders_reused_across_instances": 15,
+          "unique_sender_instance_pairs": 150,
+          "unique_senders": 15
+        },
+        "CHAIN_5": {
+          "instance_specific_sender_identity": false,
+          "instances": 10,
+          "rows": 300,
+          "senders_reused_across_instances": 1,
+          "unique_sender_instance_pairs": 10,
+          "unique_senders": 1
+        },
+        "CHAIN_6": {
+          "instance_specific_sender_identity": false,
+          "instances": 8,
+          "rows": 400,
+          "senders_reused_across_instances": 1,
+          "unique_sender_instance_pairs": 8,
+          "unique_senders": 1
+        },
+        "CHAIN_7": {
+          "instance_specific_sender_identity": false,
+          "instances": 8,
+          "rows": 440,
+          "senders_reused_across_instances": 55,
+          "unique_sender_instance_pairs": 440,
+          "unique_senders": 55
+        },
+        "CHAIN_8": {
+          "instance_specific_sender_identity": false,
+          "instances": 8,
+          "rows": 360,
+          "senders_reused_across_instances": 7,
+          "unique_sender_instance_pairs": 56,
+          "unique_senders": 7
+        }
+      },
+      "external_validity_established": false,
+      "independent_attack_population_established": false,
+      "injected_rows": 6050,
+      "outcome_ground_truth_available": false,
+      "senders_reused_across_instances": 82,
+      "source": {
+        "file": "attack_injection_dataset.parquet",
+        "sha256": "943087d7ca90263401b8dbeaa1bb68a4d4c233a8576770f26910ad3458b1f522"
+      },
+      "status": "invalid_pseudoreplication",
+      "unique_sender_instance_pairs": 689,
+      "unique_senders": 82
+    },
+    "stage2": {
+      "addresses_evaluated": 1734,
+      "addresses_scored": 1734,
+      "composite_proxy_rank_auc": 0.5147189770497338,
+      "construct": "registry_owner_proxy_vs_counterparty_comparison",
+      "counterparty_above_reference_rate": 0.67165575,
+      "counterparty_comparison_rows": 1069,
+      "fraud_ground_truth_available": false,
+      "historical_metric_reproduction": {
+        "f1": 0.5608740894901145,
+        "fn": 126,
+        "fp": 718,
+        "fpr": 0.6716557530402245,
+        "precision": 0.42879872712808276,
+        "recall": 0.8105263157894737,
+        "roc_auc": 0.5147189770497338,
+        "tn": 351,
+        "tp": 539,
+        "valid_for_operational_claims": false,
+        "warning": "Arithmetic only: historical agent/human names do not establish outcome truth or a verified negative class."
+      },
+      "labels_available": 7419,
+      "per_signal_proxy_rank_auc": {
+        "cross_platform": 0.5,
+        "economic_rationality": 0.515167010135254,
+        "network_topology": 0.5990497759834572,
+        "temporal_consistency": 0.46474886936705656,
+        "value_flow": 0.5220260661007055
+      },
+      "reference_threshold": 0.09,
+      "reference_threshold_is_operational": false,
+      "registry_proxy_above_reference_rate": 0.81052632,
+      "registry_proxy_rows": 665,
+      "sources": [
+        {
+          "file": "detection_results_dune.csv",
+          "sha256": "a7aa06ac0e77643542faa923dbbb8a35096023a28b6680e285b15ca6baa78f07"
+        },
+        {
+          "file": "labels_dune.parquet",
+          "sha256": "ef0021805453925245a6bff5b0c722137159a8d8903069e3c2157eef7cd7096d"
+        }
+      ],
+      "status": "invalid_legacy_label_semantics",
+      "unmatched_label_rows": 5685,
+      "unmatched_score_rows": 0,
+      "valid_for_operational_claims": false,
+      "verified_human_negative_class_available": false
+    }
+  },
+  "valid_for_operational_claims": false
+}

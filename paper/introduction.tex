@@ -1,46 +1,90 @@
+% ===========================================================================
+% WITHDRAWN DRAFT (July 2026): Stage 1 results are withdrawn; see README and
+% GPD/CLAIM-LEDGER.md. Kept for the record.
+% ===========================================================================
+
 \section{Introduction}\label{sec:introduction}
 
-Autonomous AI agents are already transacting at scale.
-By mid-2026 the agent economy is instrumented and large: industry data attributes on the order of 176~million agent transactions and tens of millions of dollars in autonomous settlement (98.6\% in USDC) to the May~2025--April~2026 period~\cite{usdcagentpayments2026}, while the HTTP-402 payment standard x402 alone reports more than 100~million agentic payments across Base and Solana~\cite{chainalysis2026x402}.
-The empirical slice we study is one deliberately scoped corner of this ecosystem: 665 agents registered under the ERC-8004 identity standard~\cite{erc8004} on the Base blockchain that have executed over 81{,}000 USDC transactions.
-Individual agents in this slice sustain 40 transactions per day across 46-day periods without interruption, optimize micro-payments to \$0.06--\$0.91 per-transaction precision, and operate simultaneously across multiple chains via CREATE2 address derivation.
-Platforms such as OpenClaw~\cite{openclaw2026} and Moltbook~\cite{moltbook2026} enable agents to enumerate peers, exchange transaction histories, and execute financial operations at machine speed.
-Agent-to-agent (A2A) commerce is not a forecast---it is an empirical fact with growing transaction volume, and fraud-monitoring practice designed around autonomous transactors is nascent and only now beginning to form~\cite{financialbrand2026,metamask2026agentwallet}.
+Agentic payment systems combine components that were historically easier to
+separate: a principal states an objective, software interprets that objective,
+tools expose external capabilities, a wallet authorizes value transfer, and a
+payment rail settles the result.  Standards and implementations for agent
+identity, delegation, and payment are emerging across these layers
+\cite{erc8004,ap2protocol2025,zhang2026sok,mao2026sok}.  The resulting security
+question is not whether software can transact faster than a person.  It is
+whether a settled action remains bound to an authenticated principal, a
+specific mandate, an authorized tool invocation, and an intended outcome.
 
-Banking fraud detection is structurally unprepared for this shift.
-Existing systems rest on \emph{behavioral invariants}: empirical regularities that describe how humans transact.
-Velocity checks assume fatigue-bounded throughput.
-Behavioral biometrics assume embodied interaction patterns.
-Device fingerprinting assumes persistent hardware bindings.
-KYC and AML frameworks~\cite{bsa1970} assume that identity is scarce and costly to establish.
-Every one of these assumptions is an artifact of human physiology, psychology, or economics---and every one becomes unreliable or requires reinterpretation when the transacting entity is an AI agent.
+This distinction is necessary for interpreting early on-chain evidence.  We
+study a retained Base-chain USDC transfer snapshot whose label artifact contains
+665 addresses associated with ERC-8004 registrations and 1,069 active
+counterparties.  (The historical transaction extraction and an earlier
+548-address positive set came from a different registry snapshot; we do not
+pair their counts with this label artifact.)  The available labels distinguish
+registry-associated addresses from selected non-registered counterparties;
+they do not establish that the counterparties are human, that every registered
+address was autonomously controlled throughout the observation window, or that
+any address committed fraud.  The empirical task is therefore
+\emph{registered-identity owner discrimination}, not human-versus-agent
+classification and not fraud detection.  Registry status is an identity-plane
+observation.  Fraud requires outcome evidence such as unauthorized action,
+deception, victim loss, or adjudication.
 
-An autonomous agent has no body to tire, no device to fingerprint, no geographic location to constrain, and near-zero marginal cost to instantiate a new identity.
-It can sustain transaction rates that would flag any human account within minutes, yet do so as its normal operating behavior.
-The consequence is not merely that current fraud systems may miss some agent-driven attacks; it is that part of the human-era detection surface loses its meaning.
-Signals calibrated against human baselines risk elevated false-positive rates (flagging legitimate agent commerce) or elevated false-negative rates (missing agent-orchestrated fraud) unless they are supplemented by signals that describe autonomous software rather than human behavior.
+The paper consequently separates four data planes.  The \emph{control plane}
+records instructions, mandates, messages, and tool calls.  The \emph{wallet
+plane} records key custody, policy evaluation, signing, and revocation.  The
+\emph{settlement plane} records transfers and trades.  The \emph{outcome plane}
+records delivery, authorization disputes, loss, investigations, and confirmed
+financial-crime outcomes.  Settlement data alone may reveal behavioral or
+graph structure, but it cannot recover every upstream instruction or downstream
+outcome.
 
-This paper advances a narrower core claim: fraud detection systems that rely only on human behavioral invariants have systematic blind spots under the A2A scenarios tested here.
-The failure modes are structural where the monitored signal presupposes human embodiment, but empirical claims are bounded by observed platforms, noisy labels, and attack-injection experiments.
-In the epistemological framework of Deutsch~\cite{deutsch2011}, this claim is \emph{hard to vary}: one cannot modify it while preserving its explanatory power under the observed evidence.
-We support this claim through formal analysis, empirical validation on real on-chain data, and a constructive detection framework that replaces human invariants with agent-native signals.
+Our core explanatory claim is correspondingly causal rather than ontological:
 
-The paper makes six contributions:
+\begin{quote}
+\itshape
+Financial loss becomes possible when the chain from controller intent and
+mandate, through instruction provenance and tool--wallet authorization, to
+settlement and outcome is not preserved.  Automation can amplify speed, scale,
+delegation depth, and coordination, but actor type is not itself evidence of
+fraud.
+\end{quote}
+
+This explanation is hard to vary in Deutsch's sense\cite{deutsch2011} because
+each link has a distinct function.  If mandate, provenance, authorization, and
+outcome remain aligned, machine-speed activity can be legitimate.  If a link
+fails, unauthorized loss can occur whether the executor is an LLM agent, a
+conventional script, a compromised application, or a person.  The explanation
+therefore predicts both the relevant control points and the evidence required
+to test them.
+
+The paper makes five bounded contributions:
 \begin{enumerate}[leftmargin=*,nosep]
-  \item \textbf{Nine-invariant taxonomy.} A complete formal mapping of human behavioral invariants to their corresponding agent violations, establishing the structural basis for detection failure (\cref{sec:threat}).
-  \item \textbf{Eight-chain attack taxonomy.} A classification of agent-enabled attack chains by invariant violation and detection difficulty across four tiers: \textsc{easy}, \textsc{medium}, \textsc{hard}, and out of scope for current human-assumption or per-address detectors (\cref{sec:threat}).
-  \item \textbf{Five-signal detection framework.} An agent-invariant detection methodology grounded in on-chain observables rather than human behavioral assumptions (\cref{sec:detection}).
-  \item \textbf{Three-stage empirical validation.} Evaluation across synthetic data (F1\,=\,88.71\%, AUC\,=\,0.97), real on-chain transactions (raw-label recall\,=\,61.4\% at the fixed synthetic threshold and 95.4\% after re-optimization, falling to 81.1\% on cleaned labels; composite ROC-AUC\,=\,0.515 on cleaned labels), and injection testing (7/8 attack chains detected at 100\% recall) (\cref{sec:evaluation}). The low real-data AUC and noisy negative labels are central limitations, not secondary caveats.
-  \item \textbf{Collective detection gap.} Identification of coordinated swarm attacks as a fundamentally distinct threat class requiring new architectural approaches beyond per-agent analysis (\cref{sec:evaluation}).
-  \item \textbf{Banking recommendations.} Prioritized implementation guidance (P0--P3) with deployment timelines and compliance mappings for financial institutions (\cref{sec:recommendations}).
+  \item \textbf{Construct audit.} We identify what the released labels do and
+    do not support, and reinterpret the empirical task as discrimination of
+    registry-associated owners from selected counterparties.
+  \item \textbf{Role- and data-plane threat model.} We distinguish principals,
+    agents, tools, wallets, counterparties, victims, and accountable entities,
+    and map threat hypotheses to the control, wallet, settlement, and outcome
+    planes (\cref{sec:threat}).
+  \item \textbf{Exploratory attribution benchmark.} We evaluate whether
+    settlement-layer features contain signal about registry association while
+    treating the result as attribution evidence rather than fraud evidence
+    (\cref{sec:detection,sec:evaluation}).
+  \item \textbf{Evidence vector.} We keep registry, wallet, service,
+    execution, payment, adjudication, and harm evidence independent and require
+    each claim to state its necessary conjunction.
+  \item \textbf{Validation and control agenda.} We specify the evidence and
+    governance gates required before attribution features could inform a
+    production control, without recommending deployment from the present data
+    (\cref{sec:recommendations}).
 \end{enumerate}
 
-The remainder of this paper is organized as follows.
-\Cref{sec:background} surveys the A2A commerce ecosystem and the behavioral invariants underlying current fraud detection.
-\Cref{sec:threat} presents the invariant taxonomy and attack classification.
-\Cref{sec:detection} develops the agent-native detection framework.
-\Cref{sec:evaluation} reports empirical results across all three validation stages.
-\Cref{sec:related} positions this work relative to prior research in adversarial machine learning and blockchain analytics.
-\Cref{sec:recommendations} translates findings into actionable banking guidance.
-\Cref{sec:limitations} discusses scope constraints and open problems.
-\Cref{sec:conclusions} summarizes findings and identifies directions for future work.
+The remainder of the paper defines the constructs and causal model
+(\cref{sec:background}), presents the threat hypotheses (\cref{sec:threat}),
+describes the exploratory signals (\cref{sec:detection}), and reports their
+evaluation (\cref{sec:evaluation}).  \Cref{sec:related} positions the work
+relative to agentic-commerce security, fraud detection, and blockchain
+analytics.  \Cref{sec:recommendations} gives validation and control
+recommendations, \cref{sec:limitations} states the remaining validity limits,
+and \cref{sec:conclusions} summarizes the supported conclusion.

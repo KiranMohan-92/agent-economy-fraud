@@ -149,7 +149,7 @@ arXiv preprint + industry blog posts for fastest path to practitioner impact
 
 - **Data**: Base chain USDC transactions via Dune Analytics MCP (free tier, batched at 100 addresses/query); 81,904 transactions Jan 2025–Apr 2026
 - **Labels**: ERC-8004 registry (665 agents); counterparty heuristics (0.7 confidence)
-- **Framework**: `src/a2a_detection/` (pip-installable, Apache 2.0, 32 unit tests)
+- **Framework**: `src/a2a_detection/` (pip-installable, Apache 2.0, 47 unit tests)
 - **Cleaned evaluation set**: 1,734 addresses (665 agents + 1,069 active humans, thin-counterparty filter applied)
 
 ## Notation and Conventions

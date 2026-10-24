@@ -1,8 +1,14 @@
 """Attack Pattern Injector — Phase 6, Plan 06-01.
 
-Injects synthetic instances of all 8 A2A attack chains (from Phase 2 taxonomy)
-into the real USDC transaction stream, producing a labeled mixed dataset for
-fraud detection validation.
+Injects eight hand-authored transaction motifs into a real USDC transaction
+stream. The output is a detector code-path stress test, not fraud ground
+truth or evidence that a control-plane action caused a financial transfer.
+
+Several historical motif names refer to OpenClaw session operations. OpenClaw
+session tools send messages, read scoped transcripts, or spawn sessions; they
+do not themselves create wallets, sign transfers, or settle transactions.
+Consequently, motifs 1 and 2 are only on-chain proxy patterns and cannot
+validate detection of enumeration or transcript access.
 
 Attack Chains Implemented:
     CHAIN 1  — Agent Enumeration Attack (EASY)
@@ -64,19 +70,27 @@ CHAIN_DIFFICULTIES = {
 # Address generation helpers
 # ---------------------------------------------------------------------------
 
-def _synthetic_addr(chain_id: str, index: int, role: str = "") -> str:
-    """Generate a deterministic fake address that cannot collide with real data.
+def _synthetic_addr(
+    chain_id: str,
+    index: int,
+    role: str = "",
+    instance_id: str = "",
+) -> str:
+    """Generate a deterministic, instance-specific experimental address.
 
-    Format: 0xdead<chain_hex><role_byte><index_hex>
-    All synthetic addresses start with 0xdead, which is not a valid ERC-8004
-    address and is not present in the Dune dataset.
+    The historical implementation omitted ``instance_id`` and therefore
+    collapsed multiple generated scenarios onto the same sender. Including it
+    prevents pseudoreplication. The 0xdead prefix is a visual marker, not a
+    cryptographic collision guarantee; ``inject_all_chains`` still checks the
+    generated set against the input data.
     """
     chain_num = int(chain_id.split("_")[1])
-    role_byte = hashlib.md5(role.encode()).hexdigest()[:2] if role else "00"
+    role_byte = hashlib.sha256(role.encode()).hexdigest()[:2] if role else "00"
     # 42-char Ethereum address: "0x" (2) + 40 hex chars.
     # Prefix uses 10 chars ("0xdead" + chain_num 2-hex + role_byte 2-hex),
     # leaving exactly 32 chars for the index — no truncation needed.
-    suffix = f"{index:032x}"
+    seed = f"{chain_id}:{instance_id}:{role}:{index}"
+    suffix = hashlib.sha256(seed.encode()).hexdigest()[:32]
     return f"{INJECTED_ADDR_PREFIX}{chain_num:02x}{role_byte}{suffix}"
 
 
@@ -130,17 +144,16 @@ def inject_chain1_enumeration(
 ) -> InjectionResult:
     """CHAIN 1 — Agent Enumeration Attack (EASY).
 
-    Behavioral signature: Single attacker address probing many target addresses
-    via tiny (dust) transactions in rapid succession — simulates sessions_list
-    enumeration followed by contact probing. Detectable via high out-degree
-    within a short time window.
+    Generated motif: one sender sends dust transfers (0.001-0.010 USDC) to
+    ``n_probes`` distinct targets within 60 seconds. It is an on-chain fan-out
+    pattern only; it does not model or validate any control-plane enumeration.
 
     Detection signal: Network Topology (high out-degree, short window)
     """
-    attacker = _synthetic_addr("CHAIN_1", 0, "attacker")
+    attacker = _synthetic_addr("CHAIN_1", 0, "attacker", instance_id)
     rows = []
     for i in range(n_probes):
-        target = _synthetic_addr("CHAIN_1", i + 1, "target")
+        target = _synthetic_addr("CHAIN_1", i + 1, "target", instance_id)
         ts = base_time + timedelta(seconds=int(rng.integers(0, 60)))
         amount = rng.uniform(0.001, 0.010)   # dust probes
         rows.append(_base_txrow(attacker, target, ts, amount, "CHAIN_1", instance_id, i))
@@ -155,14 +168,14 @@ def inject_chain2_history_extraction(
 ) -> InjectionResult:
     """CHAIN 2 — Transaction History Extraction Attack (MEDIUM).
 
-    Behavioral signature: Single attacker repeatedly transacting with the same
-    target in a short window (simulates sessions_history bulk access pattern).
-    Detectable as repeated-edge burst in graph.
+    Generated motif: one sender repeatedly transfers to the same target in a
+    short window, producing a repeated-edge burst. It is a transaction pattern
+    only; it does not model or validate transcript or history access.
 
     Detection signal: Network Topology (repeated edge), Value Flow (fan-in)
     """
-    attacker = _synthetic_addr("CHAIN_2", 0, "attacker")
-    target = _synthetic_addr("CHAIN_2", 1, "target")
+    attacker = _synthetic_addr("CHAIN_2", 0, "attacker", instance_id)
+    target = _synthetic_addr("CHAIN_2", 1, "target", instance_id)
     rows = []
     for i in range(n_reads):
         ts = base_time + timedelta(seconds=int(rng.integers(0, 120)))
@@ -179,20 +192,20 @@ def inject_chain3_async_flooding(
 ) -> InjectionResult:
     """CHAIN 3 — Asynchronous Transaction Flooding Attack (MEDIUM).
 
-    Behavioral signature: Single attacker sends ≥500 transactions within a 1-hour
-    window at uniform machine-speed intervals (~0.4s apart — OpenClaw channel rate
-    limit). Models sessions_send with timeoutSeconds=0 fire-and-forget mode.
-    Extrapolated rate: 500/hr → 9,000/day >> human max of 100/day.
+    Generated motif: one sender emits ``n_flood_txns`` transfers at uniform
+    0.4-second spacing to 20 rotating targets. The spacing is an arbitrary
+    generator parameter; it is not derived from, and does not model, any
+    OpenClaw API or rate limit, and it says nothing about human capability.
 
     Detection signal: Temporal Consistency (machine-speed burst)
     """
-    attacker = _synthetic_addr("CHAIN_3", 0, "attacker")
+    attacker = _synthetic_addr("CHAIN_3", 0, "attacker", instance_id)
     rows = []
-    # Machine-speed: 0.4 second intervals (OpenClaw channel rate limit)
+    # Uniform 0.4-second spacing (arbitrary generator parameter)
     for i in range(n_flood_txns):
         ts = base_time + timedelta(seconds=i * 0.4)
         amount = rng.uniform(0.001, 1.0)
-        target = _synthetic_addr("CHAIN_3", (i % 20) + 1, "target")
+        target = _synthetic_addr("CHAIN_3", (i % 20) + 1, "target", instance_id)
         rows.append(_base_txrow(attacker, target, ts, amount, "CHAIN_3", instance_id, i))
     return InjectionResult("CHAIN_3", instance_id, pd.DataFrame(rows))
 
@@ -206,17 +219,17 @@ def inject_chain4_agent_army(
 ) -> InjectionResult:
     """CHAIN 4 — Disposable Agent Army Attack (HARD).
 
-    Behavioral signature: ≥15 new addresses all activated within a 90-second
-    window, each transacting to the same sink address. Models sessions_spawn
-    creating disposable sub-agents with cleanup:delete. Detectable by correlated
-    activation timing across unrelated addresses.
+    Generated motif: ``n_agents`` fresh synthetic addresses each first appear
+    within a 90-second window and transfer to one shared sink, producing
+    correlated activation timing. It is a transaction pattern only; it does not
+    model session spawning, wallet creation, or cleanup.
 
     Detection signal: Network Topology (coordinated activation cluster)
     """
-    sink = _synthetic_addr("CHAIN_4", 0, "sink")
+    sink = _synthetic_addr("CHAIN_4", 0, "sink", instance_id)
     rows = []
     for agent_idx in range(n_agents):
-        agent = _synthetic_addr("CHAIN_4", agent_idx + 1, "agent")
+        agent = _synthetic_addr("CHAIN_4", agent_idx + 1, "agent", instance_id)
         # All agents activate within 90 seconds of each other
         activation_offset = rng.integers(0, 90)
         for txn_idx in range(txns_per_agent):
@@ -238,17 +251,16 @@ def inject_chain5_cross_platform_identity(
 ) -> InjectionResult:
     """CHAIN 5 — Cross-Platform Identity Persistence Attack (IMPOSSIBLE).
 
-    Behavioral signature: Same CREATE2-derived address appearing simultaneously
-    active on multiple chains within the same block range. On Base data this
-    manifests as an address with unusually precise near-zero creation cost
-    ($0.001–0.01) transacting to targets across different contract types.
-    Proxy signal: extremely low-cost address creation + high multi-hop activity.
+    Generated motif: one sender emits several bursts of 0.001-0.01 USDC
+    transfers to distinct targets inside a 30-second window, labelled as
+    separate "chains". All rows are on one chain; the motif does not model or
+    validate cross-chain identity.
 
-    Detection signal: Economic Rationality (below-human-cognitive-cost precision),
-    Network Topology (multi-hop fan-out from a single new address)
+    Detection signal: Economic Rationality (low-value precision),
+    Network Topology (fan-out from a single new address)
     """
     # One attacker address active from multiple "chains" (simulated via identical address)
-    attacker = _synthetic_addr("CHAIN_5", 0, "attacker")
+    attacker = _synthetic_addr("CHAIN_5", 0, "attacker", instance_id)
     rows = []
     block_off = 0
     for chain_idx in range(n_chains):
@@ -256,7 +268,9 @@ def inject_chain5_cross_platform_identity(
         for txn_idx in range(txns_per_chain):
             ts = base_time + timedelta(seconds=chain_idx * 2 + txn_idx * 0.5)
             amount = rng.uniform(0.001, 0.01)  # near-zero cost (cross-platform precision)
-            target = _synthetic_addr("CHAIN_5", chain_idx * 10 + txn_idx + 1, "target")
+            target = _synthetic_addr(
+                "CHAIN_5", chain_idx * 10 + txn_idx + 1, "target", instance_id
+            )
             rows.append(_base_txrow(attacker, target, ts, amount, "CHAIN_5", instance_id, block_off))
             block_off += 1
     return InjectionResult("CHAIN_5", instance_id, pd.DataFrame(rows))
@@ -267,20 +281,22 @@ def inject_chain6_behavioral_mimicry(
     base_time: pd.Timestamp,
     instance_id: str,
     n_txns: int = 50,
-    victim_mean_interval_s: float = 138.0,  # 2.3 min — typical human spacing
+    victim_mean_interval_s: float = 138.0,  # 2.3 min — arbitrary generator spacing
 ) -> InjectionResult:
     """CHAIN 6 — Human Behavioral Mimicry Attack (IMPOSSIBLE).
 
-    Behavioral signature: Agent mimics a human victim's timing with perfect
-    regularity (CV ≈ 0.01 vs real agents CV=1.87). The key signature is
-    "too-perfect" temporal regularity — no variance in spacing, no circadian
-    pattern, identical amounts. Real humans and real agents both show high
-    variance; perfect mimicry shows near-zero variance.
+    Generated motif: one sender transfers near-identical amounts (1.0 USDC plus
+    Gaussian jitter, SD 0.005) to one target at near-constant spacing
+    (timestamp jitter SD 0.5% of the interval, inter-arrival CV below 0.01).
+    This low-variance generator is detectable by a low-variance heuristic; a
+    stochastic policy
+    could sample other timing distributions, so it says nothing general about
+    mimicry by humans or agents.
 
     Detection signal: Temporal Consistency (CV too low = suspicious uniformity)
     """
-    attacker = _synthetic_addr("CHAIN_6", 0, "attacker")
-    target = _synthetic_addr("CHAIN_6", 1, "target")
+    attacker = _synthetic_addr("CHAIN_6", 0, "attacker", instance_id)
+    target = _synthetic_addr("CHAIN_6", 1, "target", instance_id)
     rows = []
     # Perfect timing: identical intervals with CV < 0.02
     interval_s = victim_mean_interval_s
@@ -288,7 +304,7 @@ def inject_chain6_behavioral_mimicry(
         # Near-zero variance: tiny jitter (CV ≈ 0.005)
         jitter = rng.normal(0, interval_s * 0.005)
         ts = base_time + timedelta(seconds=i * interval_s + jitter)
-        # Near-identical amounts (perfect rational optimization, CV ≈ 0.005)
+        # Near-identical amounts: small Gaussian jitter (CV ≈ 0.005)
         amount = 1.0 + rng.normal(0, 0.005)
         rows.append(_base_txrow(attacker, target, ts, amount, "CHAIN_6", instance_id, i))
     return InjectionResult("CHAIN_6", instance_id, pd.DataFrame(rows))
@@ -303,10 +319,10 @@ def inject_chain7_swarm_intelligence(
 ) -> InjectionResult:
     """CHAIN 7 — Coordinated Swarm Intelligence Attack (IMPOSSIBLE).
 
-    Behavioral signature: ≥50 addresses all sending the exact same amount to
-    different targets within a 2-second window (1 block on Base ≈ 2s).
-    Models sessions_send broadcast: attacker sends one command, 50+ sub-agents
-    execute simultaneously. No human coordination achieves this.
+    Generated motif: ``n_agents`` synthetic senders each transfer the same
+    round amount to a different target within a 2-second window. It is a
+    synchronized transaction pattern only; it does not model how the senders
+    are coordinated or who coordinates them.
 
     Detection signal: Temporal Consistency (synchronized burst), Network
     Topology (simultaneous multi-source fan-out)
@@ -316,8 +332,8 @@ def inject_chain7_swarm_intelligence(
         identical_amount = round(rng.choice([0.5, 1.0, 5.0, 10.0, 50.0]), 2)
     rows = []
     for i in range(n_agents):
-        agent = _synthetic_addr("CHAIN_7", i, "agent")
-        target = _synthetic_addr("CHAIN_7", n_agents + i, "target")
+        agent = _synthetic_addr("CHAIN_7", i, "agent", instance_id)
+        target = _synthetic_addr("CHAIN_7", n_agents + i, "target", instance_id)
         # All within 2-second window (one Base block)
         ts = base_time + timedelta(seconds=rng.uniform(0, 2.0))
         rows.append(_base_txrow(agent, target, ts, identical_amount, "CHAIN_7", instance_id, i))
@@ -333,19 +349,21 @@ def inject_chain8_market_manipulation(
 ) -> InjectionResult:
     """CHAIN 8 — Financial Market Manipulation Attack (IMPOSSIBLE).
 
-    Behavioral signature: Wash trading (A→B→A cycles with same amounts) plus
-    layering (A→B→C→D→A with diminishing amounts — simulates HFT accumulation).
-    Models cron-triggered HFT strategy with coordinated buy/sell cycles.
+    Generated motif: A→B→A round trips whose return leg is the outbound amount
+    perturbed by up to ±0.1%, plus an open (non-returning) chain of
+    ``n_layering_steps`` hops through fresh addresses whose amount decreases by
+    2% per hop. These are transfer patterns only; without trade, ownership, and
+    price-impact data they do not model or validate market manipulation.
 
-    Detection signal: Value Flow (circular/wash patterns), Economic Rationality
-    (zero-net-value cycles violate rational agent assumptions)
+    Detection signal: Value Flow (circular patterns), Economic Rationality
+    (near-zero-net-value cycles)
     """
     rows = []
     block_off = 0
 
     # Wash trading component: A→B→A with near-identical amounts
-    wash_a = _synthetic_addr("CHAIN_8", 0, "wash_a")
-    wash_b = _synthetic_addr("CHAIN_8", 1, "wash_b")
+    wash_a = _synthetic_addr("CHAIN_8", 0, "wash_a", instance_id)
+    wash_b = _synthetic_addr("CHAIN_8", 1, "wash_b", instance_id)
     for cycle in range(n_wash_cycles):
         amount = round(rng.uniform(10.0, 100.0), 2)
         t1 = base_time + timedelta(seconds=cycle * 4.0)
@@ -358,7 +376,10 @@ def inject_chain8_market_manipulation(
         block_off += 1
 
     # Layering component: A→B→C→D→E (diminishing) — obfuscation trail
-    layer_addrs = [_synthetic_addr("CHAIN_8", 10 + i, "layer") for i in range(n_layering_steps + 1)]
+    layer_addrs = [
+        _synthetic_addr("CHAIN_8", 10 + i, "layer", instance_id)
+        for i in range(n_layering_steps + 1)
+    ]
     base_amount = rng.uniform(50.0, 200.0)
     for step in range(n_layering_steps):
         ts = base_time + timedelta(seconds=step * 2.0 + rng.uniform(0, 0.5))

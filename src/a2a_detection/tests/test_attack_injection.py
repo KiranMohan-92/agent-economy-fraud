@@ -1,4 +1,4 @@
-"""Unit tests for the attack pattern injector (Phase 6, Plan 06-01).
+"""Unit tests for the synthetic transaction-motif injector.
 
 Tests verify:
 1. Each injector produces transactions with the correct behavioral signatures.
@@ -28,6 +28,7 @@ from a2a_detection.scripts.inject_attacks import (
     inject_all_chains,
     INJECTED_ADDR_PREFIX,
     CHAIN_DIFFICULTIES,
+    _synthetic_addr,
 )
 
 
@@ -66,6 +67,15 @@ def minimal_real_df():
 # ---------------------------------------------------------------------------
 # Per-chain behavioral signature tests
 # ---------------------------------------------------------------------------
+
+def test_synthetic_addresses_are_instance_specific():
+    """Independent motif instances must not collapse onto one address."""
+    first = _synthetic_addr("CHAIN_1", 0, "attacker", "CHAIN_1_inst000")
+    second = _synthetic_addr("CHAIN_1", 0, "attacker", "CHAIN_1_inst001")
+
+    assert first != second
+    assert first.startswith(INJECTED_ADDR_PREFIX)
+    assert second.startswith(INJECTED_ADDR_PREFIX)
 
 def test_chain1_produces_dust_probes_to_many_targets(rng, base_time):
     result = inject_chain1_enumeration(rng, base_time, "test_inst", n_probes=20)

@@ -1,7 +1,14 @@
 """Fetch agent transaction histories from Dune in batches.
 
-Splits 1,505 agent addresses into batches of 100, creates+executes
-each batch via MCP, and combines results into a single CSV.
+Splits the 1,505 ERC-8004 registry-associated addresses into batches of 100,
+creates+executes each batch via MCP, and combines results into a single CSV.
+Each row carries ``evt_index`` so the bridge can key events on
+``(tx_hash, evt_index)``; the run fails closed if any row lacks it.
+
+Note: the output path is the same ``data/dune_agent_transactions.csv`` that
+``data/MANIFEST.md`` records as the superseded forensic extraction. Copy that
+file aside (its SHA-256 is in the manifest) before re-running, and treat any
+new extraction as a new data version.
 
 This avoids the query engine memory limits hit by a single 1505-address
 VALUES CTE on the community (free) tier.
@@ -9,6 +16,7 @@ VALUES CTE on the community (free) tier.
 
 import csv
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -18,13 +26,19 @@ import httpx
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DATA_DIR = PROJECT_ROOT / "data"
 
-DUNE_API_KEY = "HrBeJCELgfMTjUBuGQgxvv3hafVS5YzB"
 DUNE_MCP_URL = "https://api.dune.com/mcp/v1"
-HEADERS = {
-    "x-dune-api-key": DUNE_API_KEY,
-    "Content-Type": "application/json",
-    "Accept": "application/json, text/event-stream",
-}
+
+
+def _dune_headers() -> dict[str, str]:
+    """Build authenticated headers without shipping a credential fallback."""
+    api_key = os.environ.get("DUNE_API_KEY")
+    if not api_key:
+        raise RuntimeError("DUNE_API_KEY is required; set it in the environment")
+    return {
+        "x-dune-api-key": api_key,
+        "Content-Type": "application/json",
+        "Accept": "application/json, text/event-stream",
+    }
 
 BATCH_SIZE = 100
 POLL_INTERVAL = 10
@@ -38,7 +52,7 @@ def mcp_call(tool, args, timeout=120):
         "params": {"name": tool, "arguments": args},
         "id": 1,
     }
-    resp = httpx.post(DUNE_MCP_URL, headers=HEADERS, json=payload, timeout=timeout)
+    resp = httpx.post(DUNE_MCP_URL, headers=_dune_headers(), json=payload, timeout=timeout)
     resp.raise_for_status()
     for line in resp.text.splitlines():
         if not line.startswith("data:"):
@@ -68,6 +82,7 @@ def build_batch_sql(addresses: list[str]) -> str:
 )
 SELECT
     t.evt_tx_hash,
+    t.evt_index,
     t.evt_block_number,
     t.evt_block_time,
     t."from" AS sender,
@@ -77,11 +92,13 @@ FROM erc20_base.evt_transfer t
 INNER JOIN agents a ON t."from" = a.addr
 WHERE t.contract_address = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
   AND t.evt_block_date >= DATE '2025-01-01'
+  AND t.evt_block_date < DATE '2026-04-04'
 
 UNION ALL
 
 SELECT
     t.evt_tx_hash,
+    t.evt_index,
     t.evt_block_number,
     t.evt_block_time,
     t."from" AS sender,
@@ -91,6 +108,7 @@ FROM erc20_base.evt_transfer t
 INNER JOIN agents a ON t."to" = a.addr
 WHERE t.contract_address = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
   AND t.evt_block_date >= DATE '2025-01-01'
+  AND t.evt_block_date < DATE '2026-04-04'
 
 ORDER BY evt_block_time ASC"""
 
@@ -184,22 +202,14 @@ def main():
         all_rows.extend(rows)
         print(f"  Running total: {len(all_rows)} rows\n", flush=True)
 
-    # Deduplicate (agent-to-agent txns appear in both sender and receiver batches)
-    if all_rows:
-        seen = set()
-        deduped = []
-        for row in all_rows:
-            key = row.get("evt_tx_hash", "")
-            if key not in seen:
-                seen.add(key)
-                deduped.append(row)
-            # Keep both directions for same tx (sender batch + receiver batch = 2 rows is correct for UNION ALL)
-            # Actually: within each batch, UNION ALL already captures both directions
-            # But across batches, if sender is in batch 1 and receiver in batch 5,
-            # the same tx appears once in each batch. We keep both for correct flow analysis.
-        # Actually, don't deduplicate — each batch's UNION ALL captures both directions
-        # for addresses IN THAT BATCH. Cross-batch duplicates are rare and acceptable.
-        deduped = all_rows
+    # No deduplication here: event identity is (tx_hash, evt_index), and the
+    # bridge deduplicates on that key and fails closed if it is missing.
+    missing_index = sum(1 for row in all_rows if row.get("evt_index") in (None, ""))
+    if missing_index:
+        raise RuntimeError(
+            f"{missing_index} rows lack evt_index; refusing to write a CSV the "
+            "bridge would reject (transaction hash alone is not an event key)"
+        )
 
     # Write CSV
     output = DATA_DIR / "dune_agent_transactions.csv"

@@ -1,196 +1,111 @@
-# Agent Economy and Financial Fraud Prevention
+# Agentic Payment Control and Financial-Crime Research
 
-## What This Is
+**Integrity-repair date:** 2026-07-09  
+**Canonical status:** research repair complete; confirmatory empirical program blocked by missing admissible data and outcome labels
 
-A first-principles analysis of agent-to-agent (A2A) commerce vulnerabilities in banking fraud detection systems. Using Deutsch's hard-to-vary criterion, we analyze how the necessary properties of AI agents create fundamental blind spots in fraud detection systems built on human behavioral assumptions. The research targets the OpenClaw-Moltbook agent ecosystem and produces industry-relevant recommendations for adapting fraud detection.
+## Objective
 
-## Core Research Question
+Determine what the repository's registry and transaction evidence can actually
+support, construct a hard-to-vary explanation of agentic-payment loss, and
+define the observations and experiments required to test attribution,
+control-plane security, fraud, AML, and market-abuse hypotheses without
+conflating them.
 
-How do the necessary properties of agent-to-agent (A2A) commerce create fundamental vulnerabilities in banking fraud detection systems, and what agent-aware detection framework addresses these gaps?
+## Core research question
 
-## Scoping Contract Summary
+Where can delegated software execution break the causal chain from accountable
+principal and bounded mandate through instruction provenance, tool/wallet
+authorization, settlement, and outcome; which controls prevent or limit harm;
+and what evidence is required to demonstrate incremental detection or
+intervention value?
 
-### Contract Coverage
+## Hard-to-vary explanation
 
-- **Claim/main**: Financial fraud detection systems rely on behavioral invariants that are properties of human agents by definition. AI agents lack these invariants, creating necessary blind spots in human-based detection.
-- **Acceptance signal**: (1) Explanation meets Deutsch hard-to-vary criterion — cannot be varied while remaining falsifiable. (2) Recommendations detect agent-based fraud patterns when tested against real A2A transaction data.
-- **False progress to reject**: Theoretical framework without empirical validation or industry-relevant recommendations; generic AI security advice not specific to A2A commerce properties.
+Financial loss becomes possible where the chain from controller intent and
+mandate, through instruction provenance and tool/wallet authorization, to
+settlement is not cryptographically and operationally preserved. Automation
+changes speed, scale, delegation depth, and coordination; it does not make
+actor type fraudulent. Controls must bind each action to an authenticated
+controller and bounded mandate, enforce least privilege and payment limits,
+preserve provenance, and monitor value, counterparty, and graph outcomes
+independently of executor substrate.
 
-### User Guidance To Preserve
+This explanation is falsifiable at specific links. Intact mandate, provenance,
+authorization, and settlement should permit legitimate high-speed execution.
+Breaking a link should increase unauthorized action or loss risk under matched
+conditions; if it does not, that link is not causally load-bearing.
 
-- **User-stated observables:** Set of necessary properties of A2A commerce that create blind spots in human-based fraud detection
-- **User-stated deliverables:** Taxonomy of A2A fraud attack vectors, agent-aware fraud detection framework design, industry recommendations for banking/fintech
-- **Must-have references / prior outputs:** OpenClaw platform documentation, Moltbook platform documentation, academic literature on multi-agent economic systems
-- **Stop / rethink conditions:** (1) If recommendations fail when tested against real A2A transaction data. (2) If data acquisition research reveals no viable data sources for empirical validation.
+## Scoping contract
 
-### Scope Boundaries
+### In scope
 
-**In scope**
+- construct, label, provenance, and reproducibility audit of the existing work;
+- registry/automation attribution as a task separate from fraud;
+- control-plane, wallet-policy, settlement, entity-network, market, and outcome
+  observation planes;
+- separately specified fraud/scam, AML, sanctions, and market-abuse hypotheses;
+- leakage-safe confirmatory study design and operational safety gates;
+- primary-source verification of platform, registry, identity, privacy, and
+  financial-crime claims.
 
-- Analysis of behavioral invariants that human fraud detection relies on
-- Mapping of agent properties that violate these invariants
-- Taxonomy of A2A fraud attack vectors
-- Design of agent-aware fraud detection framework
-- Industry recommendations for banking/fintech adaptation
-- Data acquisition research for A2A transaction sources
+### Out of scope for current evidence
 
-**Out of scope**
+- validated autonomous-agent identification;
+- fraud, AML, sanctions, or market-abuse performance;
+- banking generalization;
+- adversarial robustness or incidence/prevalence claims;
+- deployment thresholds, costs, timelines, or regulatory/legal conclusions.
 
-- General AI adversarial ML beyond agent-specific properties
-- Regulatory policy implementation details
-- Cryptocurrency-specific attacks (unless they illustrate A2A principles)
+## Evidence boundary
 
-### Active Anchor Registry
+The local empirical snapshot reaches registry-association evidence only. Its
+positive class is a historical owner/default-wallet proxy; its comparison class
+is unknown. It contains no verified current wallet, autonomous execution,
+mandate, fraud outcome, victim harm, case disposition, beneficial ownership, or
+banking data. Historical transaction derivatives also inherit a lossy event-key
+defect and are inadmissible for confirmatory inference.
 
-- **ref-openclaw-docs**: OpenClaw GitHub documentation
-  - Why it matters: Primary source of agent-to-agent messaging and session management behavior
-  - Carry forward: planning, execution, verification, writing
-  - Required action: read, use
+## Workstreams
 
-- **ref-moltbook-docs**: Moltbook platform documentation
-  - Why it matters: Primary source of agent social platform behavior, listings, and reputation systems
-  - Carry forward: planning, execution, verification, writing
-  - Required action: read, use
+1. **Attribution:** verified executor/controller classes, with unknown retained.
+2. **Control security:** mandate, instruction, tool, key, and policy failures.
+3. **Fraud/scams:** unauthorized/deceptive loss and intervention outcomes.
+4. **AML/sanctions:** entity, proceeds, suspicion, and investigator outcomes.
+5. **Market abuse:** orders, trades, ownership, coordination, and price impact.
 
-- **ref-agent-econ-lit**: Academic literature on multi-agent economic systems
-  - Why it matters: Theoretical context for agent economic behavior and transaction patterns
-  - Carry forward: planning, execution, writing
-  - Required action: read, cite
+## Acceptance tests
 
-### Carry-Forward Inputs
+The repair milestone is complete only when unsupported claims are withdrawn,
+code and labels fail closed, old artifacts are marked superseded, exact audit
+calculations are preserved, a claim ledger and primary-source record exist, and
+fresh adversarial review finds the new boundaries coherent.
 
-- None confirmed yet — data sources to be identified in Phase 1
+A confirmatory empirical milestone is complete only after an immutable
+event-complete corpus, verified execution/control evidence, independently
+adjudicated outcomes, outer temporal/component holdout, frozen analysis plan,
+clean-checkout reproduction, and external review. Synthetic motifs alone can
+never satisfy this gate.
 
-### Skeptical Review
+## Stop/rethink conditions
 
-- **Weakest anchor:** Data access — A2A transaction data sources not yet identified; academic literature scope — specific papers not yet surveyed
-- **Unvalidated assumptions:** OpenClaw and Moltbox APIs will be accessible for analysis; A2A transaction patterns will differ meaningfully from human patterns
-- **Competing explanation:** Banking fraud detection may already be adaptable to agent patterns without fundamental redesign
-- **Disconfirming observation:** (1) Recommendations fail when tested against real A2A transaction data. (2) A2A commerce scales without proportional fraud increase (suggesting detection works).
-- **False progress to reject:** (1) Theoretical framework without empirical validation or industry-relevant recommendations. (2) Generic AI security advice not specific to A2A commerce properties.
+- the target is not directly observed or label uncertainty is hidden;
+- an event, entity, time, or graph dependency can leak across the holdout;
+- a below-chance or failed result receives a post-hoc mechanism without being
+  labeled exploratory;
+- the claimed data plane cannot observe the proposed mechanism;
+- a score is proposed for adverse action without outcome and intervention
+  evidence;
+- a primary source contradicts the platform, legal, or protocol claim.
 
-### Open Contract Questions
+## Authoritative outputs
 
-- What A2A transaction data can we realistically obtain for empirical validation?
-- Which academic papers on multi-agent systems are most relevant?
+- `GPD/analysis/discovery-agentic-fraud-economy-research-hardening.md`
+- `GPD/CLAIM-LEDGER.md`
+- `GPD/PRIMARY-SOURCE-EVIDENCE.md`
+- `GPD/VERIFICATION-2026-07-09.md`
+- `paper/agent-economy-fraud-arxiv.md`
+- `data/MANIFEST.md`
+- `analysis/STATUS.md`
 
-## Research Questions
-
-### Answered
-
-- [x] What are the necessary properties of agent commerce that create security vulnerabilities? — Phase 2 (9 human behavioral invariants all violated: no biometrics, no velocity limits, no geographic constraints, near-zero creation cost, machine-speed execution, swarm coordination)
-- [x] Which human-based fraud detection methods can be adapted, and which must be replaced? — Phase 3 (all 5 current signals need adaptation; per-address scoring sufficient for 7/8 attack chains; group-level scoring required for swarm attacks — Phase 6)
-- [x] What agent-invariant signals exist for detecting fraudulent A2A transactions? — Phase 3+5 (5 signals: Economic Rationality, Network Topology, Value Flow, Temporal Consistency, Cross-Platform; 4/5 active on real on-chain data)
-- [x] How can banking systems maintain privacy while detecting agent-based fraud? — Phase 3 (confirmed compliant with GDPR, CCPA, GLBA, AML/KYC; all 5 signals operate without PII)
-
-### Active
-
-- [ ] Can group-level (population-level) scoring detect Chain 7 swarm attacks? — Motivated by Phase 6 finding that per-address detection structurally misses single-transaction swarm participants
-- [ ] Will the TC-canary signal (Friday 3–5pm spike) degrade measurably within 18 months as agents proliferate? — Testable prediction from Phase 6 paper; monitor with 3-period Chow test
-- [ ] How does detection performance change with high-quality negative labels? — Phase 5 precision (27.6%→42.9%) was limited by heuristic counterparty labeling; clean labels needed
-
-### Out of Scope
-
-- General AI adversarial ML techniques — why: only agent-specific properties are in scope
-- Regulatory policy drafting — why: framework design only, implementation details are separate work
-- Cross-Platform Correlation signal at scale — why: requires multi-chain data; single-chain data limits to 4/5 signals
-
-## Research Context
-
-### Physical System
-
-Agent-to-agent (A2A) commerce system comprising:
-- **OpenClaw**: Agent gateway connecting messaging apps to AI agents via sessions_list, sessions_send, sessions_history
-- **Moltbook**: Agent social platform with listings, requests, communities, and reputation systems
-- **Banking rails**: Traditional financial infrastructure with human-based fraud detection assumptions
-
-### Theoretical Framework
-
-Multi-agent economic systems + fraud detection theory + Deutsch's epistemology (hard-to-vary explanations)
-
-### Key Parameters and Scales
-
-| Parameter | Symbol | Regime | Notes |
-|-----------|--------|--------|-------|
-| Transaction velocity | v_agent | Machine-speed | Limited only by API rate limits |
-| Human transaction rate | v_human | ~10-100/day | Cognitive/sleep limits |
-| Detection latency | τ_detect | Minutes-hours | Human monitoring systems |
-| Agent coordination scale | N_agents | 10^6+ | Botnet-capable |
-| Biometric signature | σ_bio | Present (humans) | Absent (pure agents) |
-
-### Known Results
-
-- Human fraud detection assumes behavioral invariants (velocity limits, device fingerprinting, biometrics, location constraints)
-- Banking systems use KYC/AML, velocity checks, pattern recognition built for human behavior
-- OpenClaw provides sessions_list, sessions_send, sessions_history for agent discovery and messaging
-- Moltbook provides agent social layer with listings/requests and reputation voting
-- **Phase 2**: 9 human behavioral invariants completely mapped; all 9 violated by A2A agent properties; 4 hard-to-vary variations rejected
-- **Phase 3**: 5-signal detection framework designed; 97ms real-time latency; GDPR/CCPA/GLBA compliant
-- **Phase 4**: Synthetic validation: precision 82.36%, recall 96.23%, F1 88.71%, ROC-AUC 0.97; +49.1% over human baseline
-- **Phase 5**: Real on-chain validation (81,904 Base chain USDC txns, 665 ERC-8004 agents); recall 95.4% (−0.83pp transfer gap); 4/5 signals active; Value Flow strongest on real data (mean=0.42)
-- **Phase 6**: Attack injection (6,050 synthetic txns into 93,579 real); 7/8 chains at 100% per-chain recall; Chain 7 (Swarm) requires group-level detection; ROC-AUC 0.777; FPR 3.8% at operating point
-
-### What Is New
-
-- First-principles analysis using Deutsch's hard-to-vary criterion to identify necessary vulnerabilities
-- Focus on agent *invariants* rather than specific attack techniques
-- Agent-aware detection framework design grounded in actual platform documentation (OpenClaw/Moltbook)
-- Industry-targeted recommendations for immediate banking/fintech adaptation
-- **Paradox finding**: Perfect behavioral mimicry (Chain 6, CV≈0.005) is MORE detectable than realistic agent behavior because machine regularity is anomalous in systems with natural variance (CV=1.87)
-- **Structural gap finding**: Per-address scoring architecturally cannot detect single-transaction swarm participants; group-level detector required
-- **Pre-crime window**: 6–12 months before systematic exploitation based on historical fraud lag (DeFi, NFT, LLM agents)
-
-### Target Venue
-
-arXiv preprint + industry blog posts for fastest path to practitioner impact
-**Status**: Paper draft complete (`paper/agent-economy-fraud-arxiv.md`); ready for LaTeX conversion and arXiv submission to cs.CR or q-fin.RM
-
-### Computational Environment
-
-- **Data**: Base chain USDC transactions via Dune Analytics MCP (free tier, batched at 100 addresses/query); 81,904 transactions Jan 2025–Apr 2026
-- **Labels**: ERC-8004 registry (665 agents); counterparty heuristics (0.7 confidence)
-- **Framework**: `src/a2a_detection/` (pip-installable, Apache 2.0, 47 unit tests: 32 signal + 15 attack-injection)
-- **Cleaned evaluation set**: 1,734 addresses (665 agents + 1,069 active humans, thin-counterparty filter applied)
-
-## Notation and Conventions
-
-See `.gpd/CONVENTIONS.md` for all notation and sign conventions.
-See `.gpd/NOTATION_GLOSSARY.md` for symbol definitions.
-
-## Unit System
-
-This is not a traditional physics problem — units will be context-dependent (transaction rates, time intervals, confidence scores)
-
-## Requirements
-
-See `.gpd/REQUIREMENTS.md` for the detailed requirements specification.
-
-## Key References
-
-Mirror only the contract-critical anchors from `## Scoping Contract Summary`.
-
-- OpenClaw: https://github.com/openclaw/openclaw
-- Moltbook: Platform documentation (to be located)
-- Agent economics literature: To be surveyed in Phase 1
-
-## Constraints
-
-- **Data availability**: Must identify viable A2A transaction data sources for empirical validation
-- **Platform access**: OpenClaw/Moltbook documentation and APIs must be accessible
-- **Empirical validation**: Framework must be testable against realistic data or simulation
-
-## Key Decisions
-
-| Decision | Rationale | Outcome |
-|----------|-----------|---------|
-| arXiv + blog target | Fastest path to practitioner impact, bypass academic review cycles | Draft complete; ready for submission (cs.CR / q-fin.RM) |
-| Platform documentation as anchor | Grounds analysis in actual agent behavior rather than abstract theory | Confirmed — OpenClaw/Moltbook APIs provided concrete attack surface |
-| Synthetic data approach (Phase 1) | No public A2A transaction datasets existed | Validated in Phase 4; real data obtained in Phase 5 via Dune Analytics |
-| Dune Analytics MCP for real data | Only viable on-chain data source for ERC-8004 agents | 81,904 txns obtained; 665 agents labeled; recall transfers at 99.2% |
-| Value Flow weight restored 0.00→0.20 | Real timestamps available (unlike synthetic); F1 triples | F1 triples on real data — correct decision |
-| Detection threshold lowered 0.24→0.08 | Real data has compressed score distribution | Enables recall-focused operating point; FPR managed at 0.29 threshold |
-| Per-address scoring architecture | Standard anomaly detection approach | Sufficient for 7/8 chains; Chain 7 (Swarm) identified as structural gap requiring group-level extension |
-
----
-
-_Last updated: 2026-04-05 — Phase 6 complete. All 6 phases finished. arXiv paper ready for submission._
+Historical phase artifacts remain for traceability and are not authoritative
+where they conflict with these outputs.

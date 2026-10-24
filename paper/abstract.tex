@@ -1,41 +1,42 @@
 \begin{abstract}
-Financial fraud detection systems are built on nine behavioral invariants
-that describe properties exclusive to human actors: velocity limits,
-biometric authentication, device fingerprinting, geographic constraints,
-cognitive and energy constraints, identity persistence, behavioral
-stability, computational limits, and bounded rationality. We show that
-agent-to-agent (A2A) commerce stresses these invariants in systematic
-ways: some current human-assumption signals become unreliable for
-legitimate agent activity, while other agent-native signals become
-available. Using the OpenClaw agent gateway and Moltbook agent social
-platform as case studies, we derive an eight-chain taxonomy of A2A
-fraud attack vectors grounded in platform documentation. We design a
-five-signal agent-invariant detection framework and evaluate it on
-81,904 Base-chain USDC transactions from 665 ERC-8004 registered
-agents, followed by a 93,579-transaction real corpus augmented with
-6,050 injected attacks. On real data the framework achieves recall of
-95.4\% on the raw, contaminated-negative label set after threshold
-re-optimization (81.1\% after label cleaning); at the fixed
-synthetic-calibrated threshold, raw-label recall is 61.4\%, and composite
-ROC-AUC is only 0.515 on cleaned labels. These figures show useful recall
-under a noisy-label operating point, not mature ranking performance.
-Against a labeled mixed dataset with injected attack patterns, the
-framework detects 7 of~8 attack chains at 100\% per-chain recall. The
-eighth chain---coordinated swarm attacks---reveals an architectural gap:
-per-address scoring is blind to coordinated multi-agent attacks where
-individual agents have minimal on-chain footprint, motivating a
-next-generation collective detection architecture. We provide an
-open-source reference implementation (Apache~2.0) and separate
-framework-validated recommendations from broader policy proposals.
-We position this work as an empirical, detection-side complement to the
-emerging agentic-commerce-security literature: as of mid-2026, agent
-impersonation and agent-wallet theft are already documented, while
-systematic A2A-commerce fraud exploiting the specific invariant blind
-spots modeled here remains undocumented and is the threat model's
-decisive future test.
+We audit a prototype that was originally described as an agentic-fraud
+detector.  Its real-data labels do not encode fraud, autonomous execution, or
+human control.  The positive class contains 665 historical ERC-8004 registry
+owner/default-wallet proxies and the comparison class contains 1,069 active
+counterparties of unknown type.  On the retained local snapshot, the original
+composite ranks these classes at ROC-AUC 0.5147.  A full-sample, post-hoc
+reweighting reaches 0.6223; five-fold random-address cross-fitting gives pooled
+out-of-fold AUC 0.6122, and a logistic combiner gives 0.6503.  These corrected
+results are provisional until preserved in an immutable end-to-end run
+manifest; only the historical 0.5147 is reproduced by the preserved audit.
+They also remain exploratory because feature design, graph construction, cohort
+cleaning, and model selection were informed by the same connected population.
+At a training-fold threshold chosen for a nominal 5\% comparison-class alert
+rate, held-out proxy recall is 7.5\% and proxy precision is 48.1\%.
+
+The audit finds two decisive provenance defects.  First, a historical bridge
+deduplicated ERC-20 events by transaction hash and discarded 13,539 of 107,118
+rows, including 10,626 distinct transfer-event tuples.  Second, the synthetic
+motif generator reused attacker addresses across instances; correcting it
+changes 82 historical attack senders to 689 and invalidates every reported
+motif-performance metric.  A separate synthetic benchmark lacks its generator,
+row-level scores, and benchmark log and is withdrawn.  None of these artifacts
+supports fraud accuracy, banking generalization, adversarial robustness, or an
+operational threshold.
+
+We replace the easy-to-vary claim that agents are intrinsically fraudulent
+with a causal explanation: loss becomes possible when the chain from an
+authenticated controller and bounded mandate, through instruction provenance
+and tool/wallet authorization, to settlement is not preserved.  Automation
+changes speed, scale, delegation depth, and coordination; it does not turn
+actor type into fraud.  This revision contributes an explicit evidence vector,
+threat-role and observation-plane model, claim ledger, fail-closed research
+score, and preregisterable validation design.  Stronger conclusions require an
+immutable event-complete dataset, verified execution and control evidence,
+independently adjudicated financial-crime outcomes, leakage-safe temporal or
+component holdouts, and external replication.
 
 \medskip
-\noindent\textbf{Keywords:} agent-to-agent commerce, fraud detection,
-behavioral invariants, multi-agent systems, blockchain analytics,
-financial security, ERC-8004
+\noindent\textbf{Keywords:} agentic payments, construct validity, fraud
+detection, ERC-8004, transaction graphs, research integrity
 \end{abstract}

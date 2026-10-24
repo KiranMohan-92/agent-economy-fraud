@@ -16,7 +16,7 @@ from a2a_detection.signals.network_topology import NetworkTopologySignal
 from a2a_detection.signals.temporal_consistency import TemporalConsistencySignal
 from a2a_detection.signals.value_flow import ValueFlowSignal
 from a2a_detection.signals.cross_platform import CrossPlatformSignal
-from a2a_detection.signals.fusion import SignalFusion, DecisionTier
+from a2a_detection.signals.fusion import SignalFusion
 
 
 # ── Signal 1: Economic Rationality ───────────────────────────────────────────
@@ -237,17 +237,16 @@ class TestSignalFusion:
     def test_score_address_returns_detection_result(self, relay_agent_txns, agent_addr):
         result = self.fusion.score_address(agent_addr, relay_agent_txns)
         assert 0.0 <= result.composite_score <= 1.0
-        assert result.decision in list(DecisionTier)
+        assert isinstance(result.above_historical_reference, bool)
         assert set(result.signal_scores.keys()) == {
             "economic_rationality", "network_topology", "value_flow",
             "temporal_consistency", "cross_platform",
         }
 
-    def test_all_decision_tiers_accessible(self, relay_agent_txns, burst_agent_txns, agent_addr, human_txns, human_addr):
-        """Confirm ALLOW tier fires on a human address with minimal transactions."""
+    def test_historical_reference_is_non_operational(self, human_txns, human_addr):
+        """The compatibility threshold emits only a descriptive boolean."""
         result = self.fusion.score_address(human_addr, human_txns)
-        # Low-activity human should ALLOW or FLAG
-        assert result.decision in (DecisionTier.ALLOW, DecisionTier.FLAG)
+        assert isinstance(result.above_historical_reference, bool)
 
     def test_score_batch_returns_dataframe(self, relay_agent_txns, agent_addr, human_txns, human_addr):
         combined = pd.concat([relay_agent_txns, human_txns], ignore_index=True)
@@ -255,7 +254,7 @@ class TestSignalFusion:
         results = self.fusion.score_batch(addresses, combined)
         assert len(results) == 2
         assert "composite_score" in results.columns
-        assert "decision" in results.columns
+        assert "above_historical_reference" in results.columns
 
     def test_weights_sum_to_one(self):
         total = sum(self.fusion.weights.values())
@@ -269,7 +268,7 @@ class TestSignalFusion:
             {"address": agent_addr, "label": "agent"},
             {"address": human_addr, "label": "human"},
         ])
-        metrics = self.fusion.evaluate(results, labels)
+        metrics = self.fusion.evaluate(results, labels, positive_label="agent")
         assert "precision" in metrics
         assert "recall" in metrics
         assert "f1" in metrics
@@ -284,22 +283,47 @@ class TestSignalFusion:
         # (the zero-weighted signal doesn't reduce confidence)
         assert result.confidence > 0.0
 
-    def test_default_threshold_is_009(self):
-        assert self.fusion.THRESHOLD_FLAG == 0.09, (
-            "FLAG threshold was changed from 0.09. "
-            "This is the F1-optimal threshold on real Dune data (2026-04-04). "
-            "Update this test only after a new threshold sweep on updated real data."
+    def test_historical_reference_threshold_is_009(self):
+        assert self.fusion.HISTORICAL_REFERENCE_THRESHOLD == 0.09
+
+    def test_discrimination_proportional_weights(self):
+        """Weights are proportional to above-chance discrimination (AUC - 0.5),
+        using the per-signal AUCs that reproduce from committed data:
+        NT=0.5990, VF=0.5220, ER=0.5152, TC=0.4647.
+
+        This checks a heuristic, post-hoc configuration, not a guarantee: a
+        below-chance signal receives zero weight and the remaining weights
+        order by AUC - 0.5. The rule does not ensure the composite beats, or
+        even matches, the best single signal (for example, AUCs 1.0 and 0.75
+        give weights 2/3 and 1/3, and the composite can rank like the weaker
+        signal). TC is below chance on the counterparty comparison class, so
+        its weight must be exactly 0.
+        """
+        w = self.fusion.EXPLORATORY_WEIGHTS
+        assert w["temporal_consistency"] == 0.0, (
+            "temporal_consistency is below chance (AUC 0.4647) on the "
+            "counterparty comparison class and must receive zero weight under "
+            "this heuristic configuration (the old composite with positive TC "
+            "weight scored 0.5147, below NT alone at 0.5990)."
+        )
+        assert w["network_topology"] > w["value_flow"] > w["economic_rationality"], (
+            "Weights must order by above-chance discrimination: "
+            "NT (0.5990) > VF (0.5220) > ER (0.5152)."
+        )
+        assert w["network_topology"] > 0.5, (
+            "Network Topology is the only signal with meaningful discrimination "
+            "and should dominate the weight vector."
         )
 
-    def test_auc_proportional_weights(self):
-        """AUC-proportional weights: network_topology must be highest, value_flow lowest."""
+    def test_default_weights_are_untuned_and_equal(self):
         w = self.fusion.DEFAULT_WEIGHTS
-        assert w["network_topology"] >= w["temporal_consistency"], (
-            "network_topology (AUC=0.6214) should outweigh temporal_consistency (AUC=0.5683)"
-        )
-        assert w["temporal_consistency"] >= w["economic_rationality"], (
-            "temporal_consistency (AUC=0.5683) should outweigh economic_rationality (AUC=0.5497)"
-        )
-        assert w["economic_rationality"] >= w["value_flow"], (
-            "economic_rationality (AUC=0.5497) should outweigh value_flow (AUC=0.5290)"
-        )
+        assert w["network_topology"] == 0.25
+        assert w["temporal_consistency"] == 0.25
+        assert w["economic_rationality"] == 0.25
+        assert w["value_flow"] == 0.25
+        assert w["cross_platform"] == 0.0
+
+    def test_exploratory_configuration_is_explicit(self):
+        exploratory = SignalFusion.exploratory()
+        assert exploratory.weights == SignalFusion.EXPLORATORY_WEIGHTS
+        assert exploratory.weights != SignalFusion.DEFAULT_WEIGHTS

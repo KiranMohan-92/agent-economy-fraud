@@ -1,10 +1,13 @@
-% Agent-to-Agent Commerce and Human Behavioral Invariants
-% in Banking Fraud Detection
-% arXiv preprint — cs.CR — June 2026
+% ===========================================================================
+% WITHDRAWN DRAFT (July 2026): Stage 1 results are withdrawn; see README and
+% GPD/CLAIM-LEDGER.md. Kept for the record.
+% ===========================================================================
+
+% Construct audit of an early ERC-8004 registry-proxy study
+% Research-integrity revision -- July 2026
 
 \documentclass[11pt,a4paper]{article}
 
-% --- Packages ---
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
@@ -16,79 +19,48 @@
 \usepackage{cleveref}
 \usepackage{xcolor}
 \usepackage{enumitem}
-\usepackage{multirow}
 \usepackage{array}
 \usepackage{tabularx}
 \usepackage{float}
-\usepackage{caption}
-\usepackage{subcaption}
 \usepackage[numbers,sort&compress]{natbib}
 \usepackage{microtype}
 \usepackage{url}
-\usepackage{listings}
 \usepackage{xspace}
-\usepackage{tikz}
-\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
 
-% --- Listings setup ---
-\lstset{
-  basicstyle=\ttfamily\small,
-  backgroundcolor=\color{gray!8},
-  frame=single,
-  framerule=0.4pt,
-  rulecolor=\color{gray!40},
-  breaklines=true,
-  columns=fullflexible,
-  keepspaces=true,
-  xleftmargin=1em,
-  xrightmargin=1em,
-  aboveskip=0.8em,
-  belowskip=0.8em,
-}
-
-% --- Custom commands ---
-\newcommand{\A}{\mathfrak{A}}        % Agent set
-\newcommand{\tx}{\mathrm{tx}}         % Transaction
-\newcommand{\cvt}{\mathrm{CV}}        % Coefficient of variation
-\newcommand{\auc}{\mathrm{AUC}}       % Area under curve
-\newcommand{\fpr}{\mathrm{FPR}}       % False positive rate
-\newcommand{\tpr}{\mathrm{TPR}}       % True positive rate
+\newcommand{\auc}{\mathrm{AUC}}
+\newcommand{\fpr}{\mathrm{FPR}}
+\newcommand{\tpr}{\mathrm{TPR}}
 \newcommand{\ie}{i.e.,\xspace}
 \newcommand{\eg}{e.g.,\xspace}
 \newcommand{\etal}{et~al.\xspace}
 
-% --- Hyperref setup ---
 \hypersetup{
   colorlinks=true,
   linkcolor=blue!60!black,
   citecolor=green!50!black,
   urlcolor=blue!70!black,
   pdfauthor={Kiran Mohan},
-  pdftitle={Agent-to-Agent Commerce and Human Behavioral Invariants in Banking Fraud Detection}
+  pdftitle={Registry-Associated Wallet Ranking in Early ERC-8004 Data}
 }
 
-% --- Title ---
-\title{Agent-to-Agent Commerce and Human Behavioral\\
-Invariants in Banking Fraud Detection}
+\title{Registry-Associated Wallet Ranking in Early ERC-8004 Data:\\
+A Construct Audit and Agentic-Payment Threat Model}
 
-\author{
-  Kiran Mohan\\
-  \textit{Independent Researcher}
-  % TODO before upload: confirm exact name spelling; optionally add
-  % \texttt{email} and ORCID. Affiliation intentionally omitted
-  % (independent-researcher submission).
-}
-
-\date{June 2026}
+\author{Kiran Mohan\\\textit{Independent Researcher}}
+\date{July 2026}
 
 \begin{document}
-
 \maketitle
 
-% --- Abstract ---
-\input{abstract}
+% Visible withdrawal notice. It follows \maketitle because, in the one-column
+% article class, \maketitle starts a new page; text placed before it would sit
+% alone on page 1.
+\noindent\fbox{\parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{%
+  \textbf{WITHDRAWN DRAFT (July 2026): Stage~1 results are withdrawn; see
+  README and GPD/CLAIM-LEDGER.md. Kept for the record.}}}
+\medskip
 
-% --- Main sections ---
+\input{abstract}
 \input{introduction}
 \input{background}
 \input{threat_model}
@@ -99,19 +71,15 @@ Invariants in Banking Fraud Detection}
 \input{limitations}
 \input{conclusions}
 
-% --- Acknowledgments ---
-\section*{Acknowledgments}
-On-chain transaction data was obtained via Dune Analytics.
-ERC-8004 agent registry data from Base chain contract
-\texttt{0x8004...9432}.
-The \texttt{a2a-detection} reference implementation is available
-under the Apache~2.0 license.
+\section*{Research-integrity notice}
+This revision supersedes the repository's earlier submission-ready claim.
+The current data snapshot is neither an immutable public release nor valid
+fraud ground truth.  Consequently, this manuscript is a construct audit and
+research protocol, not a validated detector, bank study, or deployment guide.
 
-% --- Bibliography ---
 \bibliographystyle{plainnat}
 \bibliography{references}
 
-% --- Appendices ---
 \appendix
 \input{appendix_signals}
 \input{appendix_dataset}
