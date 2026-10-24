@@ -131,3 +131,17 @@ python -m venv .venv
 
 Large historical data files are intentionally not treated as a released
 benchmark. See `data/MANIFEST.md` before running any empirical script.
+
+## License
+
+- **Code** (Python, SQL and other source files) is licensed under the
+  [Apache License 2.0](LICENSE).
+- **The paper, research notes, analysis write-ups and figures** (LaTeX,
+  Markdown and image files, including `paper/`, `GPD/` and `.gpd/`) are
+  licensed under [CC BY 4.0](LICENSE-CC-BY-4.0). Reuse them freely with
+  credit to Kiran Mohan.
+- **Files in `data/`:** `base_erc8004_agents.json` is extracted from public
+  on-chain records, and the terms of those sources still apply to it. The
+  derived analysis outputs (`detection_results.csv`, which includes synthetic
+  baseline scores; `invariant_violations.json`; `overlap_results.json`) and
+  `MANIFEST.md` are licensed under CC BY 4.0.
